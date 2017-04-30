@@ -1,2 +1,2 @@
-#' @import dplyr
+#' @import tidyr dplyr
 NULL

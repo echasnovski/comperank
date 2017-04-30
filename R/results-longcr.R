@@ -1,0 +1,163 @@
+#' Long format of competition results
+#'
+#' Functions for converting data of competition results to long format.
+#'
+#' @param cr_data Data of competition results (convertable to tabular).
+#' @param repair Whether to repair input.
+#'
+#' @section Long format of competition results:
+#' It is assumed that competition consists from multiple games (matches,
+#' comparisons, etc.). One game can consist from \bold{variable} number of
+#' players. Inside a game all players are treated equally.
+#' In every game player has some score. It is assumed that the higher the score
+#' the better for the player.
+#'
+#' \code{longcr} inherits from \code{\link[=tbl_df]{tibble}}. Data should have
+#'   at least three columns with the following names:
+#'   \itemize{
+#'     \item "game" - game identifier;
+#'     \item "player" - player identifier;
+#'     \item "score" - score of particular player at particular game.
+#'   }
+#'   Extra columns are allowed but not recommended.
+#'
+#' @details \code{to_longcr} is S3 method for converting data to \code{longcr}.
+#' When using default method if \code{repair} is \code{TRUE} it also tries
+#' to fix possible problems with the following actions:
+#' \itemize{
+#'   \item Throw an error if there are less than 3 columns;
+#'   \item Detect first columns with names containing "game", "player" or
+#'     "score" (ignoring case). If there are many matching names for one output
+#'     name then the first one is used;
+#'   \item If some legitimate names aren't detected the first unmatched
+#'     columns are used;
+#'   \item Return the tibble with 3 appropriate columns and column names.
+#' }
+#'
+#' When applying \code{to_longcr} to \code{widecr} object, convertion is made:
+#' \itemize{
+#'   \item If there is column \code{game} then it is used as game identifier.
+#'     Else treat every column as separate game data;
+#'   \item Every "player"-"score" pair for every game is converted to separate
+#'     row with duplicating the appropriate extra columns.
+#' }
+#'
+#' @return \code{is_longcr} returns TRUE if its argument is appropriate object
+#'   of class \code{longcr}.
+#'
+#' \code{to_longcr} returns an object of class \code{longcr}.
+#'
+#' @examples
+#' cr_data <- data.frame(
+#'   playerscoregame_ID = rep(1:5, times = 2),
+#'   gameId = rep(1:5, each = 2),
+#'   scoreS = 31:40,
+#'   scoreSS = 41:50
+#' )
+#' cr_data_long <- to_longcr(cr_data, repair = TRUE)
+#' is_longcr(cr_data_long)
+#'
+#' @name results-longcr
+#' @seealso \link[=results-widecr]{widecr} for wide format.
+NULL
+
+#' @rdname results-longcr
+#' @export
+is_longcr <- function(cr_data) {
+  (class(cr_data)[1] == "longcr") &&
+    (inherits(x = cr_data, what = "tbl_df")) &&
+    (length(setdiff(c("game", "player", "score"), colnames(cr_data))) == 0)
+}
+
+#' @rdname results-longcr
+#' @export
+to_longcr <- function(cr_data, repair = TRUE) {
+  UseMethod("to_longcr")
+}
+
+#' @export
+to_longcr.default <- function(cr_data, repair = TRUE) {
+  res <- dplyr::tbl_df(cr_data)
+  if (repair) {
+    res <- repair_longcr(res)
+  }
+  res <- add_class(res, "longcr")
+
+  res
+}
+
+#' @export
+to_longcr.widecr <- function(cr_data, repair = TRUE) {
+  if (!is_widecr(cr_data)) {
+    stop("Input is not appropriate object of class widecr.")
+  }
+
+  if (!("game" %in% colnames(cr_data))) {
+    cr_data <- cr_data %>%
+      mutate_(.dots = list(
+        game = ~ 1:n()
+      ))
+    cr_data <- add_class(cr_data, "widecr")
+  }
+
+  matched_names <- colnames(cr_data)[grepl(pattern = "player|score",
+                                           x = colnames(cr_data))]
+
+  res <- cr_data %>%
+    gather_(key_col = "to_longcr_widecr_name",
+            value_col = "to_longcr_widecr_value",
+            gather_cols = matched_names) %>%
+    extract_(col = "to_longcr_widecr_name",
+             into = c("to_longcr_widecr_group", "to_longcr_widecr_id"),
+             regex = ".*(player|score)(.*)",
+             remove = TRUE, convert = FALSE) %>%
+    group_by_("game", "to_longcr_widecr_id") %>%
+    spread_(key_col = "to_longcr_widecr_group",
+            value_col = "to_longcr_widecr_value") %>%
+    ungroup() %>%
+    select_(.dots = list(quote(-to_longcr_widecr_id))) %>%
+    select_(.dots = list(
+      "game", "player", "score", ~ everything()
+    ))
+
+  class(res) <- c("longcr", class(cr_data)[-1])
+
+  res
+}
+
+repair_longcr <- function(cr_data) {
+  if (ncol(cr_data) < 3) {
+    stop("Repaired object has less than 3 columns.")
+  }
+
+  # Repairing column names and order
+  longcr_colnames <- c("game", "player", "score")
+
+  names_cr <- tolower(colnames(cr_data))
+  names_cr_extracted <-
+    regexpr(
+      pattern = paste0(longcr_colnames, collapse = "|"),
+      text = names_cr
+    ) %>%
+    regmatches(x = names_cr)
+
+  matched_inds <- match(x = longcr_colnames, table = names_cr_extracted)
+
+  unmatched <- is.na(matched_inds)
+  num_unmatched <- sum(unmatched)
+  if (num_unmatched > 0) {
+    warning(sprintf(
+      "Next columns are not found. Add columns with first unmatched.\n  %s",
+      paste0(longcr_colnames[which(unmatched)], collapse = ", ")
+    ))
+
+    matched_inds[unmatched] <-
+      setdiff(1:ncol(cr_data), matched_inds[!unmatched])[num_unmatched]
+  }
+
+  res <- cr_data[, matched_inds, drop = FALSE]
+  colnames(res) <- longcr_colnames
+
+  bind_cols(res, cr_data[, setdiff(1:ncol(cr_data), matched_inds),
+                         drop = FALSE])
+}
