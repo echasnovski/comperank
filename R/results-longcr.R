@@ -9,17 +9,18 @@
 #' It is assumed that competition consists from multiple games (matches,
 #' comparisons, etc.). One game can consist from \bold{variable} number of
 #' players. Inside a game all players are treated equally.
-#' In every game player has some score. It is assumed that the higher the score
-#' the better for the player.
+#' In every game every player has some score. It is assumed that the higher
+#' the score the better for the player.
 #'
 #' \code{longcr} inherits from \code{\link[=tbl_df]{tibble}}. Data should have
 #'   at least three columns with the following names:
 #'   \itemize{
 #'     \item "game" - game identifier;
 #'     \item "player" - player identifier;
-#'     \item "score" - score of particular player at particular game.
+#'     \item "score" - score of particular player in particular game.
 #'   }
-#'   Extra columns are allowed but not recommended.
+#'   Extra columns are allowed but not recommended (if object is converted to
+#'   \code{widecr} they will be dropped).
 #'
 #' @details \code{to_longcr} is S3 method for converting data to \code{longcr}.
 #' When using default method if \code{repair} is \code{TRUE} it also tries
@@ -33,21 +34,25 @@
 #'     columns are used;
 #'   \item Return the tibble with 3 appropriate columns and column names.
 #' }
+#' If \code{repair} is \code{FALSE} it converts \code{cr_data} to
+#' \code{\link[=tbl_df]{tibble}} and adds \code{longcr} class to it.
 #'
 #' When applying \code{to_longcr} to \code{widecr} object, convertion is made:
 #' \itemize{
 #'   \item If there is column \code{game} then it is used as game identifier.
-#'     Else treat every column as separate game data;
+#'     Else treat every row as separate game data;
 #'   \item Every "player"-"score" pair for every game is converted to separate
-#'     row with duplicating the appropriate extra columns.
+#'     row with adding the appropriate extra columns.
 #' }
+#'
+#' For appropriate \code{longcr} objects \code{to_longcr} returns its input.
 #'
 #' @return \code{is_longcr} returns TRUE if its argument is appropriate object
 #'   of class \code{longcr}.
 #'
 #' \code{to_longcr} returns an object of class \code{longcr}.
 #'
-#' @examples
+#' @examples # Repairing example
 #' cr_data <- data.frame(
 #'   playerscoregame_ID = rep(1:5, times = 2),
 #'   gameId = rep(1:5, each = 2),
@@ -123,6 +128,15 @@ to_longcr.widecr <- function(cr_data, repair = TRUE) {
   class(res) <- c("longcr", class(cr_data)[-1])
 
   res
+}
+
+#' @export
+to_longcr.longcr <- function(cr_data, repair = TRUE) {
+  if (!is_longcr(cr_data)) {
+    stop("Input is not appropriate object of class longcr.")
+  }
+
+  cr_data
 }
 
 repair_longcr <- function(cr_data) {

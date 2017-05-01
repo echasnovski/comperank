@@ -43,6 +43,9 @@ problems with the following actions:
 }
 Note that the order (and numeration) of pairs can change.
 
+If \code{repair} is \code{FALSE} it converts \code{cr_data} to
+\code{\link[=tbl_df]{tibble}} and adds \code{widecr} class to it.
+
 When applying \code{to_widecr} to \code{longcr} object, convertion is made:
 \itemize{
   \item All columns except "game", "player" and "score" are dropped;
@@ -52,14 +55,16 @@ When applying \code{to_widecr} to \code{longcr} object, convertion is made:
     will be \code{NA}'s in some pairs.
     Column \code{game} is preserved in output.
 }
+
+For appropriate \code{widecr} objects \code{to_widecr} returns its input.
 }
 \section{Wide format of competition results}{
 
 It is assumed that competition consists from multiple games (matches,
 comparisons, etc.). One game can consist only from \bold{constant} number
 of players. Inside a game all players are treated equally.
-In every game player has some score. It is assumed that the higher the score
-the better for the player.
+In every game every player has some score. It is assumed that the higher
+the score the better for the player.
 
 \code{widecr} inherits from \code{\link[=tbl_df]{tibble}}. Data should be
 orginized in pairs of columns "player"-"score". For example: player1, score1,

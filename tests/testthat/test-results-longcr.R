@@ -7,6 +7,12 @@ input <- data.frame(
   scoreSP = 41:50
 )
 
+input_good <- data.frame(
+  game = 1:10,
+  player = 11:20,
+  score = 101:110
+)
+
 test_that("is_longcr works", {
   expect_true(is_longcr(to_longcr(input, repair = TRUE)))
 })
@@ -35,6 +41,10 @@ test_that("to_longcr.default works", {
   expect_identical(suppressWarnings(to_longcr(input[, -1], repair = TRUE)),
                    output_2)
 
+  output_good <- dplyr::tbl_df(input_good)
+  output_good <- add_class(output_good, "longcr")
+  expect_identical(to_longcr(input_good, repair = TRUE), output_good)
+
   # Test usage without repairing
   output_3 <- dplyr::tbl_df(input)
   output_3 <- add_class(output_3, "longcr")
@@ -61,7 +71,7 @@ test_that("to_longcr.widecr works", {
   to_longcr_res <- to_longcr(input_widecr)
   expect_identical(to_longcr_res, output_longcr_from_widecr)
 
-  # Using withou game column
+  # Using without game column
   input_widecr_nogame <- input_widecr[, setdiff(colnames(input_widecr), "game")]
   input_widecr_nogame <- add_class(input_widecr_nogame, "widecr")
   output_longcr_from_widecr_nogame <- output_longcr_from_widecr
@@ -69,12 +79,16 @@ test_that("to_longcr.widecr works", {
   expect_identical(to_longcr(input_widecr_nogame),
                    output_longcr_from_widecr_nogame)
 
-
-  # Converting twice doesn't affect the result
-  expect_identical(to_longcr(to_longcr_res), to_longcr_res)
-
   # Throwing error on corrupted widecr object
   input_widecr_corrupt <- input_widecr[, -1]
   input_widecr_corrupt <- add_class(input_widecr_corrupt, "widecr")
   expect_error(to_longcr(input_widecr_corrupt), "not.*widecr")
+})
+
+test_that("to_longcr.longcr works", {
+  to_longcr_res <- to_longcr(input_good)
+  expect_identical(to_longcr(to_longcr_res, repair = TRUE), to_longcr_res)
+
+  class(to_longcr_res) <- "longcr"
+  expect_error(to_longcr(to_longcr_res, repair = TRUE), "not.*longcr")
 })

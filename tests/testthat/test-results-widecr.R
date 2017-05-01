@@ -18,11 +18,20 @@ input_2 <- as.data.frame(c(
            paste0("score", 1:10))
 ))
 
+input_good <- data.frame(
+  player1 = 1:10,
+  score1 = 11:20,
+  player2 = 2:11,
+  score2 = 12:21
+)
+
 test_that("is_widecr works", {
   output_2 <- dplyr::tbl_df(input_2)
   output_2 <- add_class(output_2, "widecr")
   expect_true(is_widecr(output_2))
   expect_false(is_widecr(output_2[, -20]))
+  class(output_2) <- "widecr"
+  expect_false(is_widecr(output_2))
 })
 
 test_that("to_widecr.default works", {
@@ -45,6 +54,10 @@ test_that("to_widecr.default works", {
            formatC(rep(1:10, each = 2), width = 2,
                    format = "d", flag = "0"))
   )
+
+  output_good <- dplyr::tbl_df(input_good)
+  output_good <- add_class(output_good, "widecr")
+  expect_identical(to_widecr(input_good, repair = TRUE), output_good)
 
   # Test usage without repairing
   output_2 <- dplyr::tbl_df(input_2)
@@ -81,4 +94,12 @@ test_that("to_widecr.longcr works", {
   class(longcr_corrupt) <- "longcr"
   expect_error(to_widecr(longcr_corrupt),
                "not.*longcr")
+})
+
+test_that("to_widecr.widecr works", {
+  widecr_input <- to_widecr(input_1, repair = TRUE)
+  expect_identical(to_widecr(widecr_input, repair = TRUE), widecr_input)
+
+  class(widecr_input) <- "widecr"
+  expect_error(to_widecr(widecr_input, repair = TRUE), "not.*widecr")
 })
