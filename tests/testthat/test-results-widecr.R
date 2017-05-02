@@ -1,11 +1,11 @@
 context("results-widecr")
 
 input_1 <- data.frame(
-  player_1 = 1:10,
-  player__2 = 2:11,
-  score_1 = 11:20,
-  score1 = 12:21,
-  score__2 = 13:22,
+  playerA = 1:10,
+  playerB = 2:11,
+  scoreC = 11:20,
+  scoreB = 12:21,
+  scoreA = 13:22,
   otherColumn =  101:110
 )
 
@@ -36,13 +36,13 @@ test_that("is_widecr works", {
 
 test_that("to_widecr.default works", {
   # Test repairing
-  output_1 <- tbl_df(data.frame(
-    player1 = rep(NA, 10),
-    score1 = 12:21,
-    player2 = 1:10,
-    score2 = 11:20,
-    player3 = 2:11,
-    score3 = 13:22,
+  output_1 <- dplyr::tbl_df(data.frame(
+    player1 = 1:10,
+    score1 = 13:22,
+    player2 = 2:11,
+    score2 = 12:21,
+    player3 = rep(NA, 10),
+    score3 = 11:20,
     otherColumn = 101:110
   ))
   output_1 <- add_class(output_1, "widecr")

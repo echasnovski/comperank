@@ -80,11 +80,11 @@ be used in convertion to \code{longcr} format via \code{\link{to_longcr}}.
 
 \examples{
 cr_data <- data.frame(
-  player_1 = 1:10,
-  player__2 = 2:11,
-  score_1 = 11:20,
-  score1 = 12:21,
-  score__2 = 13:22,
+  playerA = 1:10,
+  playerB = 2:11,
+  scoreC = 11:20,
+  scoreB = 12:21,
+  scoreA = 13:22,
   otherColumn =  101:110
 )
 cr_data_wide <- to_widecr(cr_data, repair = TRUE)
