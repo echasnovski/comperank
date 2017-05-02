@@ -1,3 +1,18 @@
+# General -----------------------------------------------------------------
+#' Skip some action
+#'
+#' @param x Input object
+#' @param ... Additional arguments to be passed to or from methods.
+#'
+#' @return An exact copy of \code{x}.
+#'
+#' @examples identical(skip_action(1), 1)
+#'
+#' @export
+skip_action <- function(x, ...) {
+  x
+}
+
 # Competition results -----------------------------------------------------
 get_formatC_width <- function(vec) {
   floor(log10(length(unique(vec)))) + 1
@@ -21,4 +36,5 @@ assert_used_names <- function(used, original, prefix = "") {
 
   invisible(TRUE)
 }
+
 
