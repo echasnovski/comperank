@@ -4,6 +4,7 @@
 #'
 #' @param cr_data Data of competition results (convertable to tabular).
 #' @param repair Whether to repair input.
+#' @param ... Additional arguments to be passed to or from methods.
 #'
 #' @section Long format of competition results:
 #' It is assumed that competition consists from multiple games (matches,
@@ -78,15 +79,15 @@ is_longcr <- function(cr_data) {
 
 #' @rdname results-longcr
 #' @export
-to_longcr <- function(cr_data, repair = TRUE) {
+to_longcr <- function(cr_data, repair = TRUE, ...) {
   UseMethod("to_longcr")
 }
 
 #' @export
-to_longcr.default <- function(cr_data, repair = TRUE) {
+to_longcr.default <- function(cr_data, repair = TRUE, ...) {
   res <- dplyr::tbl_df(cr_data)
   if (repair) {
-    res <- repair_longcr(res)
+    res <- repair_longcr(res, ...)
   }
   res <- add_class(res, "longcr")
 
@@ -94,7 +95,7 @@ to_longcr.default <- function(cr_data, repair = TRUE) {
 }
 
 #' @export
-to_longcr.widecr <- function(cr_data, repair = TRUE) {
+to_longcr.widecr <- function(cr_data, repair = TRUE, ...) {
   if (!is_widecr(cr_data)) {
     stop("Input is not appropriate object of class widecr.")
   }
@@ -133,7 +134,7 @@ to_longcr.widecr <- function(cr_data, repair = TRUE) {
 }
 
 #' @export
-to_longcr.longcr <- function(cr_data, repair = TRUE) {
+to_longcr.longcr <- function(cr_data, repair = TRUE, ...) {
   if (!is_longcr(cr_data)) {
     stop("Input is not appropriate object of class longcr.")
   }
@@ -141,7 +142,7 @@ to_longcr.longcr <- function(cr_data, repair = TRUE) {
   cr_data
 }
 
-repair_longcr <- function(cr_data) {
+repair_longcr <- function(cr_data, ...) {
   if (ncol(cr_data) < 3) {
     stop("Repaired object has less than 3 columns.")
   }

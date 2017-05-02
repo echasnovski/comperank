@@ -50,6 +50,10 @@ test_that("to_longcr.default works", {
   output_3 <- dplyr::tbl_df(input)
   output_3 <- add_class(output_3, "longcr")
   expect_identical(to_longcr(input, repair = FALSE), output_3)
+
+  # Test handling extra inputs
+  expect_silent(to_longcr(input_good, repair = TRUE, extraArg = 1))
+  expect_silent(to_longcr(input_good, repair = FALSE, extraArg = 1))
 })
 
 test_that("to_longcr.widecr works", {

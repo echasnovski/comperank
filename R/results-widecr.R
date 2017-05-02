@@ -4,6 +4,7 @@
 #'
 #' @param cr_data Data of competition results (convertable to tabular).
 #' @param repair Whether to repair input.
+#' @param ... Additional arguments to be passed to or from methods.
 #'
 #' @section Wide format of competition results:
 #' It is assumed that competition consists from multiple games (matches,
@@ -105,15 +106,15 @@ is_widecr <- function(cr_data) {
 
 #' @rdname results-widecr
 #' @export
-to_widecr <- function(cr_data, repair = TRUE) {
+to_widecr <- function(cr_data, repair = TRUE, ...) {
   UseMethod("to_widecr")
 }
 
 #' @export
-to_widecr.default <- function(cr_data, repair = TRUE) {
+to_widecr.default <- function(cr_data, repair = TRUE, ...) {
   res <- dplyr::tbl_df(cr_data)
   if (repair) {
-    res <- repair_widecr(res)
+    res <- repair_widecr(res, ...)
   }
   res <- add_class(res, "widecr")
 
@@ -121,7 +122,7 @@ to_widecr.default <- function(cr_data, repair = TRUE) {
 }
 
 #' @export
-to_widecr.longcr <- function(cr_data, repair = TRUE) {
+to_widecr.longcr <- function(cr_data, repair = TRUE, ...) {
   if (!is_longcr(cr_data)) {
     stop("Input is not appropriate object of class longcr.")
   }
@@ -159,7 +160,7 @@ to_widecr.longcr <- function(cr_data, repair = TRUE) {
 }
 
 #' @export
-to_widecr.widecr <- function(cr_data, repair = TRUE) {
+to_widecr.widecr <- function(cr_data, repair = TRUE, ...) {
   if (!is_widecr(cr_data)) {
     stop("Input is not appropriate object of class widecr.")
   }
@@ -167,7 +168,7 @@ to_widecr.widecr <- function(cr_data, repair = TRUE) {
   cr_data
 }
 
-repair_widecr <- function(cr_data) {
+repair_widecr <- function(cr_data, ...) {
   # Repairing column names and order
   is_wide_cr_name <- grepl(pattern = "player|score",
                            x = tolower(colnames(cr_data)))

@@ -8,12 +8,14 @@
 \usage{
 is_widecr(cr_data)
 
-to_widecr(cr_data, repair = TRUE)
+to_widecr(cr_data, repair = TRUE, ...)
 }
 \arguments{
 \item{cr_data}{Data of competition results (convertable to tabular).}
 
 \item{repair}{Whether to repair input.}
+
+\item{...}{Additional arguments to be passed to or from methods.}
 }
 \value{
 \code{is_widecr} returns TRUE if its argument is appropriate object
