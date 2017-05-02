@@ -34,6 +34,8 @@
 #'     is given;
 #'   \item If some legitimate names aren't detected the first unmatched
 #'     columns are used;
+#'   \item If in one game some player listed more than once the first record
+#'     is taken;
 #'   \item Return the tibble with at least 3 appropriate columns and column
 #'     names.
 #' }
@@ -178,6 +180,13 @@ repair_longcr <- function(cr_data, ...) {
   res <- cr_data[, matched_inds, drop = FALSE]
   colnames(res) <- longcr_colnames
 
-  bind_cols(res, cr_data[, setdiff(1:ncol(cr_data), matched_inds),
-                         drop = FALSE])
+  not_dupl_records <- !duplicated(res[, c("game", "player")])
+
+  res <- bind_cols(
+    res,
+    cr_data[, setdiff(1:ncol(cr_data), matched_inds),
+            drop = FALSE]
+  )
+
+  res[not_dupl_records, ]
 }

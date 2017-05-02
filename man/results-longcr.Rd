@@ -38,6 +38,8 @@ to fix possible problems with the following actions:
     is given;
   \item If some legitimate names aren't detected the first unmatched
     columns are used;
+  \item If in one game some player listed more than once the first record
+    is taken;
   \item Return the tibble with at least 3 appropriate columns and column
     names.
 }
