@@ -32,10 +32,12 @@ to fix possible problems with the following actions:
   \item Throw an error if there are less than 3 columns;
   \item Detect first columns with names containing "game", "player" or
     "score" (ignoring case). If there are many matching names for one output
-    name then the first one is used;
+    name then the first one is used. In case of imperfect match, message
+    is given;
   \item If some legitimate names aren't detected the first unmatched
     columns are used;
-  \item Return the tibble with 3 appropriate columns and column names.
+  \item Return the tibble with at least 3 appropriate columns and column
+    names.
 }
 If \code{repair} is \code{FALSE} it converts \code{cr_data} to
 \code{\link[=tbl_df]{tibble}} and adds \code{longcr} class to it.

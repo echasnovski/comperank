@@ -16,3 +16,12 @@ test_that("add_class works", {
   expect_identical(add_class(input, class_char = "class2"),
                    output)
 })
+
+test_that("assert_used_names works", {
+  used <- c("gameId", "playerId", "scoreId")
+  original <- c("game", "player", "score")
+  expect_silent(assert_used_names(original, original))
+  expect_message(
+    assert_used_names(used, original),
+    "not.*matched.*gameId.*game.*playerId.*player.*scoreId.*score")
+})

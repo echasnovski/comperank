@@ -44,6 +44,7 @@ test_that("to_longcr.default works", {
   output_good <- dplyr::tbl_df(input_good)
   output_good <- add_class(output_good, "longcr")
   expect_identical(to_longcr(input_good, repair = TRUE), output_good)
+  expect_silent(to_longcr(input_good, repair = TRUE))
 
   # Test usage without repairing
   output_3 <- dplyr::tbl_df(input)

@@ -7,3 +7,15 @@ add_class <- function(obj, class_char) {
 
   obj
 }
+
+assert_used_names <- function(used, original) {
+  if (any(used != original)) {
+    unmatched <- used != original
+    used_names_message <- paste0(used[unmatched], " -> ", original[unmatched],
+                                 collapse = "\n")
+    message("Some matched names are not perfectly matched:\n",
+            used_names_message, "\n")
+  }
+
+  invisible(TRUE)
+}

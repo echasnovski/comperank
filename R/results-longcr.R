@@ -29,10 +29,12 @@
 #'   \item Throw an error if there are less than 3 columns;
 #'   \item Detect first columns with names containing "game", "player" or
 #'     "score" (ignoring case). If there are many matching names for one output
-#'     name then the first one is used;
+#'     name then the first one is used. In case of imperfect match, message
+#'     is given;
 #'   \item If some legitimate names aren't detected the first unmatched
 #'     columns are used;
-#'   \item Return the tibble with 3 appropriate columns and column names.
+#'   \item Return the tibble with at least 3 appropriate columns and column
+#'     names.
 #' }
 #' If \code{repair} is \code{FALSE} it converts \code{cr_data} to
 #' \code{\link[=tbl_df]{tibble}} and adds \code{longcr} class to it.
@@ -161,13 +163,15 @@ repair_longcr <- function(cr_data) {
   num_unmatched <- sum(unmatched)
   if (num_unmatched > 0) {
     warning(sprintf(
-      "Next columns are not found. Add columns with first unmatched.\n  %s",
+      "Next columns are not found. Using first unmatched columns.\n  %s",
       paste0(longcr_colnames[which(unmatched)], collapse = ", ")
     ))
 
     matched_inds[unmatched] <-
       setdiff(1:ncol(cr_data), matched_inds[!unmatched])[num_unmatched]
   }
+
+  assert_used_names(colnames(cr_data)[matched_inds], longcr_colnames)
 
   res <- cr_data[, matched_inds, drop = FALSE]
   colnames(res) <- longcr_colnames
