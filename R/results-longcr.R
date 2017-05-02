@@ -172,7 +172,8 @@ repair_longcr <- function(cr_data, ...) {
       setdiff(1:ncol(cr_data), matched_inds[!unmatched])[num_unmatched]
   }
 
-  assert_used_names(colnames(cr_data)[matched_inds], longcr_colnames)
+  assert_used_names(colnames(cr_data)[matched_inds], longcr_colnames,
+                    prefix = "to_longcr: ")
 
   res <- cr_data[, matched_inds, drop = FALSE]
   colnames(res) <- longcr_colnames

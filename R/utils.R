@@ -1,3 +1,4 @@
+# Competition results -----------------------------------------------------
 get_formatC_width <- function(vec) {
   floor(log10(length(unique(vec)))) + 1
 }
@@ -8,14 +9,16 @@ add_class <- function(obj, class_char) {
   obj
 }
 
-assert_used_names <- function(used, original) {
+assert_used_names <- function(used, original, prefix = "") {
   if (any(used != original)) {
     unmatched <- used != original
     used_names_message <- paste0(used[unmatched], " -> ", original[unmatched],
-                                 collapse = "\n")
-    message("Some matched names are not perfectly matched:\n",
+                                 collapse = "\n  ")
+    message(prefix,
+            "Some matched names are not perfectly matched:\n  ",
             used_names_message, "\n")
   }
 
   invisible(TRUE)
 }
+
