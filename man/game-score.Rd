@@ -13,11 +13,11 @@ score_game_mean_sd(cr_data)
 \arguments{
 \item{cr_data}{Competition results.}
 
-\item{score_game}{Function to compute game score (see Details)}
+\item{score_game}{Function to compute game scores (see Details)}
 }
 \value{
 If \code{score_game} is \code{NULL} then \code{get_game_scores}
-returns \code{\link[=tbl_df]{tibble}} is returned with one column \code{game}
+returns \code{\link[=tbl_df]{tibble}} with one column \code{game}
 which has all games in \code{cr_data}. If not \code{NULL} then there will be
 extra columns for every game score that \code{score_game} produces
 (names are preserved).
@@ -27,7 +27,7 @@ of the game; "sdScore" - standard deviation of scores in the game.
 }
 \description{
 This page describes functionality for computing game scores, i.e. some
-measurements of the game itself.
+measurements (of arbitrary nature) of the game itself.
 }
 \details{
 \code{score_game} is a function that takes results of a

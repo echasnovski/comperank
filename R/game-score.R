@@ -1,17 +1,17 @@
 #' Compute game scores
 #'
 #' This page describes functionality for computing game scores, i.e. some
-#' measurements of the game itself.
+#' measurements (of arbitrary nature) of the game itself.
 #'
 #' @param cr_data Competition results.
-#' @param score_game Function to compute game score (see Details)
+#' @param score_game Function to compute game scores (see Details)
 #'
 #' @details \code{score_game} is a function that takes results of a
 #' game in \code{\link[=results-longcr]{longcr}} form and produces named
 #' vector of game scores.
 #'
 #' @return If \code{score_game} is \code{NULL} then \code{get_game_scores}
-#' returns \code{\link[=tbl_df]{tibble}} is returned with one column \code{game}
+#' returns \code{\link[=tbl_df]{tibble}} with one column \code{game}
 #' which has all games in \code{cr_data}. If not \code{NULL} then there will be
 #' extra columns for every game score that \code{score_game} produces
 #' (names are preserved).

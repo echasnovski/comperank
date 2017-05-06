@@ -10,8 +10,9 @@
 #' It is assumed that competition consists from multiple games (matches,
 #' comparisons, etc.). One game can consist from \bold{variable} number of
 #' players. Inside a game all players are treated equally.
-#' In every game every player has some score. It is assumed that the higher
-#' the score the better for the player.
+#' In every game every player has some score: the value of arbitrary nature
+#' that сharacterizes player's performance (in most cases it is some numeric
+#' value).
 #'
 #' \code{longcr} inherits from \code{\link[=tbl_df]{tibble}}. Data should have
 #'   at least three columns with the following names:
@@ -20,8 +21,10 @@
 #'     \item "player" - player identifier;
 #'     \item "score" - score of particular player in particular game.
 #'   }
-#'   Extra columns are allowed but not recommended (if object is converted to
-#'   \code{widecr} they will be dropped).
+#'   Extra columns are allowed. \bold{Note} that if object is converted to
+#'   \code{widecr} they will be dropped. So it is better to store extra
+#'   information about "game"-"player" pair as list-column "score" which will
+#'   stay untouched.
 #'
 #' @details \code{to_longcr} is S3 method for converting data to \code{longcr}.
 #' When using default method if \code{repair} is \code{TRUE} it also tries
