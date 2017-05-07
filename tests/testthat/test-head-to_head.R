@@ -51,13 +51,13 @@ test_that("players_drop works", {
     as.numeric(1:9), ncol = 3,
     dimnames = list(c(1, 2, 4), c(1, 2, 4))
   )
-  h2h_mat_extra <- rbind(cbind(h2h_mat_original, NA_real_), NA_real_)
-  colnames(h2h_mat_extra)[4] <- "3"
-  rownames(h2h_mat_extra)[4] <- "3"
+  h2h_mat_extra_players <- rbind(cbind(h2h_mat_original, NA_real_), NA_real_)
+  colnames(h2h_mat_extra_players)[4] <- "3"
+  rownames(h2h_mat_extra_players)[4] <- "3"
 
-  expect_identical(players_drop(h2h_mat_extra), h2h_mat_original)
+  expect_identical(players_drop(h2h_mat_extra_players), h2h_mat_original)
 
-  expect_identical(players_drop(h2h_mat_extra, extraArg = TRUE),
+  expect_identical(players_drop(h2h_mat_extra_players, extraArg = TRUE),
                    h2h_mat_original)
 })
 

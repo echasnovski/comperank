@@ -126,7 +126,8 @@ to_longcr.widecr <- function(cr_data, repair = TRUE, ...) {
              remove = TRUE, convert = FALSE) %>%
     group_by_("game", "to_longcr_widecr_id") %>%
     spread_(key_col = "to_longcr_widecr_group",
-            value_col = "to_longcr_widecr_value") %>%
+            value_col = "to_longcr_widecr_value",
+            convert = TRUE) %>%
     ungroup() %>%
     select_(.dots = list(quote(-to_longcr_widecr_id))) %>%
     select_(.dots = list(
