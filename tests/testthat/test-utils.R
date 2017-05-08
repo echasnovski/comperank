@@ -67,3 +67,28 @@ test_that("renamecreate_columns works", {
 })
 
 
+
+# reduce_full_join --------------------------------------------------------
+test_that("reduce_full_join works", {
+  input <- list(
+    dplyr::tbl_df(data.frame(
+      game = 1:10,
+      player1 = 11:20,
+      score1 = 101:110
+    )),
+    dplyr::tbl_df(data.frame(
+      game = 1:5,
+      player2 = 12:16,
+      score2 = 102:106
+    ))
+  )
+  output <- dplyr::tbl_df(data.frame(
+    game = 1:10,
+    player1 = 11:20,
+    score1 = 101:110,
+    player2 = c(12:16, rep(NA, 5)),
+    score2 = c(102:106, rep(NA, 5))
+  ))
+
+  expect_identical(reduce_full_join(input, by = "game"), output)
+})

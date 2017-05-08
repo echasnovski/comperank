@@ -21,6 +21,7 @@ input_2 <- as.data.frame(c(
 ))
 
 input_good <- data.frame(
+  game = 1:10,
   player1 = 1:10,
   score1 = 11:20,
   player2 = 2:11,
@@ -30,7 +31,8 @@ input_good <- data.frame(
 input_longcr <- dplyr::tbl_df(data.frame(
   game = rep(1:10, each = 2),
   player = rep(11:20, times = 2),
-  score = 101:110
+  score = rep(101:110, times = 2),
+  otherCol = rep(-(1:10), times = 2)
 ))
 input_longcr <- add_class(input_longcr, "longcr")
 
@@ -72,7 +74,36 @@ test_that("to_widecr.default handles simple repairing", {
   expect_identical(to_widecr(input_1, repair = TRUE), output_1)
 })
 
-test_that("to_widecr.default renames too many columns correctly", {
+test_that("to_widecr.default throws an error if no column is matched", {
+  input_bad_colnames <- input_1
+  colnames(input_bad_colnames) <- 1:ncol(input_bad_colnames)
+
+  expect_warning(to_widecr(input_bad_colnames, repair = TRUE),
+                 "Neither 'player' nor 'score' columns are detected.")
+  expect_equal(suppressWarnings(to_widecr(input_bad_colnames, repair = TRUE)),
+               input_bad_colnames)
+})
+
+test_that("to_widecr.default places column 'game' on first place", {
+  input_game_col <- input_1
+  input_game_col$game <- 1001:1010
+
+  output_game_col <- dplyr::tbl_df(data.frame(
+    game = 1001:1010,
+    player1 = 1:10,
+    score1 = 13:22,
+    player2 = 2:11,
+    score2 = 12:21,
+    player3 = rep(NA_integer_, 10),
+    score3 = 11:20,
+    otherColumn = 101:110
+  ))
+  output_game_col <- add_class(output_game_col, "widecr")
+
+  expect_identical(to_widecr(input_game_col, repair = TRUE), output_game_col)
+})
+
+test_that("to_widecr.default correctly renames many columns", {
   expect_identical(
     colnames(to_widecr(input_2, repair = TRUE)),
     paste0(rep(c("player", "score"), times = 2),
@@ -169,17 +200,37 @@ test_that("to_widecr.default handles extra arguments", {
 # to_widecr.longcr --------------------------------------------------------
 test_that("to_widecr.longcr does simple converting", {
   output_widecr_from_longcr <- dplyr::tbl_df(data.frame(
+    game = 1:10,
     player1 = seq(from = 11L, to = 19L, by = 2L),
     score1 = seq(from = 101L, to = 109L, by = 2L),
     player2 = seq(from = 12L, to = 20L, by = 2L),
-    score2 = seq(from = 102L, to = 110L, by = 2L),
-    game = 1:10
+    score2 = seq(from = 102L, to = 110L, by = 2L)
   ))
   output_widecr_from_longcr <- add_class(output_widecr_from_longcr,
                                          "widecr")
 
   to_widecr_res <- to_widecr(input_longcr)
   expect_identical(to_widecr_res, output_widecr_from_longcr)
+})
+
+test_that("to_widecr.longcr correctly renames many columns", {
+  input_many_pairs <- input_longcr
+  input_many_pairs <- dplyr::bind_rows(
+    input_many_pairs,
+    input_many_pairs[rep(1, 10), ]
+  )
+
+  output_colnames <-
+    c(
+      "game",
+      paste0(rep(c("player", "score"), times = 12),
+             formatC(rep(1:12, each = 2), width = 2, format = "d", flag = "0"))
+    )
+
+  expect_identical(
+    colnames(to_widecr(input_many_pairs, repair = TRUE)),
+    output_colnames
+  )
 })
 
 test_that("to_widecr.longcr throws error on corrupted longcr object", {
@@ -192,11 +243,11 @@ test_that("to_widecr.longcr throws error on corrupted longcr object", {
 test_that("to_widecr.longcr preserves column types", {
   input_types <- input_longcr
   output_types <- dplyr::tbl_df(data.frame(
+    game = 1:10,
     player1 = seq(from = 11L, to = 19L, by = 2L),
     score1 = seq(from = 101L, to = 109L, by = 2L),
     player2 = seq(from = 12L, to = 20L, by = 2L),
-    score2 = seq(from = 102L, to = 110L, by = 2L),
-    game = 1:10
+    score2 = seq(from = 102L, to = 110L, by = 2L)
   ))
   output_types <- add_class(output_types, "widecr")
 
@@ -211,6 +262,7 @@ test_that("to_widecr.longcr preserves column types", {
   output_types2 <- output_types
   input_types2$game <- as.character(input_types2$game)
   output_types2$game <- as.character(output_types2$game)
+  output_types2[, ] <- output_types2[order(output_types2$game), ]
   expect_identical(to_widecr(input_types2, repair = TRUE), output_types2,
                    info = "Character 'game'")
 

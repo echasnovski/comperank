@@ -20,7 +20,8 @@ input_widecr <- dplyr::tbl_df(data.frame(
   score1 = 101:110,
   player2 = 12:21,
   score2 = 102:111,
-  game = 2:11
+  game = 2:11,
+  otherCol = -(1:10)
 ))
 input_widecr <- add_class(input_widecr, "widecr")
 
@@ -150,11 +151,12 @@ test_that("to_longcr.widecr does simple converting", {
   output_longcr_from_widecr <- dplyr::tbl_df(data.frame(
     game = rep(2:11, each = 2),
     player = c(11L, rep(12:20, each = 2), 21L),
-    score = c(101L, rep(102:110, each = 2), 111L)
+    score = c(101L, rep(102:110, each = 2), 111L),
+    otherCol = rep(-(1:10), each = 2)
   ))
   output_longcr_from_widecr <- add_class(output_longcr_from_widecr, "longcr")
 
-  to_longcr_res <- to_longcr(input_widecr)
+  to_longcr_res <- to_longcr(input_widecr, repair = TRUE)
 
   expect_identical(to_longcr_res, output_longcr_from_widecr)
 })
@@ -164,7 +166,8 @@ test_that("to_longcr.widecr preserves column types", {
   output_types <- dplyr::tbl_df(data.frame(
     game = rep(2:11, each = 2),
     player = c(11L, rep(12:20, each = 2), 21L),
-    score = c(101L, rep(102:110, each = 2), 111L)
+    score = c(101L, rep(102:110, each = 2), 111L),
+    otherCol = rep(-(1:10), each = 2)
   ))
   output_types <- add_class(output_types, "longcr")
 
@@ -179,6 +182,9 @@ test_that("to_longcr.widecr preserves column types", {
   output_types2 <- output_types
   input_types2$game <- as.character(input_types2$game)
   output_types2$game <- as.character(output_types2$game)
+  output_types2 <- output_types2[order(output_types2$game,
+                                       output_types2$player), ]
+  output_types2 <- add_class(output_types2, "longcr")
   expect_identical(to_longcr(input_types2, repair = TRUE), output_types2,
                    info = "Character 'game'")
 
@@ -221,11 +227,29 @@ test_that("to_longcr.widecr preserves column types", {
                    info = "List-column 'score'")
 })
 
+test_that("to_longcr.widecr removes duplicated 'game'-'player'
+          if repair is TRUE", {
+  input_dupl <- input_widecr
+  input_dupl$player2[1] <- 11L
+
+  output_dupl <- dplyr::tbl_df(data.frame(
+    game = rep(2:11, each = 2),
+    player = c(11L, rep(12:20, each = 2), 21L),
+    score = c(101L, rep(102:110, each = 2), 111L),
+    otherCol = rep(-(1:10), each = 2)
+  ))
+  output_dupl <- output_dupl[-2, ]
+  output_dupl <- add_class(output_dupl, "longcr")
+
+  expect_identical(to_longcr(input_dupl, repair = TRUE), output_dupl)
+})
+
 test_that("to_longcr.widecr works without column 'game'", {
   output_longcr_from_widecr <- dplyr::tbl_df(data.frame(
     game = rep(2:11, each = 2),
     player = c(11L, rep(12:20, each = 2), 21L),
-    score = c(101L, rep(102:110, each = 2), 111L)
+    score = c(101L, rep(102:110, each = 2), 111L),
+    otherCol = rep(-(1:10), each = 2)
   ))
   output_longcr_from_widecr <- add_class(output_longcr_from_widecr, "longcr")
 

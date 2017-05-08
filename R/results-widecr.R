@@ -41,7 +41,9 @@
 #'   \item Convert identifiers once again to character form with possible
 #'     leading zeros (to account for R standard string ordering);
 #'   \item Spread pairs to appropriate columns adding columns with
-#'     \code{NA_integer_} if they were not present in original data.
+#'     \code{NA_integer_} if they were not present in original data;
+#'   \item \bold{Note} that if there is column \code{game} it is placed as
+#'     first column.
 #' }
 #' Note that the order (and numeration) of pairs can change.
 #'
@@ -55,7 +57,8 @@
 #'     "player"-"score" pairs is taken as the maximum number of players in game.
 #'     If not all games are played between the same number of players then there
 #'     will be \code{NA}'s in some pairs.
-#'     Column \code{game} is preserved in output.
+#'     Column \code{game} is preserved in output and is used for arranging in
+#'     increasing order.
 #' }
 #'
 #' For appropriate \code{widecr} objects \code{to_widecr} returns its input.
@@ -137,27 +140,28 @@ to_widecr.longcr <- function(cr_data, repair = TRUE, ...) {
       to_widecr_id = ~ 1:n()
     )) %>%
     ungroup() %>%
-    gather_(key_col = "to_widecr_group", value_col = "to_widecr_value",
-            gather_cols = c("player", "score")) %>%
     mutate_(.dots = list(
       to_widecr_id = ~ formatC(to_widecr_id,
                                width = get_formatC_width(to_widecr_id),
-                               format = "d", flag = "0"),
-      to_widecr_id = ~ factor(to_widecr_id),
-      to_widecr_group = ~ factor(to_widecr_group,
-                                 levels = c("player", "score")),
-      to_widecr_name = ~ interaction(to_widecr_group,
-                                     to_widecr_id,
-                                     sep = "")
-    )) %>%
-    select_(.dots = list(quote(-to_widecr_id),
-                         quote(-to_widecr_group))) %>%
-    spread_(key_col = "to_widecr_name", value_col = "to_widecr_value",
-            convert = TRUE, drop = FALSE)
+                               format = "d", flag = "0")
+    ))
+  res <- split(res, res$to_widecr_id) %>%
+    lapply(function(game_data) {
+      pair_id <- game_data$to_widecr_id[1]
 
-  res <- res[, c(setdiff(colnames(res), "game"), "game")]
+      game_data %>%
+        rename_(.dots = setNames(list("player", "score"),
+                                 paste0(c("player", "score"), pair_id))) %>%
+        select_(.dots = list(~ - to_widecr_id))
+    }) %>%
+    reduce_full_join(by = "game") %>%
+    arrange_("game") %>%
+    select_(.dots = list("game", ~ everything()))
 
-  class(res) <- c("widecr", class(cr_data)[-1])
+  if (repair) {
+    res <- repair_widecr(res)
+  }
+  class(res) <- c("widecr", "tbl_df", "tbl", "data.frame")
 
   res
 }
@@ -200,6 +204,11 @@ repair_widecr <- function(cr_data, ...) {
 
   res <- renamecreate_columns(cr_data, repair_info, fill = NA_integer_) %>%
     select_(.dots = c(as.list(repair_info$target), list(~ everything())))
+
+  if ("game" %in% colnames(res)) {
+    res <- res %>%
+      select_(.dots = list("game", ~ everything()))
+  }
 
   res
 }

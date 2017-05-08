@@ -49,7 +49,11 @@
 #'   \item If there is column \code{game} then it is used as game identifier.
 #'     Else treat every row as separate game data;
 #'   \item Every "player"-"score" pair for every game is converted to separate
-#'     row with adding the appropriate extra columns.
+#'     row with adding the appropriate extra columns;
+#'   \item Result is arranged by \code{game} and \code{player} in increasing
+#'     order;
+#'   \item If \code{repair} is \code{TRUE} then repairment is done as in
+#'     \code{to_longcr.default}.
 #' }
 #'
 #' For appropriate \code{longcr} objects \code{to_longcr} returns its input.
@@ -105,34 +109,38 @@ to_longcr.widecr <- function(cr_data, repair = TRUE, ...) {
   }
 
   if (!("game" %in% colnames(cr_data))) {
-    cr_data <- cr_data %>%
-      mutate_(.dots = list(
-        game = ~ 1:n()
-      ))
-    cr_data <- add_class(cr_data, "widecr")
+    cr_data$game <- 1:nrow(cr_data)
   }
 
-  matched_names <- colnames(cr_data)[grepl(pattern = "player|score",
-                                           x = colnames(cr_data))]
+  column_info <-
+    data.frame(
+      name = colnames(cr_data),
+      stringsAsFactors = FALSE
+    ) %>%
+    extract_(col = "name", into = c("group", "pair"),
+             regex = "(player|score)([0-9]+)", remove = FALSE) %>%
+    arrange_("pair", "group")
 
-  res <- cr_data %>%
-    gather_(key_col = "to_longcr_widecr_name",
-            value_col = "to_longcr_widecr_value",
-            gather_cols = matched_names) %>%
-    extract_(col = "to_longcr_widecr_name",
-             into = c("to_longcr_widecr_group", "to_longcr_widecr_id"),
-             regex = ".*(player|score)(.*)",
-             remove = TRUE, convert = FALSE) %>%
-    group_by_("game", "to_longcr_widecr_id") %>%
-    spread_(key_col = "to_longcr_widecr_group",
-            value_col = "to_longcr_widecr_value",
-            convert = TRUE) %>%
-    ungroup() %>%
-    select_(.dots = list(quote(-to_longcr_widecr_id))) %>%
-    select_(.dots = list(
-      "game", "player", "score", ~ everything()
-    ))
+  extra_columns <- column_info %>%
+    filter_(.dots = list(
+      ~ name != "game", ~ !(group %in% c("player", "score"))
+    )) %>%
+    "$"("name")
 
+  res <- split(column_info, column_info$pair) %>%
+    lapply(function(pair_info) {
+      pair_names <- pair_info$name
+      names(pair_names) <- pair_info$group
+
+      cr_data %>%
+        select_(.dots = as.list(c("game", pair_names, extra_columns)))
+    }) %>%
+    bind_rows() %>%
+    arrange_("game", "player")
+
+  if (repair) {
+    res <- repair_longcr(cr_data = res)
+  }
   class(res) <- c("longcr", class(cr_data)[-1])
 
   res

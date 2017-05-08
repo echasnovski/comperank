@@ -72,3 +72,15 @@ renamecreate_columns <- function(df, info, fill = NA_integer_) {
 
   res
 }
+
+reduce_full_join <- function(x, by) {
+  if (length(x) == 1) {
+    return(x[[1]])
+  }
+
+  reduce_f <- function(x, y) {
+    full_join(x = x, y = y, by = by)
+  }
+
+  Reduce(f = reduce_f, x = x[-1], init = x[[1]])
+}

@@ -41,7 +41,9 @@ problems with the following actions:
   \item Convert identifiers once again to character form with possible
     leading zeros (to account for R standard string ordering);
   \item Spread pairs to appropriate columns adding columns with
-    \code{NA_integer_} if they were not present in original data.
+    \code{NA_integer_} if they were not present in original data;
+  \item \bold{Note} that if there is column \code{game} it is placed as
+    first column.
 }
 Note that the order (and numeration) of pairs can change.
 
@@ -55,7 +57,8 @@ When applying \code{to_widecr} to \code{longcr} object, convertion is made:
     "player"-"score" pairs is taken as the maximum number of players in game.
     If not all games are played between the same number of players then there
     will be \code{NA}'s in some pairs.
-    Column \code{game} is preserved in output.
+    Column \code{game} is preserved in output and is used for arranging in
+    increasing order.
 }
 
 For appropriate \code{widecr} objects \code{to_widecr} returns its input.

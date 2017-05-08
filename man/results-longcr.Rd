@@ -50,7 +50,11 @@ When applying \code{to_longcr} to \code{widecr} object, convertion is made:
   \item If there is column \code{game} then it is used as game identifier.
     Else treat every row as separate game data;
   \item Every "player"-"score" pair for every game is converted to separate
-    row with adding the appropriate extra columns.
+    row with adding the appropriate extra columns;
+  \item Result is arranged by \code{game} and \code{player} in increasing
+    order;
+  \item If \code{repair} is \code{TRUE} then repairment is done as in
+    \code{to_longcr.default}.
 }
 
 For appropriate \code{longcr} objects \code{to_longcr} returns its input.
