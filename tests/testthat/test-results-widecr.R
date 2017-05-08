@@ -47,6 +47,14 @@ test_that("is_widecr works", {
   expect_false(is_widecr(output_2))
 })
 
+test_that("is_widecr returns FALSE on non-digit pair identifier", {
+  output_2 <- dplyr::tbl_df(input_2)
+  output_2 <- add_class(output_2, "widecr")
+  colnames(output_2)[c(1, 11)] <- c("playerA", "scoreA")
+
+  expect_false(is_widecr(output_2))
+})
+
 
 # to_widecr.default -------------------------------------------------------
 test_that("to_widecr.default handles simple repairing", {

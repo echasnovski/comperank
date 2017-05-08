@@ -15,8 +15,10 @@
 #' value).
 #'
 #' \code{widecr} inherits from \code{\link[=tbl_df]{tibble}}. Data should be
-#' orginized in pairs of columns "player"-"score". For example: player1, score1,
-#' player2, score2. Order doesn't matter. Extra columns are allowed.
+#' orginized in pairs of columns "player"-"score". Identifier of a pair should
+#' go after respective keyword and consist only from digits. For example:
+#' player1, score1, player2, score2. Order doesn't matter.
+#' Extra columns are allowed.
 #'
 #' To account for R standard string ordering, identifiers of pairs should be
 #' formatted with possible leading zeros. For example: player01, score01, ...,
@@ -90,7 +92,7 @@ is_widecr <- function(cr_data) {
     name = names_cr[grepl("player|score", x = names_cr)]
   ) %>%
     extract_(col = "name", into = c("group", "id"),
-             regex = ".*(player|score)(.*)",
+             regex = ".*(player|score)([0-9]+)",
              remove = TRUE) %>%
     mutate_(.dots = list(
       group = ~ factor(group, levels = c("player", "score")),
