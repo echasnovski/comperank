@@ -30,13 +30,12 @@
 #' When using default method if \code{repair} is \code{TRUE} it also tries
 #' to fix possible problems with the following actions:
 #' \itemize{
-#'   \item Throw an error if there are less than 3 columns;
 #'   \item Detect first columns with names containing "game", "player" or
 #'     "score" (ignoring case). If there are many matching names for one output
 #'     name then the first one is used. In case of imperfect match, message
 #'     is given;
-#'   \item If some legitimate names aren't detected the first unmatched
-#'     columns are used;
+#'   \item If some legitimate names aren't detected respective columns are
+#'     created and filled with \code{NA_integer_}. Also a message is given.
 #'   \item If in one game some player listed more than once the first record
 #'     is taken;
 #'   \item Return the tibble with at least 3 appropriate columns and column
@@ -149,48 +148,35 @@ to_longcr.longcr <- function(cr_data, repair = TRUE, ...) {
 }
 
 repair_longcr <- function(cr_data, ...) {
-  if (ncol(cr_data) < 3) {
-    stop("Repaired object has less than 3 columns.")
-  }
-
-  # Repairing column names and order
   longcr_colnames <- c("game", "player", "score")
+  longcr_pattern <- paste0(longcr_colnames, collapse = "|")
 
   names_cr <- tolower(colnames(cr_data))
+  matched_which <- which(grepl(pattern = longcr_pattern, x = names_cr))
   names_cr_extracted <-
     regexpr(
-      pattern = paste0(longcr_colnames, collapse = "|"),
-      text = names_cr
+      pattern = longcr_pattern,
+      text = names_cr[matched_which]
     ) %>%
-    regmatches(x = names_cr)
+    regmatches(x = names_cr[matched_which])
 
   matched_inds <- match(x = longcr_colnames, table = names_cr_extracted)
+  repair_info <-
+    data.frame(
+      target = longcr_colnames,
+      original = names(cr_data)[matched_which[matched_inds]],
+      stringsAsFactors = FALSE
+    )
 
-  unmatched <- is.na(matched_inds)
-  num_unmatched <- sum(unmatched)
-  if (num_unmatched > 0) {
-    warning(sprintf(
-      "Next columns are not found. Using first unmatched columns.\n  %s",
-      paste0(longcr_colnames[which(unmatched)], collapse = ", ")
+  assert_used_names(repair_info, prefix = "to_longcr: ")
+
+  res <- renamecreate_columns(cr_data, repair_info, fill = NA_integer_) %>%
+    select_(.dots = list(
+      "game", "player", "score", ~ everything()
     ))
 
-    matched_inds[unmatched] <-
-      setdiff(1:ncol(cr_data), matched_inds[!unmatched])[num_unmatched]
-  }
-
-  assert_used_names(colnames(cr_data)[matched_inds], longcr_colnames,
-                    prefix = "to_longcr: ")
-
-  res <- cr_data[, matched_inds, drop = FALSE]
-  colnames(res) <- longcr_colnames
-
-  not_dupl_records <- !duplicated(res[, c("game", "player")])
-
-  res <- bind_cols(
-    res,
-    cr_data[, setdiff(1:ncol(cr_data), matched_inds),
-            drop = FALSE]
-  )
+  not_dupl_records <- (!duplicated(res[, c("game", "player")])) |
+    is.na(res$game) | is.na(res$player)
 
   res[not_dupl_records, ]
 }

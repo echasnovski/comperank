@@ -40,8 +40,8 @@ problems with the following actions:
     \code{as.integer(as.factor(...))};
   \item Convert identifiers once again to character form with possible
     leading zeros (to account for R standard string ordering);
-  \item Spread pairs to appropriate columns adding columns with NA if
-    they were not present in original data.
+  \item Spread pairs to appropriate columns adding columns with
+    \code{NA_integer_} if they were not present in original data.
 }
 Note that the order (and numeration) of pairs can change.
 

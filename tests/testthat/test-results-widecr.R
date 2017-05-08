@@ -55,7 +55,7 @@ test_that("to_widecr.default handles simple repairing", {
     score1 = 13:22,
     player2 = 2:11,
     score2 = 12:21,
-    player3 = rep(NA, 10),
+    player3 = rep(NA_integer_, 10),
     score3 = 11:20,
     otherColumn = 101:110
   ))

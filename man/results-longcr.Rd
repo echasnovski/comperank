@@ -31,13 +31,12 @@ Functions for converting data of competition results to long format.
 When using default method if \code{repair} is \code{TRUE} it also tries
 to fix possible problems with the following actions:
 \itemize{
-  \item Throw an error if there are less than 3 columns;
   \item Detect first columns with names containing "game", "player" or
     "score" (ignoring case). If there are many matching names for one output
     name then the first one is used. In case of imperfect match, message
     is given;
-  \item If some legitimate names aren't detected the first unmatched
-    columns are used;
+  \item If some legitimate names aren't detected respective columns are
+    created and filled with \code{NA_integer_}. Also a message is given.
   \item If in one game some player listed more than once the first record
     is taken;
   \item Return the tibble with at least 3 appropriate columns and column

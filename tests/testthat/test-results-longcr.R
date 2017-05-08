@@ -45,20 +45,17 @@ test_that("to_longcr.default handles simple repairing", {
   expect_identical(to_longcr(unclass(input), repair = TRUE), output_1)
 })
 
-test_that("to_longcr.default throws error on less than 3 columns", {
-  expect_error(to_longcr(input[, 1:2], repair = TRUE), "3 columns")
-})
-
 test_that("to_longcr.default handles missing columns correctly", {
   output_2 <- dplyr::tibble(
     game = input$gameId,
-    player = input$scoreSP,
-    score = input$scoreS
+    player = rep(NA_integer_, nrow(input)),
+    score = input$scoreS,
+    scoreSP = input$scoreSP
   )
   output_2 <- add_class(output_2, "longcr")
 
-  expect_warning(to_longcr(input[, -1], repair = TRUE), "not found.*player")
-  expect_identical(suppressWarnings(to_longcr(input[, -1], repair = TRUE)),
+  expect_message(to_longcr(input[, -1], repair = TRUE), "not found.*player")
+  expect_identical(suppressMessages(to_longcr(input[, -1], repair = TRUE)),
                    output_2)
 })
 

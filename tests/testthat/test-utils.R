@@ -35,12 +35,35 @@ test_that("add_class works", {
 
 # assert_used_names -------------------------------------------------------
 test_that("assert_used_names works", {
-  used <- c("gameId", "playerId", "scoreId")
-  original <- c("game", "player", "score")
-
-  expect_silent(assert_used_names(original, original))
+  info <- data.frame(original = c("gameId", "playerId", "scoreId"),
+                     target = c("game", "player", "score"),
+                     stringsAsFactors = FALSE)
   expect_message(
-    assert_used_names(used, original),
-    "not.*matched.*gameId.*game.*playerId.*player.*scoreId.*score")
+    assert_used_names(info, prefix = "prefix: "),
+    "prefix: .*not.*matched.*gameId.*game.*playerId.*player.*scoreId.*score"
+  )
+
+  info$original <- info$target
+  expect_silent(assert_used_names(info))
+
+  info$original[2] <- NA
+  expect_message(
+    assert_used_names(info, prefix = "prefix: "),
+    "prefix: .*not.*found.*NA.*player"
+  )
 })
+
+
+# renamecreate_columns ----------------------------------------------------
+test_that("renamecreate_columns works", {
+  input <- data.frame(x = 1:10, y = 2:11, z = 3:12)
+  info <- data.frame(target = c("a", "b", "c"), original = c("x", NA, "y"),
+                     stringsAsFactors = FALSE)
+  output <- data.frame(a = 1:10, c = 2:11, z = 3:12, b = rep(NA_integer_, 10))
+
+  expect_identical(renamecreate_columns(df = input, info = info,
+                                        fill = NA_integer_),
+                   output)
+})
+
 

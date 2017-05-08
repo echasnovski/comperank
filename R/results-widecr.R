@@ -38,8 +38,8 @@
 #'     \code{as.integer(as.factor(...))};
 #'   \item Convert identifiers once again to character form with possible
 #'     leading zeros (to account for R standard string ordering);
-#'   \item Spread pairs to appropriate columns adding columns with NA if
-#'     they were not present in original data.
+#'   \item Spread pairs to appropriate columns adding columns with
+#'     \code{NA_integer_} if they were not present in original data.
 #' }
 #' Note that the order (and numeration) of pairs can change.
 #'
@@ -170,44 +170,34 @@ to_widecr.widecr <- function(cr_data, repair = TRUE, ...) {
 }
 
 repair_widecr <- function(cr_data, ...) {
-  # Repairing column names and order
-  is_wide_cr_name <- grepl(pattern = "player|score",
-                           x = tolower(colnames(cr_data)))
-  extra_data <- cr_data[, !is_wide_cr_name, drop = FALSE]
-  res <- cr_data[, is_wide_cr_name, drop = FALSE]
+  repair_info <-
+    data.frame(
+      original = colnames(cr_data),
+      stringsAsFactors = FALSE
+    ) %>%
+    extract_(col = "original", into = c("group", "pair"),
+             regex = ".*(player|score)(.*)", remove = FALSE) %>%
+    filter_(.dots = list(~ group %in% c("player", "score")))
 
-  colnames(res) <- tolower(colnames(res))
+  if (nrow(repair_info) == 0) {
+    warning("Neither 'player' nor 'score' columns are detected.")
+    return(cr_data)
+  }
 
-  res <- res %>%
+  repair_info <- repair_info %>%
     mutate_(.dots = list(
-      repair_widecr_game = ~ 1:n()
+      pair = ~ as.integer(factor(pair))
     )) %>%
-    gather_(key_col = "repair_widecr_name",
-            value_col = "repair_widecr_value",
-            gather_cols = colnames(res)) %>%
-    extract_(col = "repair_widecr_name",
-             into = c("repair_widecr_group", "repair_widecr_id"),
-             regex = ".*(player|score)(.*)",
-             remove = TRUE) %>%
-    filter_(.dots = list(
-      ~ repair_widecr_group %in% c("player", "score")
-    )) %>%
+    complete_(cols = c("group", "pair")) %>%
     mutate_(.dots = list(
-      repair_widecr_group = ~ factor(repair_widecr_group,
-                                     levels = c("player", "score")),
-      repair_widecr_id = ~ as.integer(factor(repair_widecr_id)),
-      repair_widecr_id = ~ formatC(repair_widecr_id,
-                                   width = get_formatC_width(repair_widecr_id),
-                                   format = "d", flag = "0"),
-      repair_widecr_name = ~ interaction(repair_widecr_group,
-                                         repair_widecr_id,
-                                         sep = "")
+      pair = ~ formatC(pair, width = get_formatC_width(pair),
+                       format = "d", flag = "0")
     )) %>%
-    select_("repair_widecr_game", "repair_widecr_name",
-            "repair_widecr_value") %>%
-    spread_(key_col = "repair_widecr_name", value_col = "repair_widecr_value",
-            convert = TRUE, drop = FALSE) %>%
-    select_(.dots = list(quote(-repair_widecr_game)))
+    arrange_("pair", "group") %>%
+    unite_(col = "target", from = c("group", "pair"), sep = "")
 
-  bind_cols(res, extra_data)
+  res <- renamecreate_columns(cr_data, repair_info, fill = NA_integer_) %>%
+    select_(.dots = c(as.list(repair_info$target), list(~ everything())))
+
+  res
 }
