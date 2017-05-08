@@ -91,4 +91,5 @@ test_that("reduce_full_join works", {
   ))
 
   expect_identical(reduce_full_join(input, by = "game"), output)
+  expect_identical(reduce_full_join(input[1], by = "game"), input[[1]])
 })
