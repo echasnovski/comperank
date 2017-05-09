@@ -69,7 +69,7 @@ It is assumed that competition consists from multiple games (matches,
 comparisons, etc.). One game can consist only from \bold{constant} number
 of players. Inside a game all players are treated equally.
 In every game every player has some score: the value of arbitrary nature
-that сharacterizes player's performance (in most cases it is some numeric
+that characterizes player's performance (in most cases it is some numeric
 value).
 
 \code{widecr} inherits from \code{\link[=tbl_df]{tibble}}. Data should be
