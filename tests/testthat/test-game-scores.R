@@ -1,4 +1,4 @@
-context("game-score")
+context("game-scores")
 
 
 # Input data --------------------------------------------------------------
@@ -11,25 +11,11 @@ input <- to_longcr(data.frame(
 
 # get_game_scores ---------------------------------------------------------
 test_that("get_game_scores works with NULL score_game", {
-  output <- structure(
-    list(
-      game = 1:5
-    ),
-    class = c("tbl_df", "tbl", "data.frame"),
-    row.names = c(NA, -5L),
-    .Names = c("game")
-  )
+  output <- dplyr::tbl_df(data.frame(game = 1:5))
 
-  # input_game_scores <- get_game_scores(cr_data = input,
-  #                                      score_game = score_game_mean_sd)
-
-  expect_equal(get_game_scores(cr_data = input,
+  expect_identical(get_game_scores(cr_data = input,
                                score_game = NULL),
-               output)
-  # expect_identical(class(input_game_scores), class(output))
-  # expect_equal(input_game_scores$game, output$game)
-  # expect_equal(input_game_scores$meanScore, output$meanScore)
-  # expect_equal(input_game_scores$sdScore, output$sdScore)
+                   output)
 })
 
 test_that("get_game_scores works with not NULL score_game", {

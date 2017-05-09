@@ -28,10 +28,10 @@
 #'
 #' get_game_scores(cr_data = cr_data, score_game = score_game_mean_sd)
 #'
-#' @name game-score
+#' @name game-scores
 NULL
 
-#' @rdname game-score
+#' @rdname game-scores
 #' @export
 get_game_scores <- function(cr_data, score_game = NULL) {
   cr <- cr_data %>%
@@ -39,18 +39,22 @@ get_game_scores <- function(cr_data, score_game = NULL) {
     select_("game", "player", "score")
 
   if (is.null(score_game)) {
-    distinct_(cr, "game")
+    res <- distinct_(cr, "game")
   } else {
-    cr %>%
+    res <- cr %>%
       group_by_("game") %>%
       do_({
         ~ tbl_df(as.list(score_game(.)))
       }) %>%
       ungroup()
   }
+
+  class(res) <- c("tbl_df", "tbl", "data.frame")
+
+  res
 }
 
-#' @rdname game-score
+#' @rdname game-scores
 #' @export
 score_game_mean_sd <- function(cr_data) {
   c(meanScore = mean(cr_data$score), sdScore = sd(cr_data$score))
