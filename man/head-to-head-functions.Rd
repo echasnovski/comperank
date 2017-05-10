@@ -2,42 +2,42 @@
 % Please edit documentation in R/head-to-head-functions.R
 \name{head-to-head-functions}
 \alias{head-to-head-functions}
+\alias{get_h2h_mean_score_diff}
 \alias{h2h_mean_score_diff}
-\alias{mean_score_diff}
+\alias{get_h2h_mean_score}
 \alias{h2h_mean_score}
-\alias{mean_score}
+\alias{get_h2h_sum_score_diff}
 \alias{h2h_sum_score_diff}
-\alias{sum_score_diff}
+\alias{get_h2h_sum_score}
 \alias{h2h_sum_score}
-\alias{sum_score}
+\alias{get_h2h_num_wins}
 \alias{h2h_num_wins}
-\alias{num_wins}
 \title{Specific functions for computing Head-to-Head matrices}
 \usage{
-h2h_mean_score_diff(cr_data, players = NULL, absent_players = players_drop,
+get_h2h_mean_score_diff(cr_data, players = NULL,
+  absent_players = players_drop, absent_h2h = fill_h2h, ...)
+
+h2h_mean_score_diff(matchup_data, ...)
+
+get_h2h_mean_score(cr_data, players = NULL, absent_players = players_drop,
   absent_h2h = fill_h2h, ...)
 
-mean_score_diff(matchup_data, ...)
+h2h_mean_score(matchup_data, ...)
 
-h2h_mean_score(cr_data, players = NULL, absent_players = players_drop,
+get_h2h_sum_score_diff(cr_data, players = NULL,
+  absent_players = players_drop, absent_h2h = fill_h2h, ...)
+
+h2h_sum_score_diff(matchup_data, ...)
+
+get_h2h_sum_score(cr_data, players = NULL, absent_players = players_drop,
   absent_h2h = fill_h2h, ...)
 
-mean_score(matchup_data, ...)
+h2h_sum_score(matchup_data, ...)
 
-h2h_sum_score_diff(cr_data, players = NULL, absent_players = players_drop,
+get_h2h_num_wins(cr_data, players = NULL, absent_players = players_drop,
   absent_h2h = fill_h2h, ...)
 
-sum_score_diff(matchup_data, ...)
-
-h2h_sum_score(cr_data, players = NULL, absent_players = players_drop,
-  absent_h2h = fill_h2h, ...)
-
-sum_score(matchup_data, ...)
-
-h2h_num_wins(cr_data, players = NULL, absent_players = players_drop,
-  absent_h2h = fill_h2h, ...)
-
-num_wins(matchup_data, half_for_draw = FALSE, ...)
+h2h_num_wins(matchup_data, half_for_draw = FALSE, ...)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
@@ -54,36 +54,37 @@ dealing with absent Head-to-Head records for some pairs of players.}
 \item{...}{Additional arguments to be passed to or from methods.}
 
 \item{matchup_data}{Data of matchups described in \link{head-to-head} as
-input for specific h2h_fun.}
+input for specific \code{h2h_fun}.}
 
 \item{half_for_draw}{Whether to count half points for draws in
-\code{num_wins}.}
+\code{h2h_num_wins}.}
 }
 \value{
-\code{h2h_*} return \link[=head-to-head]{Head-to-Head matrices}.
+\code{get_h2h_*} return \link[=head-to-head]{Head-to-Head matrices}.
 
-All implementations of \code{h2h_fun} return a single Head-to-Head value.
+All \code{h2h_*} are implementations of \code{h2h_fun} and return a single
+Head-to-Head value.
 }
 \description{
-Specific functions for computing Head-to-Head matrices
+Specific functions for computing Head-to-Head matrices.
 }
 \details{
 This is a list of currently implemented \code{h2h_fun}s:
 \describe{
-  \item{mean_score_diff}{Computes mean score difference of \code{player2}
+  \item{h2h_mean_score_diff}{Computes mean score difference of \code{player2}
     compared to \code{player1};}
-  \item{mean_score}{Computes mean score of \code{player2};}
-  \item{sum_score_diff}{Computes sum of score differences of \code{player2}
-    compared to \code{player1};}
-  \item{sum_score}{Computes sum of scores of \code{player2};}
-  \item{num_wins}{Computes number of matchups \code{player2} scored
+  \item{h2h_mean_score}{Computes mean score of \code{player2};}
+  \item{h2h_sum_score_diff}{Computes sum of score differences of
+    \code{player2} compared to \code{player1};}
+  \item{h2h_sum_score}{Computes sum of scores of \code{player2};}
+  \item{h2h_num_wins}{Computes number of matchups \code{player2} scored
     \bold{more} than \code{player1}. If \code{half_for_draw} is \code{TRUE}
     then it also adds half number of matchups where they had draw.
     \bold{Note} that it excludes matchups of the players with themselves.}
 }
 
-All \code{h2h_*} are wrappers around \code{\link[=head-to-head]{h2h}} for
-using a specific \code{h2h_fun}.
+All \code{get_h2h_*} are wrappers around \code{\link[=head-to-head]{get_h2h}}
+for using a specific \code{h2h_fun}.
 }
 \examples{
 # Initializing data
@@ -95,13 +96,13 @@ cr_data <- data.frame(
 matchup_data <- get_matchups(cr_data)
 
 # Computing Head-to-Head matrices
-h2h_num_wins(cr_data)
-h2h_num_wins(cr_data, half_for_draw = TRUE)
-h2h_num_wins(cr_data, half_for_draw = TRUE, fill = 0)
+get_h2h_num_wins(cr_data)
+get_h2h_num_wins(cr_data, half_for_draw = TRUE)
+get_h2h_num_wins(cr_data, half_for_draw = TRUE, fill = 0)
 
 # Computing Head-to-Head values based on matchups
-mean_score_diff(matchup_data[2, ])
-mean_score_diff(matchup_data[19, ])
+h2h_mean_score_diff(matchup_data[2, ])
+h2h_mean_score_diff(matchup_data[19, ])
 
 }
 \seealso{

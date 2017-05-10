@@ -11,8 +11,8 @@
 #' comparisons, etc.). One game can consist from \bold{variable} number of
 #' players. Inside a game all players are treated equally.
 #' In every game every player has some score: the value of arbitrary nature
-#' that characterizes player's performance (in most cases it is some numeric
-#' value).
+#' that fully characterizes player's performance in particular game (in most
+#' cases it is some numeric value).
 #'
 #' \code{longcr} inherits from \code{\link[=tbl_df]{tibble}}. Data should have
 #'   at least three columns with the following names:

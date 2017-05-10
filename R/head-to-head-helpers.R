@@ -1,5 +1,7 @@
 #' Helpers for computing Head-to-Head matrices
 #'
+#' Helpers for computing Head-to-Head matrices.
+#'
 #' @param h2h_mat Head-to-Head matrix.
 #' @param fill Value to fill with.
 #' @param x Value to print.

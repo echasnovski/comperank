@@ -15,7 +15,7 @@ skip_action(x, ...)
 An exact copy of \code{x}.
 }
 \description{
-Skip some action
+Function for skipping action.
 }
 \examples{
 identical(skip_action(1), 1)

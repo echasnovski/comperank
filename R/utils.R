@@ -1,6 +1,8 @@
 # General -----------------------------------------------------------------
 #' Skip some action
 #'
+#' Function for skipping action.
+#'
 #' @param x Input object
 #' @param ... Additional arguments to be passed to or from methods.
 #'

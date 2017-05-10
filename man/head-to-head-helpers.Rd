@@ -57,7 +57,7 @@ is considered different from "player2"-"player1" in order to except more
 advanced, not simmetrical Head-to-Head values.
 }
 \description{
-Helpers for computing Head-to-Head matrices
+Helpers for computing Head-to-Head matrices.
 }
 \examples{
 cr_data <- data.frame(

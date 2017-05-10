@@ -11,8 +11,8 @@
 #' comparisons, etc.). One game can consist only from \bold{constant} number
 #' of players. Inside a game all players are treated equally.
 #' In every game every player has some score: the value of arbitrary nature
-#' that characterizes player's performance (in most cases it is some numeric
-#' value).
+#' that fully characterizes player's performance in particular game (in most
+#' cases it is some numeric value).
 #'
 #' \code{widecr} inherits from \code{\link[=tbl_df]{tibble}}. Data should be
 #' orginized in pairs of columns "player"-"score". Identifier of a pair should
