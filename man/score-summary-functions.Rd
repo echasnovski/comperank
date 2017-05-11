@@ -4,11 +4,14 @@
 \alias{score-summary-functions}
 \alias{score_mean_sd}
 \alias{score_min_max}
+\alias{score_sum}
 \title{Specific functions for computing score summary}
 \usage{
 score_mean_sd(cr_data, prefix = "", ...)
 
 score_min_max(cr_data, prefix = "", ...)
+
+score_sum(cr_data, prefix = "", ...)
 }
 \arguments{
 \item{cr_data}{Competition results.}
@@ -21,9 +24,11 @@ score_min_max(cr_data, prefix = "", ...)
 This is a list of currently implemented \code{score_fun}s:
 \describe{
   \item{score_mean_sd}{Returns a named vector (before adding prefix):
-  "meanScore" - mean score; "sdScore" - standard deviation of scores;}
+    "meanScore" - mean score; "sdScore" - standard deviation of scores;}
   \item{score_min_max}{Returns a named vector (before adding prefix):
-  "minScore" - minimum score; "maxScore" - maximum score.}
+    "minScore" - minimum score; "maxScore" - maximum score;}
+  \item{score_sum}{Returns a named vector (before adding prefix):
+    "sumScore" - sum of all present scores.}
 }
 }
 \description{

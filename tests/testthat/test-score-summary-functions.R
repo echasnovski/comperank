@@ -55,3 +55,27 @@ test_that("score_min_max adds prefix", {
     c("season", "player", "seasonPlayer_minScore", "seasonPlayer_maxScore")
   )
 })
+
+# score_sum -------------------------------------------------------------
+test_that("score_sum works", {
+  input_game <- input[1:2, ]
+  output_game <- c(sumScore = 63)
+
+  expect_equal(score_sum(input_game), output_game)
+
+  expect_silent(score_sum(input_game, extraArg = TRUE))
+})
+
+test_that("score_sum adds prefix", {
+  output_summary <-
+    get_score_summary(
+      cr_data = input, item = c("season", "player"),
+      score_fun = score_sum, prefix = "seasonPlayer_"
+    )
+
+  expect_equal(
+    colnames(output_summary),
+    c("season", "player", "seasonPlayer_sumScore")
+  )
+})
+

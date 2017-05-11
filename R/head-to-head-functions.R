@@ -19,7 +19,8 @@
 #'   \item{h2h_num_wins}{Computes number of matchups \code{player2} scored
 #'     \bold{more} than \code{player1}. If \code{half_for_draw} is \code{TRUE}
 #'     then it also adds half number of matchups where they had draw.
-#'     \bold{Note} that it excludes matchups of the players with themselves.}
+#'     \bold{Note} that it excludes matchups of the players with themselves;}
+#'   \item{h2h_num}{Computes number of matchups.}
 #' }
 #'
 #' @return All \code{h2h_*} are implementations of \code{h2h_fun} and return a
@@ -78,4 +79,10 @@ h2h_num_wins <- function(matchup_data, half_for_draw = FALSE, ...) {
   score1 <- matchup_data$score1[not_identity]
   score2 <- matchup_data$score2[not_identity]
   sum(score2 > score1) + half_for_draw * 0.5 * sum(score2 == score1)
+}
+
+#' @rdname head-to-head-functions
+#' @export
+h2h_num <- function(matchup_data, ...) {
+  nrow(matchup_data)
 }

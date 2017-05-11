@@ -79,3 +79,10 @@ test_that("h2h_num_wins works", {
 
   expect_silent(h2h_num_wins(matchup_data_1[c(2, 6, 9), ], extraArg = TRUE))
 })
+
+# h2h_num -----------------------------------------------------------------
+test_that("h2h_num works", {
+  expect_equal(h2h_num(matchup_data), nrow(matchup_data))
+  expect_equal(h2h_num(matchup_data[1:3, ]), 3)
+})
+

@@ -7,6 +7,7 @@
 \alias{h2h_sum_score_diff}
 \alias{h2h_sum_score}
 \alias{h2h_num_wins}
+\alias{h2h_num}
 \title{Specific functions for computing Head-to-Head matrices}
 \usage{
 h2h_mean_score_diff(matchup_data, ...)
@@ -18,6 +19,8 @@ h2h_sum_score_diff(matchup_data, ...)
 h2h_sum_score(matchup_data, ...)
 
 h2h_num_wins(matchup_data, half_for_draw = FALSE, ...)
+
+h2h_num(matchup_data, ...)
 }
 \arguments{
 \item{matchup_data}{Data of matchups described in \link{head-to-head} as
@@ -47,7 +50,8 @@ This is a list of currently implemented \code{h2h_fun}s:
   \item{h2h_num_wins}{Computes number of matchups \code{player2} scored
     \bold{more} than \code{player1}. If \code{half_for_draw} is \code{TRUE}
     then it also adds half number of matchups where they had draw.
-    \bold{Note} that it excludes matchups of the players with themselves.}
+    \bold{Note} that it excludes matchups of the players with themselves;}
+  \item{h2h_num}{Computes number of matchups.}
 }
 }
 \examples{

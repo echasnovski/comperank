@@ -16,9 +16,11 @@
 #' @return This is a list of currently implemented \code{score_fun}s:
 #' \describe{
 #'   \item{score_mean_sd}{Returns a named vector (before adding prefix):
-#'   "meanScore" - mean score; "sdScore" - standard deviation of scores;}
+#'     "meanScore" - mean score; "sdScore" - standard deviation of scores;}
 #'   \item{score_min_max}{Returns a named vector (before adding prefix):
-#'   "minScore" - minimum score; "maxScore" - maximum score.}
+#'     "minScore" - minimum score; "maxScore" - maximum score;}
+#'   \item{score_sum}{Returns a named vector (before adding prefix):
+#'     "sumScore" - sum of all present scores.}
 #' }
 #'
 #' @examples
@@ -40,7 +42,8 @@ NULL
 #' @rdname score-summary-functions
 #' @export
 score_mean_sd <- function(cr_data, prefix = "", ...) {
-  res <- c(mean(cr_data$score), sd(cr_data$score))
+  cr <- to_longcr(cr_data, repair = TRUE)
+  res <- c(mean(cr$score), sd(cr$score))
   names(res) <- paste0(prefix, c("meanScore", "sdScore"))
 
   res
@@ -49,8 +52,19 @@ score_mean_sd <- function(cr_data, prefix = "", ...) {
 #' @rdname score-summary-functions
 #' @export
 score_min_max <- function(cr_data, prefix = "", ...) {
-  res <- c(min(cr_data$score), max(cr_data$score))
+  cr <- to_longcr(cr_data, repair = TRUE)
+  res <- c(min(cr$score), max(cr$score))
   names(res) <- paste0(prefix, c("minScore", "maxScore"))
+
+  res
+}
+
+#' @rdname score-summary-functions
+#' @export
+score_sum <- function(cr_data, prefix = "", ...) {
+  cr <- to_longcr(cr_data, repair = TRUE)
+  res <- sum(cr$score)
+  names(res) <- paste0(prefix, c("sumScore"))
 
   res
 }
