@@ -28,7 +28,7 @@ dealing with absent Head-to-Head records for some pairs of players.}
 An object of class \code{h2h} which is a square matrix of
   Head-to-Head values. Rows correspond to \code{player1} and columns to
   \code{player2} (as in input for \code{h2h_fun}). Row and column
-  names are made with \code{as.character(players)}.
+  names are made with \code{as.character()} on players used for computation.
 }
 \description{
 This page describes methods of computing Head-to-Head matrices.
@@ -43,11 +43,14 @@ extra field in \code{score} column making it a list-column).
 
 \code{get_h2h} performs computation of Head-to-Head matrix:
 square matrix with number of rows (and columns) equal to number of players
-for which it is computed. Head-to-Head values are computed in these steps:
+for which it is computed. Head-to-Head values are computed based only on
+matchups (pairs of players from one game) between players from argument
+\code{players}. The following algorithm is used:
 \enumerate{
-  \item Compute for every present in \code{cr_data} matchup (pair of players)
-    its Head-to-Head value via \code{h2h_fun} based on these players' scores
-    in common games. It should accept two arguments:
+  \item Compute for every present in \code{cr_data} matchup
+    between players from \code{players} its Head-to-Head value via
+    \code{h2h_fun} based on these players' scores in common games.
+    \code{h2h_fun} should accept two arguments:
     \itemize{
       \item A tibble of \link[=head-to-head-helpers]{matchups} data.
         Structure is like \code{\link[=results-widecr]{widecr}} with
