@@ -94,9 +94,9 @@ get_h2h <- function(cr_data, h2h_fun, players = NULL,
                     absent_players = players_drop, absent_h2h = fill_h2h,
                     ...) {
   cr <- to_longcr(cr_data, ...)
-  players <- get_players(cr_data = cr, players = players, ...)
+  players <- get_cr_players(cr_data = cr, players = players, ...)
 
-  h2h_long <- get_matchups(cr_data = cr) %>%
+  h2h_long <- get_cr_matchups(cr_data = cr) %>%
     filter_(.dots = list(
       ~ player1 %in% players, ~ player2 %in% players
     )) %>%

@@ -5,8 +5,8 @@
 \alias{players_drop}
 \alias{fill_h2h}
 \alias{print.h2h}
-\alias{get_players}
-\alias{get_matchups}
+\alias{get_cr_players}
+\alias{get_cr_matchups}
 \title{Helpers for computing Head-to-Head matrices}
 \usage{
 players_drop(h2h_mat, ...)
@@ -15,9 +15,9 @@ fill_h2h(h2h_mat, fill = NA_real_, ...)
 
 \method{print}{h2h}(x, ...)
 
-get_players(cr_data, players = NULL, ...)
+get_cr_players(cr_data, players = NULL, ...)
 
-get_matchups(cr_data)
+get_cr_matchups(cr_data)
 }
 \arguments{
 \item{h2h_mat}{Head-to-Head matrix.}
@@ -39,12 +39,12 @@ are absent in original competition results).
 
 \code{fill_h2h} replaces \code{NA}s in \code{h2h_mat} with \code{fill}.
 
-\code{get_players} in case of argument \code{players} is \code{NULL} returns
-vector of players present in \code{cr_data}. If not \code{NULL} then returns
-its argument \code{players}.
+\code{get_cr_players} in case of argument \code{players} is \code{NULL}
+returns vector of players present in \code{cr_data}. If not \code{NULL} then
+returns its argument \code{players}.
 
-\code{get_matchups} returns a \code{\link[=tbl_df]{tibble}} of all matchups
-present in \code{cr_data}. It has following columns:
+\code{get_cr_matchups} returns a \code{\link[=tbl_df]{tibble}} of all
+matchups present in \code{cr_data}. It has following columns:
 \describe{
   \item{game}{Game identifier of matchup}
   \item{player1}{Identifier of first player in matchup}
@@ -65,8 +65,8 @@ cr_data <- data.frame(
   player = rep(1:5, times = 3),
   score = 31:45
 )
-get_players(cr_data, players = NULL)
-get_matchups(cr_data)
+get_cr_players(cr_data, players = NULL)
+get_cr_matchups(cr_data)
 
 }
 \seealso{

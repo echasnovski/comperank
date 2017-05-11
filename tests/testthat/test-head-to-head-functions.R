@@ -8,7 +8,7 @@ cr_data <- data.frame(
   score = 31:34,
   scoreSP = 44:41
 )
-matchup_data <- get_matchups(cr_data)
+matchup_data <- get_cr_matchups(cr_data)
 
 
 # h2h_mean_score_diff -----------------------------------------------------

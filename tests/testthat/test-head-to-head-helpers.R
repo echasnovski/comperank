@@ -42,24 +42,24 @@ test_that("print.h2h works", {
   expect_output(print(input), "  a b c\na 1 4 7\nb 2 5 8\nc 3 6 9")
 })
 
-# get_players ----------------------------------------------------------
-test_that("get_players works", {
+# get_cr_players ----------------------------------------------------------
+test_that("get_cr_players works", {
   input <- data.frame(
     game = 1:10,
     player = 11:20,
     score = 101:110
   )
 
-  expect_identical(get_players(input, NULL), 11:20)
-  expect_identical(get_players(input, 10:21), 10:21)
+  expect_identical(get_cr_players(input, NULL), 11:20)
+  expect_identical(get_cr_players(input, 10:21), 10:21)
 
-  expect_identical(get_players(input, NULL, extraArg = TRUE), 11:20)
-  expect_identical(get_players(input, 10:21, extraArg = TRUE), 10:21)
+  expect_identical(get_cr_players(input, NULL, extraArg = TRUE), 11:20)
+  expect_identical(get_cr_players(input, 10:21, extraArg = TRUE), 10:21)
 })
 
 
-# get_matchups ------------------------------------------------------------
-test_that("get_matchups works", {
+# get_cr_matchups ------------------------------------------------------------
+test_that("get_cr_matchups works", {
   output <- dplyr::tbl_df(data.frame(
     game = rep(1:2, each = 4),
     player1 = rep(rep(1:2, each = 2), times = 2),
@@ -68,5 +68,5 @@ test_that("get_matchups works", {
     score2 = c(rep(31:32, times = 2), rep(33:34, times = 2))
   ))
 
-  expect_equal(get_matchups(cr_data), output)
+  expect_equal(get_cr_matchups(cr_data), output)
 })

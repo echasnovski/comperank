@@ -61,7 +61,7 @@ cr_data <- data.frame(
   player = rep(1:5, times = 2),
   score = c(31:39, 39)
 )
-matchup_data <- get_matchups(cr_data)
+matchup_data <- get_cr_matchups(cr_data)
 
 # Computing Head-to-Head matrices
 get_h2h(cr_data, h2h_num_wins)
