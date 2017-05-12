@@ -1,4 +1,4 @@
-context("score-summary")
+context("item-summary")
 
 
 # Input data --------------------------------------------------------------
@@ -10,18 +10,18 @@ input <- data.frame(
 )
 
 
-# get_score_summary ---------------------------------------------------------
-test_that("get_score_summary works with NULL score_fun", {
+# get_item_summary ---------------------------------------------------------
+test_that("get_item_summary works with NULL summary_fun", {
   output <- dplyr::tbl_df(data.frame(game = 1:20))
 
   expect_identical(
-    get_score_summary(cr_data = input, item = "game",
-                      score_fun = NULL),
+    get_item_summary(cr_data = input, item = "game",
+                     summary_fun = NULL),
     output
   )
 })
 
-test_that("get_score_summary works with not NULL score_fun", {
+test_that("get_item_summary works with not NULL summary_fun", {
   output <- structure(
     list(
       game = 1:20,
@@ -34,9 +34,9 @@ test_that("get_score_summary works with not NULL score_fun", {
   )
 
   output_scores <-
-    get_score_summary(cr_data = input,
-                      item = "game",
-                      score_fun = score_mean_sd)
+    get_item_summary(cr_data = input,
+                     item = "game",
+                     summary_fun = summary_mean_sd_score)
 
   expect_identical(class(output_scores), class(output))
   expect_equal(output_scores$game, output$game)
@@ -44,7 +44,7 @@ test_that("get_score_summary works with not NULL score_fun", {
   expect_equal(output_scores$sdScore, output$sdScore)
 })
 
-test_that("get_score_summary works with multiple items", {
+test_that("get_item_summary works with multiple items", {
   output <- structure(
     list(
       season = rep(1:2, each = 10),
@@ -57,9 +57,9 @@ test_that("get_score_summary works with multiple items", {
     .Names = c("season", "player", "meanScore", "sdScore")
   )
 
-  output_scores <- get_score_summary(
+  output_scores <- get_item_summary(
     cr_data = input, item = c("season", "player"),
-    score_fun = score_mean_sd
+    summary_fun = summary_mean_sd_score
   )
 
   expect_identical(class(output_scores), class(output))
@@ -69,11 +69,11 @@ test_that("get_score_summary works with multiple items", {
   expect_equal(output_scores$sdScore, output$sdScore)
 })
 
-test_that("get_score_summary works with extra arguments", {
+test_that("get_item_summary works with extra arguments", {
   expect_silent(
-    get_score_summary(
+    get_item_summary(
       cr_data = input, item = c("season", "player"),
-      score_fun = score_mean_sd, prefix = "seasonPlayer_"
+      summary_fun = summary_mean_sd_score, prefix = "seasonPlayer_"
     )
   )
 })
@@ -85,7 +85,7 @@ test_that("get_game_summary works", {
 
   expect_identical(
     get_game_summary(cr_data = input,
-                     score_fun = NULL),
+                     summary_fun = NULL),
     output
   )
 })
@@ -96,7 +96,7 @@ test_that("get_player_summary works", {
 
   expect_identical(
     get_player_summary(cr_data = input,
-                       score_fun = NULL),
+                       summary_fun = NULL),
     output
   )
 })
