@@ -13,27 +13,30 @@ rate_massey(cr_data, players = NULL)
 \item{players}{Vector of players for which rating is computed.}
 }
 \value{
-Named vector of the Massey rating.
+Named vector of the Massey rating. The sum of all ratings should be
+  equal to 0.
 }
 \description{
 Function to compute rating using Massey method.
 }
 \details{
-Computation is done based only on the matchups between players in
-  argument \code{players}. If \code{NULL} then all players present in
-  \code{cr_data} are used. \bold{Note} that all \code{players} should be
-  present in \code{cr_data} because otherwise there will be an error using
+This rating method was initially designed for games between two
+  players. That is why competition results are transformed into pairwise
+  games \code{cr_pair} with \link{to_pairgames}. Data from \code{cr_pair} is
+  used in rating computation.
+
+  Computation is done based only on the games between players in argument
+  \code{players}. If \code{NULL} then all players present in \code{cr_pair}
+  are used. \bold{Note} that all \code{players} should be present in
+  \code{cr_pair} because otherwise there will be an error during solving
   linear system described below. Message is given if there are players absent
-  in \code{cr_data}.
+  in \code{cr_pair}.
 
   The outline of Massey rating method is as follows:
   \enumerate{
     \item Compute Massey matrix: diagonal elements are equal to number of
       games played by certain player, off-diagonal are equal to minus number
-      of common games played. In other words it is
-      \link[=head-to-head]{Head-to-Head matrix} using \code{h2h_num} as
-      \code{\link[=head-to-head-functions]{h2h_fun}} with off-diagonal
-      elements switched sign. This matrix will be the matrix of system of
+      of common games played. This matrix will be the matrix of system of
       linear equations (SLE);
     \item Compute right-hand side of SLE as cumulative score differences of
       players, i.e. sum of all scores \emph{for} the player minus sum of all
