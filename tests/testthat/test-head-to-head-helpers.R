@@ -8,6 +8,8 @@ cr_data <- data.frame(
   score = 31:34,
   scoreSP = 44:41
 )
+
+
 # players_drop -------------------------------------------------------------
 test_that("players_drop works", {
   h2h_mat_original <- matrix(
@@ -46,15 +48,15 @@ test_that("print.h2h works", {
 test_that("get_cr_players works", {
   input <- data.frame(
     game = 1:10,
-    player = 11:20,
+    player = c(19L, 18L, 13L, 14L, 16L, 17L, 12L, 15L, 20L, 11L),
     score = 101:110
   )
 
   expect_identical(get_cr_players(input, NULL), 11:20)
-  expect_identical(get_cr_players(input, 10:21), 10:21)
+  expect_identical(get_cr_players(input, 21:10), 21:10)
 
   expect_identical(get_cr_players(input, NULL, extraArg = TRUE), 11:20)
-  expect_identical(get_cr_players(input, 10:21, extraArg = TRUE), 10:21)
+  expect_identical(get_cr_players(input, 21:10, extraArg = TRUE), 21:10)
 })
 
 
