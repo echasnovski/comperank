@@ -17,7 +17,7 @@ test_that("rate_massey works with not NULL 'players'", {
   players <- names(output)[c(5, 2, 1, 3, 4)]
   expect_equal(rate_massey(input, players = players), output[players])
 
-  output_1 <- c(-8.2, 23, -14.8)
+  output_1 <- c(-16, 21, -5)
   names(output_1) <- names(output)[1:3]
   expect_equal(rate_massey(input, players = names(output)[1:3]),
                output_1)

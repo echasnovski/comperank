@@ -45,7 +45,11 @@ extra field in \code{score} column making it a list-column).
 square matrix with number of rows (and columns) equal to number of players
 for which it is computed. Head-to-Head values are computed based only on
 matchups (pairs of players from one game) between players from argument
-\code{players}. The following algorithm is used:
+\code{players}. \bold{Note} to be careful with Head-to-Head values of
+players with themselves: it can be inaccurate if \code{players} is not
+\code{NULL} because it will be based on possibly undesirable data.
+
+The following algorithm is used:
 \enumerate{
   \item Compute for every present in \code{cr_data} matchup
     between players from \code{players} its Head-to-Head value via

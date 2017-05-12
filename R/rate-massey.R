@@ -52,13 +52,16 @@ rate_massey <- function(cr_data, players = NULL) {
   massey_mat <- - get_h2h(cr_data = cr, h2h_fun = h2h_num,
                           players = players, absent_players = skip_action,
                           absent_h2h = fill_h2h, fill = 0)
-  diag(massey_mat) <- - diag(massey_mat)
+  diag(massey_mat) <- 0
+  diag(massey_mat) <- - rowSums(massey_mat)
 
   sum_score_mat <- get_h2h(cr_data = cr, h2h_fun = h2h_sum_score,
                            players = players, absent_players = skip_action,
                            absent_h2h = fill_h2h, fill = 0)
-  score_for <- diag(sum_score_mat)
-  score_against <- rowSums(sum_score_mat) - score_for
+  diag(sum_score_mat) <- 0
+
+  score_for <- colSums(sum_score_mat)
+  score_against <- rowSums(sum_score_mat)
   score_diff <- score_for - score_against
 
   massey_mat_mod <- massey_mat
