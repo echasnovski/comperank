@@ -13,14 +13,20 @@
 #'   Implementations of \code{summary_fun} should be able to take
 #'   \code{prefix} and \code{...} as parameters.
 #'
-#' @return This is a list of currently implemented \code{summary_fun}s:
+#' @return All \code{summary_fun}s return a named vector of item summaries
+#'   (names are given before adding prefix). This is a list of currently
+#'   implemented \code{summary_fun}s:
 #' \describe{
-#'   \item{summary_mean_sd_score}{Returns a named vector (before adding prefix):
+#'   \item{summary_mean_sd_score}{Returns a vector:
 #'     "meanScore" - mean score; "sdScore" - standard deviation of scores;}
-#'   \item{summary_min_max_score}{Returns a named vector (before adding prefix):
+#'   \item{summary_min_max_score}{Returns a vector:
 #'     "minScore" - minimum score; "maxScore" - maximum score;}
-#'   \item{summary_sum_score}{Returns a named vector (before adding prefix):
-#'     "sumScore" - sum of all present scores.}
+#'   \item{summary_sum_score}{Returns a vector:
+#'     "sumScore" - sum of all present scores;}
+#'   \item{summary_num_games}{Returns a vector:
+#'     "numGames" - number of unique games;}
+#'   \item{summary_num_players}{Returns a vector:
+#'     "numPlayers" - number of unique players.}
 #' }
 #'
 #' @examples
@@ -69,6 +75,26 @@ summary_sum_score <- function(cr_data, prefix = "", ...) {
   cr <- to_longcr(cr_data, repair = TRUE)
   res <- sum(cr$score)
   names(res) <- paste0(prefix, c("sumScore"))
+
+  res
+}
+
+#' @rdname item-summary-functions
+#' @export
+summary_num_games <- function(cr_data, prefix = "", ...) {
+  cr <- to_longcr(cr_data, repair = TRUE)
+  res <- length(unique(cr$game))
+  names(res) <- paste0(prefix, c("numGames"))
+
+  res
+}
+
+#' @rdname item-summary-functions
+#' @export
+summary_num_players <- function(cr_data, prefix = "", ...) {
+  cr <- to_longcr(cr_data, repair = TRUE)
+  res <- length(unique(cr$player))
+  names(res) <- paste0(prefix, c("numPlayers"))
 
   res
 }

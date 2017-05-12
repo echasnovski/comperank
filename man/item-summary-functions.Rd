@@ -5,6 +5,8 @@
 \alias{summary_mean_sd_score}
 \alias{summary_min_max_score}
 \alias{summary_sum_score}
+\alias{summary_num_games}
+\alias{summary_num_players}
 \title{Specific functions for computing item summary}
 \usage{
 summary_mean_sd_score(cr_data, prefix = "", ...)
@@ -12,6 +14,10 @@ summary_mean_sd_score(cr_data, prefix = "", ...)
 summary_min_max_score(cr_data, prefix = "", ...)
 
 summary_sum_score(cr_data, prefix = "", ...)
+
+summary_num_games(cr_data, prefix = "", ...)
+
+summary_num_players(cr_data, prefix = "", ...)
 }
 \arguments{
 \item{cr_data}{Competition results.}
@@ -21,14 +27,20 @@ summary_sum_score(cr_data, prefix = "", ...)
 \item{...}{Additional arguments to be passed to or from methods.}
 }
 \value{
-This is a list of currently implemented \code{summary_fun}s:
+All \code{summary_fun}s return a named vector of item summaries
+  (names are given before adding prefix). This is a list of currently
+  implemented \code{summary_fun}s:
 \describe{
-  \item{summary_mean_sd_score}{Returns a named vector (before adding prefix):
+  \item{summary_mean_sd_score}{Returns a vector:
     "meanScore" - mean score; "sdScore" - standard deviation of scores;}
-  \item{summary_min_max_score}{Returns a named vector (before adding prefix):
+  \item{summary_min_max_score}{Returns a vector:
     "minScore" - minimum score; "maxScore" - maximum score;}
-  \item{summary_sum_score}{Returns a named vector (before adding prefix):
-    "sumScore" - sum of all present scores.}
+  \item{summary_sum_score}{Returns a vector:
+    "sumScore" - sum of all present scores;}
+  \item{summary_num_games}{Returns a vector:
+    "numGames" - number of unique games;}
+  \item{summary_num_players}{Returns a vector:
+    "numPlayers" - number of unique players.}
 }
 }
 \description{
