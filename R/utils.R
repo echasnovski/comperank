@@ -86,3 +86,16 @@ reduce_full_join <- function(x, by) {
 
   Reduce(f = reduce_f, x = x[-1], init = x[[1]])
 }
+
+# Rating methods ----------------------------------------------------------
+assert_used_objects <- function(used, original, prefix = "",
+                                object_name, data_name) {
+  not_present <- setdiff(used, original)
+  if (length(not_present) > 0) {
+    message(prefix, "These ", object_name,
+            " are absent in ", data_name, ":\n  ",
+            paste0(not_present, collapse = ", "), "\n")
+  }
+
+  invisible(TRUE)
+}

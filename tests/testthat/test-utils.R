@@ -93,3 +93,20 @@ test_that("reduce_full_join works", {
   expect_identical(reduce_full_join(input, by = "game"), output)
   expect_identical(reduce_full_join(input[1], by = "game"), input[[1]])
 })
+
+# assert_used_objects -----------------------------------------------------
+test_that("assert_used_objects works", {
+  used <- c("a", "b", "c")
+  original <- c("a", "d", "e", "f")
+
+  expect_message(assert_used_objects(used = used, original = original,
+                                     prefix = "prefix: ",
+                                     object_name = "some objects",
+                                     data_name = "some data"),
+                 "^prefix: .* some objects .*absent.*in.* some data:.*  b, c")
+  expect_silent(assert_used_objects(used = used[1], original = original,
+                                    prefix = "prefix: ",
+                                    object_name = "some objects",
+                                    data_name = "some data"))
+})
+

@@ -21,7 +21,10 @@ Function to compute rating using Massey method.
 \details{
 Computation is done based only on the matchups between players in
   argument \code{players}. If \code{NULL} then all players present in
-  \code{cr_data} are used.
+  \code{cr_data} are used. \bold{Note} that all \code{players} should be
+  present in \code{cr_data} because otherwise there will be an error using
+  linear system described below. Message is given if there are players absent
+  in \code{cr_data}.
 
   The outline of Massey rating method is as follows:
   \enumerate{

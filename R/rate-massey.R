@@ -8,7 +8,10 @@
 #'
 #' @details Computation is done based only on the matchups between players in
 #'   argument \code{players}. If \code{NULL} then all players present in
-#'   \code{cr_data} are used.
+#'   \code{cr_data} are used. \bold{Note} that all \code{players} should be
+#'   present in \code{cr_data} because otherwise there will be an error using
+#'   linear system described below. Message is given if there are players absent
+#'   in \code{cr_data}.
 #'
 #'   The outline of Massey rating method is as follows:
 #'   \enumerate{
@@ -39,6 +42,13 @@
 rate_massey <- function(cr_data, players = NULL) {
   cr <- to_longcr(cr_data, repair = TRUE)
 
+  # Assert used players
+  original_players <- get_cr_players(cr, players = NULL)
+  assert_used_objects(used = players, original = original_players,
+                      prefix = "rate_massey: ", object_name = "players",
+                      data_name = "competition results")
+
+  # Compute Massey ratings
   massey_mat <- - get_h2h(cr_data = cr, h2h_fun = h2h_num,
                           players = players, absent_players = skip_action,
                           absent_h2h = fill_h2h, fill = 0)
