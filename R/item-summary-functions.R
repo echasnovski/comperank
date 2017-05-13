@@ -2,15 +2,12 @@
 #'
 #' This page describes specific functions for computing item summary.
 #'
-#' @param cr_data Competition results.
+#' @param cr_data Competition results in format ready for
+#'   \code{\link[=results-longcr]{to_longcr}}.
 #' @param prefix Possible prefix to add to item summary's names.
 #' @param ... Additional arguments to be passed to or from methods.
 #'
-#' @details \code{cr_data} should be convertable to
-#'   \code{\link[=results-longcr]{longcr}} form via
-#'   \code{\link[=results-longcr]{to_longcr}}
-#'
-#'   Implementations of \code{summary_fun} should be able to take
+#' @details Implementations of \code{summary_fun} should be able to take
 #'   \code{prefix} and \code{...} as parameters.
 #'
 #' @return All \code{summary_fun}s return a named vector of item summaries

@@ -14,7 +14,8 @@ get_game_summary(cr_data, summary_fun = NULL, ...)
 get_player_summary(cr_data, summary_fun = NULL, ...)
 }
 \arguments{
-\item{cr_data}{Competition results.}
+\item{cr_data}{Competition results in format ready for
+\code{\link[=results-longcr]{to_longcr}}.}
 
 \item{item}{Character vector of columns to group by.}
 
@@ -39,12 +40,9 @@ summary measurements (of arbitrary nature) of item (one or more columns)
 present in competition results.
 }
 \details{
-\code{cr_data} should be in format suitable for
-  \code{\link[=results-longcr]{to_longcr}}.
-
-  Argument \code{item} defines on which columns grouping is made for
+Argument \code{item} defines on which columns grouping is made for
   computing item summary. Basically \code{get_item_summary} performes a
-  grouped apply of \code{summary_fun} to \code{cr_data}.
+  grouped by rows apply of \code{summary_fun} to \code{cr_data}.
 
   \code{summary_fun} is a function that takes competition results of a
   particular item (game, player, their combination, etc.) and produces named

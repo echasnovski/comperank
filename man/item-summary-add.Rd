@@ -14,7 +14,8 @@ add_game_summary(cr_data, summary_fun = NULL, ...)
 add_player_summary(cr_data, summary_fun = NULL, ...)
 }
 \arguments{
-\item{cr_data}{Competition results.}
+\item{cr_data}{Competition results in format ready for
+\code{\link[=results-longcr]{to_longcr}}.}
 
 \item{item}{Character vector of columns to group by.}
 
@@ -31,14 +32,11 @@ add_player_summary(cr_data, summary_fun = NULL, ...)
   accordingly.
 }
 \description{
-This page describes function for adding item summary to competition results
-as columns.
+This page describes functions for adding item summary as columns to
+competition results.
 }
 \details{
-\code{cr_data} should be in format suitable for
-  \code{\link[=results-longcr]{to_longcr}}.
-
-  If "game" is present in \code{item} but not in column names of
+If "game" is present in \code{item} but not in column names of
   \code{cr_data} (which can occur in case of
   \code{\link[=results-widecr]{widecr}} format) then every row is treated as
   separate game results. In all other cases every entry of \code{item} should

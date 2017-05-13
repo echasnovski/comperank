@@ -19,13 +19,14 @@
 #' transofrmation or addition of more information (in form of extra columns or
 #' extra field in \code{score} column making it a list-column).
 #'
-#' \code{get_h2h} performs computation of Head-to-Head matrix:
-#' square matrix with number of rows (and columns) equal to number of players
-#' for which it is computed. Head-to-Head values are computed based only on
-#' matchups (pairs of players from one game) between players from argument
-#' \code{players}. \bold{Note} to be careful with Head-to-Head values of
-#' players with themselves: it can be inaccurate if \code{players} is not
-#' \code{NULL} because it will be based on possibly undesirable data.
+#' \code{get_h2h} performs computation of Head-to-Head matrix: square matrix
+#' with number of rows (and columns) equal to number of players for which it is
+#' computed. Head-to-Head values are computed based only on
+#' \link[=head-to-head-helpers]{matchups} (pairs of players from one game)
+#' between players from argument \code{players}. \bold{Note} to be careful with
+#' Head-to-Head values of players with themselves: it can be inaccurate if
+#' \code{players} is not \code{NULL} because it will be based on possibly
+#' undesirable data.
 #'
 #' The following algorithm is used:
 #' \enumerate{
@@ -51,13 +52,13 @@
 #'
 #'     For absent in \code{cr_data} matchups \code{NA_real_}s are produced;
 #'
-#'   \item Perform actions via \code{absent_players} on those players' data
-#'     which are absent in \code{cr_data}. For no actions use
-#'     \code{\link{skip_action}}. For other options see
-#'     \link{head-to-head-helpers};
-#'   \item Perform actions via \code{absent_h2h} on those entries of
-#'     Head-to-Head matrix which are \code{NA}. For no actions use
-#'     \code{\link{skip_action}}. For other options see
+#'   \item Perform actions via \code{absent_players}. It should, based on
+#'     Head-to-Head matrix, do something with data of players that have not
+#'     enough games played. For no actions use \code{\link{skip_action}}.
+#'     For other options see \link{head-to-head-helpers};
+#'   \item Perform actions via \code{absent_h2h}. It should do something with
+#'     those entries of Head-to-Head matrix which are \code{NA}. For no actions
+#'     use \code{\link{skip_action}}. For other options see
 #'     \link{head-to-head-helpers}.
 #' }
 #'

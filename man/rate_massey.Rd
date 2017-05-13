@@ -22,8 +22,11 @@ Function to compute rating using Massey method.
 \details{
 This rating method was initially designed for games between two
   players. That is why competition results are transformed into pairwise
-  games \code{cr_pair} with \link{to_pairgames}. Data from \code{cr_pair} is
+  games \code{cr_pair} via \link{to_pairgames}. Data from \code{cr_pair} is
   used in rating computation.
+
+  It is assumed that score is numeric and higher values are better for
+  the player.
 
   Computation is done based only on the games between players in argument
   \code{players}. If \code{NULL} then all players present in \code{cr_pair}
@@ -40,7 +43,7 @@ This rating method was initially designed for games between two
       linear equations (SLE);
     \item Compute right-hand side of SLE as cumulative score differences of
       players, i.e. sum of all scores \emph{for} the player minus sum of all
-      scores \emph{against} a player;
+      scores \emph{against} the player;
     \item Make adjustment for solvability of SLE. Modify the last row of
       Massey matrix so that all its cells are equal to 1. Also change the
       last cell in right-hand side to 0. This adjustment ensures that sum of

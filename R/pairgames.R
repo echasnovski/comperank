@@ -23,7 +23,7 @@
 #'   \bold{Note} that in order for this function to work column \code{player}
 #'   after convertion to \code{\link[=results-longcr]{longcr}} should be
 #'   comparable, i.e. function '<' can be used properly on its values (which is
-#'   true in most cases).
+#'   true in most real-world cases).
 #'
 #' @return A competition results of pairwised games as
 #'   \link[=results-widecr]{widecr} object with two players.

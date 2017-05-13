@@ -9,9 +9,10 @@
 #' @param players Vector of players for which Head-to-Head is computed.
 #' @param ... Additional arguments to be passed to or from methods.
 #'
-#' @return \code{players_drop} removes those rows and column of \code{h2h_mat}
-#' which are filled with \code{NA}s (and therefore the respective players
-#' are absent in original competition results).
+#' @return \code{players_drop} removes from \code{h2h_mat} rows and columns of
+#' the players for which either row or column contain only \code{NA} (in
+#' most cases it means these players are absent in original competition
+#' results).
 #'
 #' \code{fill_h2h} replaces \code{NA}s in \code{h2h_mat} with \code{fill}.
 #'

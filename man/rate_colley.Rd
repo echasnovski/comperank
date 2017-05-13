@@ -13,8 +13,7 @@ rate_colley(cr_data, players = NULL)
 \item{players}{Vector of players for which rating is computed.}
 }
 \value{
-Named vector of the Colley rating. The sum of all ratings should be
-  equal to 0.5*"number of players in the rating".
+Named vector of the Colley rating. The mean rating should be 0.5.
 }
 \description{
 Function to compute rating using Colley method.
@@ -22,8 +21,11 @@ Function to compute rating using Colley method.
 \details{
 This rating method was initially designed for games between two
   players. That is why competition results are transformed into pairwise
-  games \code{cr_pair} with \link{to_pairgames}. Data from \code{cr_pair} is
+  games \code{cr_pair} via \link{to_pairgames}. Data from \code{cr_pair} is
   used in rating computation.
+
+  It is assumed that score is numeric and higher values are better for
+  the player.
 
   Computation is done based only on the matchups between players in
   argument \code{players}. If \code{NULL} then all players present in

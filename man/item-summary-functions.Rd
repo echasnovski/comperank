@@ -20,7 +20,8 @@ summary_num_games(cr_data, prefix = "", ...)
 summary_num_players(cr_data, prefix = "", ...)
 }
 \arguments{
-\item{cr_data}{Competition results.}
+\item{cr_data}{Competition results in format ready for
+\code{\link[=results-longcr]{to_longcr}}.}
 
 \item{prefix}{Possible prefix to add to item summary's names.}
 
@@ -47,11 +48,7 @@ All \code{summary_fun}s return a named vector of item summaries
 This page describes specific functions for computing item summary.
 }
 \details{
-\code{cr_data} should be convertable to
-  \code{\link[=results-longcr]{longcr}} form via
-  \code{\link[=results-longcr]{to_longcr}}
-
-  Implementations of \code{summary_fun} should be able to take
+Implementations of \code{summary_fun} should be able to take
   \code{prefix} and \code{...} as parameters.
 }
 \examples{

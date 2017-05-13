@@ -4,17 +4,15 @@
 #' summary measurements (of arbitrary nature) of item (one or more columns)
 #' present in competition results.
 #'
-#' @param cr_data Competition results.
+#' @param cr_data Competition results in format ready for
+#'   \code{\link[=results-longcr]{to_longcr}}.
 #' @param item Character vector of columns to group by.
 #' @param summary_fun Function to compute item summary (see Details).
 #' @param ... Additional arguments to be passed to or from methods.
 #'
-#' @details \code{cr_data} should be in format suitable for
-#'   \code{\link[=results-longcr]{to_longcr}}.
-#'
-#'   Argument \code{item} defines on which columns grouping is made for
+#' @details Argument \code{item} defines on which columns grouping is made for
 #'   computing item summary. Basically \code{get_item_summary} performes a
-#'   grouped apply of \code{summary_fun} to \code{cr_data}.
+#'   grouped by rows apply of \code{summary_fun} to \code{cr_data}.
 #'
 #'   \code{summary_fun} is a function that takes competition results of a
 #'   particular item (game, player, their combination, etc.) and produces named

@@ -1,17 +1,15 @@
 #' Add item summary to competition results
 #'
-#' This page describes function for adding item summary to competition results
-#' as columns.
+#' This page describes functions for adding item summary as columns to
+#' competition results.
 #'
-#' @param cr_data Competition results.
+#' @param cr_data Competition results in format ready for
+#'   \code{\link[=results-longcr]{to_longcr}}.
 #' @param item Character vector of columns to group by.
 #' @param summary_fun Function to compute item summary (see Details).
 #' @param ... Additional arguments to be passed to or from methods.
 #'
-#' @details \code{cr_data} should be in format suitable for
-#'   \code{\link[=results-longcr]{to_longcr}}.
-#'
-#'   If "game" is present in \code{item} but not in column names of
+#' @details If "game" is present in \code{item} but not in column names of
 #'   \code{cr_data} (which can occur in case of
 #'   \code{\link[=results-widecr]{widecr}} format) then every row is treated as
 #'   separate game results. In all other cases every entry of \code{item} should
