@@ -29,7 +29,7 @@ This rating method was initially designed for games between two
 
   Computation is done based only on the matchups between players in
   argument \code{players}. If \code{NULL} then all players present in
-  \code{cr_data} are used. \bold{Note} that it isn't necassary for all
+  \code{cr_data} are used. \bold{Note} that it isn't necessary for all
   entries in \code{players} to be present in \code{cr_pair} but it might be
   a good idea in order to obtain plausible outcome rating.
 

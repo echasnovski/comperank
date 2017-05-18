@@ -11,7 +11,7 @@ ncaa2005
 }
 \description{
 \code{ncaa2005} is an example competition results of an isolated group of
-Atlantic Coast Conference teams provided in Langville and Meyer book
-"Who's #1".
+Atlantic Coast Conference teams provided in book "Who's #1" by Langville and
+Meyer.
 }
 \keyword{datasets}

@@ -17,11 +17,11 @@
 #'   \code{cr_data}.
 #'
 #'   \bold{Note} that any column except \code{game}, \code{player} and
-#'   \code{score} will be dropped after convertion to
+#'   \code{score} will be dropped after conversion to
 #'   \code{\link[=results-longcr]{longcr}}.
 #'
 #'   \bold{Note} that in order for this function to work column \code{player}
-#'   after convertion to \code{\link[=results-longcr]{longcr}} should be
+#'   after conversion to \code{\link[=results-longcr]{longcr}} should be
 #'   comparable, i.e. function '<' can be used properly on its values (which is
 #'   true in most real-world cases).
 #'

@@ -15,7 +15,7 @@
 #' cases it is some numeric value).
 #'
 #' \code{widecr} inherits from \code{\link[=tbl_df]{tibble}}. Data should be
-#' orginized in pairs of columns "player"-"score". Identifier of a pair should
+#' organized in pairs of columns "player"-"score". Identifier of a pair should
 #' go after respective keyword and consist only from digits. For example:
 #' player1, score1, player2, score2. Order doesn't matter.
 #' Extra columns are allowed.
@@ -25,7 +25,7 @@
 #' player10, score10.
 #'
 #' Column \code{game} for game identifier is optional. If present it will
-#' be used in convertion to \code{longcr} format via \code{\link{to_longcr}}.
+#' be used in conversion to \code{longcr} format via \code{\link{to_longcr}}.
 #'
 #' @details \code{to_widecr} is S3 method for converting data to \code{widecr}.
 #' When using default method if \code{repair = TRUE} it tries to fix possible
@@ -33,9 +33,9 @@
 #' \itemize{
 #'   \item Detect columns with names containing "player" or "score".
 #'     All other columns are treated as "extra";
-#'   \item Extract first occurence of "player" or "score" from names of detected
-#'     columns. Everything after extracted word is treated as identifier of
-#'     "player"-"score" pair;
+#'   \item Extract first occurrence of "player" or "score" from names of
+#'     detected columns. Everything after extracted word is treated as
+#'     identifier of "player"-"score" pair;
 #'   \item Convert these identifiers to numeric form with
 #'     \code{as.integer(as.factor(...))};
 #'   \item Convert identifiers once again to character form with possible
@@ -50,10 +50,10 @@
 #' If \code{repair} is \code{FALSE} it converts \code{cr_data} to
 #' \code{\link[=tbl_df]{tibble}} and adds \code{widecr} class to it.
 #'
-#' When applying \code{to_widecr} to \code{longcr} object, convertion is made:
+#' When applying \code{to_widecr} to \code{longcr} object, conversion is made:
 #' \itemize{
 #'   \item All columns except "game", "player" and "score" are dropped;
-#'   \item Convertion from long to wide format is made. The number of
+#'   \item Conversion from long to wide format is made. The number of
 #'     "player"-"score" pairs is taken as the maximum number of players in game.
 #'     If not all games are played between the same number of players then there
 #'     will be \code{NA}'s in some pairs.

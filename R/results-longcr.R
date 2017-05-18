@@ -44,7 +44,7 @@
 #' If \code{repair} is \code{FALSE} it converts \code{cr_data} to
 #' \code{\link[=tbl_df]{tibble}} and adds \code{longcr} class to it.
 #'
-#' When applying \code{to_longcr} to \code{widecr} object, convertion is made:
+#' When applying \code{to_longcr} to \code{widecr} object, conversion is made:
 #' \itemize{
 #'   \item If there is column \code{game} then it is used as game identifier.
 #'     Else treat every row as separate game data;
@@ -52,7 +52,7 @@
 #'     row with adding the appropriate extra columns;
 #'   \item Result is arranged by \code{game} and \code{player} in increasing
 #'     order;
-#'   \item If \code{repair} is \code{TRUE} then repairment is done as in
+#'   \item If \code{repair} is \code{TRUE} then repair is done as in
 #'     \code{to_longcr.default}.
 #' }
 #'

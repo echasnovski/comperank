@@ -32,7 +32,7 @@
 #' }
 #' \bold{Note} that matchups are not symmetrical: matchup "player1"-"player2"
 #' is considered different from "player2"-"player1" in order to except more
-#' advanced, not simmetrical Head-to-Head values.
+#' advanced, not symmetrical Head-to-Head values.
 #'
 #' @examples
 #' cr_data <- data.frame(
@@ -44,8 +44,8 @@
 #' get_cr_matchups(cr_data)
 #'
 #' @seealso \link{head-to-head} Abstract computing of Head-to-Head matrices.
-#' @seealso \link{head-to-head-functions} Specific functions for computing.
-#'   Head-to-Head matrices
+#' @seealso \link{head-to-head-functions} Specific functions for computing
+#'   Head-to-Head matrices.
 #' @name head-to-head-helpers
 NULL
 

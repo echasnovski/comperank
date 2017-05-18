@@ -33,15 +33,16 @@ All \code{summary_fun}s return a named vector of item summaries
   implemented \code{summary_fun}s:
 \describe{
   \item{summary_mean_sd_score}{Returns a vector:
-    "meanScore" - mean score; "sdScore" - standard deviation of scores;}
+    \code{meanScore} - mean score;
+    \code{sdScore} - standard deviation of scores;}
   \item{summary_min_max_score}{Returns a vector:
-    "minScore" - minimum score; "maxScore" - maximum score;}
+    \code{minScore} - minimum score; \code{maxScore} - maximum score;}
   \item{summary_sum_score}{Returns a vector:
-    "sumScore" - sum of all present scores;}
+    \code{sumScore} - sum of all present scores;}
   \item{summary_num_games}{Returns a vector:
-    "numGames" - number of unique games;}
+    \code{numGames} - number of unique games;}
   \item{summary_num_players}{Returns a vector:
-    "numPlayers" - number of unique players.}
+    \code{numPlayers} - number of unique players.}
 }
 }
 \description{

@@ -16,7 +16,7 @@
 #' confrontation between two players. It is assumed that this value can be
 #' computed based only on the players' scores in their common games. If it is
 #' not true for some case then competition results should be changed by
-#' transofrmation or addition of more information (in form of extra columns or
+#' transformation or addition of more information (in form of extra columns or
 #' extra field in \code{score} column making it a list-column).
 #'
 #' \code{get_h2h} performs computation of Head-to-Head matrix: square matrix
@@ -47,7 +47,7 @@
 #'
 #'     \bold{Note} that order of the players in matchups matters. So, for
 #'     example, matchup "player1"-"player2" is considered different from
-#'     "player2"-"player1" in order to except more advanced, not simmetrical
+#'     "player2"-"player1" in order to except more advanced, not symmetrical
 #'     Head-to-Head values.
 #'
 #'     For absent in \code{cr_data} matchups \code{NA_real_}s are produced;
@@ -92,7 +92,8 @@
 #' )
 #'
 #' @seealso \link{head-to-head-helpers} Head-to-Head helpers.
-#' @seealso \link{head-to-head-functions} Specific functions for computing.
+#' @seealso \link{head-to-head-functions} Specific functions for computing
+#'   Head-to-Head matrices.
 #' @name head-to-head
 NULL
 
