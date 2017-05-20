@@ -109,7 +109,7 @@ to_longcr.widecr <- function(cr_data, repair = TRUE, ...) {
   }
 
   if (!("game" %in% colnames(cr_data))) {
-    cr_data$game <- 1:nrow(cr_data)
+    cr_data$game <- seq_len(nrow(cr_data))
   }
 
   column_info <-

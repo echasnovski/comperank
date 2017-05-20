@@ -67,7 +67,7 @@ add_item_summary <- function(cr_data, item, summary_fun = NULL, ...) {
 
   need_repair_game <- ("game" %in% item) && !("game" %in% colnames(cr_data))
   if (need_repair_game) {
-    cr_data$game <- 1:nrow(cr_data)
+    cr_data$game <- seq_len(nrow(cr_data))
   }
 
   item_summary <-

@@ -76,7 +76,7 @@ test_that("to_widecr.default handles simple repairing", {
 
 test_that("to_widecr.default throws an error if no column is matched", {
   input_bad_colnames <- input_1
-  colnames(input_bad_colnames) <- 1:ncol(input_bad_colnames)
+  colnames(input_bad_colnames) <- seq_len(ncol(input_bad_colnames))
 
   expect_warning(to_widecr(input_bad_colnames, repair = TRUE),
                  "Neither 'player' nor 'score' columns are detected.")

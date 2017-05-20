@@ -8,8 +8,10 @@ Depends: R (>= 3.4.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/echasnovski/comperank
+BugReports: https://github.com/echasnovski/comperank/issues
 RoxygenNote: 6.0.1
-Imports: dplyr,
-    tidyr
+Imports: dplyr (>= 0.5.0),
+    tidyr (>= 0.6.1)
 Suggests: testthat,
     covr
