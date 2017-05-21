@@ -57,6 +57,12 @@ test_that("is_widecr returns FALSE on non-digit pair identifier", {
   expect_false(is_widecr(output_2))
 })
 
+test_that("is_widecr handles data with no 'player' or 'score' columns", {
+  input_nocols <- dplyr::tbl_df(data.frame(x = 1:10))
+  input_nocols <- add_class(input_nocols, "widecr")
+  expect_false(is_widecr(input_nocols))
+})
+
 
 # to_widecr.default -------------------------------------------------------
 test_that("to_widecr.default handles simple repairing", {

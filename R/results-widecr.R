@@ -92,8 +92,15 @@ is_widecr <- function(cr_data) {
   }
   names_cr <- tolower(colnames(cr_data))
   names_df <- data.frame(
-    name = names_cr[grepl("player|score", x = names_cr)]
-  ) %>%
+    name = names_cr[grepl("player|score", x = names_cr)],
+    stringsAsFactors = FALSE
+  )
+
+  if (nrow(names_df) == 0) {
+    return(FALSE)
+  }
+
+  names_df <- names_df %>%
     extract_(col = "name", into = c("group", "id"),
              regex = ".*(player|score)([0-9]+)",
              remove = TRUE) %>%
@@ -109,6 +116,7 @@ is_widecr <- function(cr_data) {
       levels(names_df$name)
     )
 }
+
 
 #' @rdname results-widecr
 #' @export
