@@ -40,6 +40,9 @@
 #' @return Named vector of the Massey rating. The sum of all ratings should be
 #'   equal to 0.
 #'
+#' @references Kenneth Massey (1997) \emph{Statistical models applied to the
+#'   rating of sports teams}. Bachelor’s thesis, Bluefield College.
+#'
 #' @examples rate_massey(ncaa2005)
 #' rate_massey(ncaa2005, players = c("UNC", "Duke", "Miami", "UVA", "VT"))
 #' rate_massey(ncaa2005, players = c("UNC", "Miami", "UVA", "VT"))

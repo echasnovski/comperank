@@ -57,3 +57,7 @@ rate_massey(ncaa2005, players = c("UNC", "Duke", "Miami", "UVA", "VT"))
 rate_massey(ncaa2005, players = c("UNC", "Miami", "UVA", "VT"))
 
 }
+\references{
+Kenneth Massey (1997) \emph{Statistical models applied to the
+  rating of sports teams}. Bachelor’s thesis, Bluefield College.
+}

@@ -33,6 +33,10 @@
 #'
 #' @return Named vector of the Colley rating. The mean rating should be 0.5.
 #'
+#' @references Wesley N. Colley (2002) \emph{Colley’s Bias Free College Football
+#'   Ranking Method: The Colley Matrix Explained}. Available online at
+#'   \url{http://www.colleyrankings.com}
+#'
 #' @examples rate_colley(ncaa2005)
 #' rate_colley(ncaa2005, players = c("UNC", "Duke", "Miami", "UVA", "VT"))
 #' rate_colley(ncaa2005, players = c("UNC", "Miami", "UVA", "VT"))
