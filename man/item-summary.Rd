@@ -41,8 +41,8 @@ present in competition results.
 }
 \details{
 Argument \code{item} defines on which columns grouping is made for
-  computing item summary. Basically \code{get_item_summary} performs a
-  grouped by rows apply of \code{summary_fun} to \code{cr_data}.
+  computing item summary. Basically \code{get_item_summary} applies
+  \code{summary_fun} to groups of \code{cr_data} defined by \code{item}.
 
   \code{summary_fun} is a function that takes competition results of a
   particular item (game, player, their combination, etc.) and produces named
