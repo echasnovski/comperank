@@ -6,7 +6,7 @@
 \title{Compute Head-to-Head matrix}
 \usage{
 get_h2h(cr_data, h2h_fun, players = NULL, absent_players = players_drop,
-  absent_h2h = fill_h2h, ...)
+  absent_h2h = fill_h2h, transpose = FALSE, ...)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
@@ -21,6 +21,8 @@ dealing with players which absent in \code{cr_data}.}
 
 \item{absent_h2h}{Function which performs actions on Head-to-Head matrix
 dealing with absent Head-to-Head records for some pairs of players.}
+
+\item{transpose}{Whether to transpose Head-to-Head matrix.}
 
 \item{...}{Additional arguments to be passed to or from methods.}
 }
@@ -81,7 +83,10 @@ The following algorithm is used:
   \item Perform actions via \code{absent_h2h}. It should do something with
     those entries of Head-to-Head matrix which are \code{NA}. For no actions
     use \code{\link{skip_action}}. For other options see
-    \link{head-to-head-helpers}.
+    \link{head-to-head-helpers};
+  \item If \code{transpose} is \code{TRUE} do transposition of Head-to-Head
+    matrix. This option is added to minimize the need in almost duplicated
+    \code{h2h_fun}s.
 }
 
 If argument \code{players} is \code{NULL} then Head-to-Head matrix is
