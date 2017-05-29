@@ -119,12 +119,12 @@ to_longcr.widecr <- function(cr_data, repair = TRUE, ...) {
     ) %>%
     extract_(col = "name", into = c("group", "pair"),
              regex = "(player|score)([0-9]+)", remove = FALSE) %>%
-    arrange_("pair", "group")
+    arrange(.data$pair, .data$group)
 
   extra_columns <- column_info %>%
-    filter_(.dots = list(
-      ~ name != "game", ~ !(group %in% c("player", "score"))
-    )) %>%
+    filter(.data$name != "game",
+      !(.data$group %in% c("player", "score"))
+    ) %>%
     "$"("name")
 
   res <- split(column_info, column_info$pair) %>%
@@ -133,10 +133,10 @@ to_longcr.widecr <- function(cr_data, repair = TRUE, ...) {
       names(pair_names) <- pair_info$group
 
       cr_data %>%
-        select_(.dots = as.list(c("game", pair_names, extra_columns)))
+        select(rlang::UQS(rlang::syms(c("game", pair_names, extra_columns))))
     }) %>%
     bind_rows() %>%
-    arrange_("game", "player")
+    arrange(.data$game, .data$player)
 
   if (repair) {
     res <- repair_longcr(cr_data = res)
@@ -179,9 +179,8 @@ repair_longcr <- function(cr_data, ...) {
   assert_used_names(repair_info, prefix = "to_longcr: ")
 
   res <- renamecreate_columns(cr_data, repair_info, fill = NA_integer_) %>%
-    select_(.dots = list(
-      "game", "player", "score", ~ everything()
-    ))
+    select(.data$game, .data$player, .data$score,
+           everything())
 
   not_dupl_records <- (!duplicated(res[, c("game", "player")])) |
     is.na(res$game) | is.na(res$player)

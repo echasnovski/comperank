@@ -104,11 +104,11 @@ is_widecr <- function(cr_data) {
     extract_(col = "name", into = c("group", "id"),
              regex = ".*(player|score)([0-9]+)",
              remove = TRUE) %>%
-    mutate_(.dots = list(
-      group = ~ factor(group, levels = c("player", "score")),
-      id = ~ factor(id),
-      name = ~ interaction(group, id, sep = "")
-    ))
+    mutate(
+      group = factor(.data$group, levels = c("player", "score")),
+      id = factor(.data$id),
+      name = interaction(.data$group, .data$id, sep = "")
+    )
 
   (class(cr_data)[1] == "widecr") &&
     setequal(
@@ -142,29 +142,31 @@ to_widecr.longcr <- function(cr_data, repair = TRUE, ...) {
   }
 
   res <- cr_data %>%
-    select_("game", "player", "score") %>%
-    group_by_("game") %>%
-    mutate_(.dots = list(
-      to_widecr_id = ~ 1:n()
-    )) %>%
+    select(.data$game, .data$player, .data$score) %>%
+    group_by(.data$game) %>%
+    mutate(..in_game_id = seq_len(n())) %>%
     ungroup() %>%
-    mutate_(.dots = list(
-      to_widecr_id = ~ formatC(to_widecr_id,
-                               width = get_formatC_width(to_widecr_id),
-                               format = "d", flag = "0")
-    ))
-  res <- split(res, res$to_widecr_id) %>%
+    mutate(
+      ..in_game_id = formatC(.data[["..in_game_id"]],
+                           width = get_formatC_width(.data[["..in_game_id"]]),
+                           format = "d", flag = "0")
+    )
+  res <- split(res, res[["..in_game_id"]]) %>%
     lapply(function(game_data) {
-      pair_id <- game_data$to_widecr_id[1]
+      pair_id <- game_data[["..in_game_id"]][1]
+      player_name <- paste0("player", pair_id)
+      score_name <- paste0("score", pair_id)
 
       game_data %>%
-        rename_(.dots = setNames(list("player", "score"),
-                                 paste0(c("player", "score"), pair_id))) %>%
-        select_(.dots = list(~ - to_widecr_id))
+        rename(
+          rlang::UQ(player_name) := .data$player,
+          rlang::UQ(score_name) := .data$score
+        ) %>%
+        select(-.data[["..in_game_id"]])
     }) %>%
     reduce_full_join(by = "game") %>%
-    arrange_("game") %>%
-    select_(.dots = list("game", ~ everything()))
+    arrange(.data$game) %>%
+    select(.data$game, everything())
 
   if (repair) {
     res <- repair_widecr(res)
@@ -191,7 +193,7 @@ repair_widecr <- function(cr_data, ...) {
     ) %>%
     extract_(col = "original", into = c("group", "pair"),
              regex = ".*(player|score)(.*)", remove = FALSE) %>%
-    filter_(.dots = list(~ group %in% c("player", "score")))
+    filter(.data$group %in% c("player", "score"))
 
   if (nrow(repair_info) == 0) {
     warning("Neither 'player' nor 'score' columns are detected.")
@@ -199,23 +201,25 @@ repair_widecr <- function(cr_data, ...) {
   }
 
   repair_info <- repair_info %>%
-    mutate_(.dots = list(
-      pair = ~ as.integer(factor(pair))
-    )) %>%
+    mutate(pair = as.integer(factor(.data$pair))) %>%
     complete_(cols = c("group", "pair")) %>%
-    mutate_(.dots = list(
-      pair = ~ formatC(pair, width = get_formatC_width(pair),
-                       format = "d", flag = "0")
-    )) %>%
-    arrange_("pair", "group") %>%
+    mutate(pair = formatC(.data$pair,
+                          width = get_formatC_width(.data$pair),
+                          format = "d", flag = "0")) %>%
+    arrange(.data$pair, .data$group) %>%
     unite_(col = "target", from = c("group", "pair"), sep = "")
 
-  res <- renamecreate_columns(cr_data, repair_info, fill = NA_integer_) %>%
-    select_(.dots = c(as.list(repair_info$target), list(~ everything())))
+  res <- renamecreate_columns(cr_data, repair_info, fill = NA_integer_)
 
   if ("game" %in% colnames(res)) {
     res <- res %>%
-      select_(.dots = list("game", ~ everything()))
+      select(.data$game,
+             rlang::UQS(rlang::syms(repair_info$target)),
+             everything())
+  } else {
+    res <- res %>%
+      select(rlang::UQS(rlang::syms(repair_info$target)),
+             everything())
   }
 
   res

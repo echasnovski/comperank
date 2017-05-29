@@ -90,7 +90,7 @@ get_cr_players <- function(cr_data, players = NULL, ...) {
 get_cr_matchups <- function(cr_data) {
   cr <- cr_data %>%
     to_longcr(repair = TRUE) %>%
-    select_("game", "player", "score")
+    select(.data$game, .data$player, .data$score)
 
   left_join(x = cr, y = cr, by = "game", suffix = c("1", "2"))
 }

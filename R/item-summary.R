@@ -69,13 +69,11 @@ get_item_summary <- function(cr_data, item, summary_fun = NULL, ...) {
     to_longcr(repair = TRUE)
 
   if (is.null(summary_fun)) {
-    res <- distinct_(cr, .dots = as.list(item))
+    res <- distinct(cr, rlang::UQS(rlang::syms(item)))
   } else {
     res <- cr %>%
-      group_by_(.dots = as.list(item)) %>%
-      do_({
-        ~ tbl_df(as.list(summary_fun(., ...)))
-      }) %>%
+      group_by(rlang::UQS(rlang::syms(item))) %>%
+      do(tbl_df(as.list(summary_fun(.data, ...)))) %>%
       ungroup()
   }
 

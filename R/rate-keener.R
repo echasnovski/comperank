@@ -134,10 +134,8 @@ skew_keener <- function(x, ...) {
 normalize_keener <- function(h2h_mat, cr_data, ...) {
   player_games_df <- cr_data %>%
     to_longcr(repair = TRUE) %>%
-    count_(vars = "player") %>%
-    filter_(.dots = list(
-      ~ player %in% rownames(h2h_mat)
-    ))
+    count(.data$player) %>%
+    filter(.data$player %in% rownames(h2h_mat))
 
   player_games <- rep(0, nrow(h2h_mat))
   names(player_games) <- rownames(h2h_mat)

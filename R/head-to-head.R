@@ -111,21 +111,22 @@ get_h2h <- function(cr_data, h2h_fun, players = NULL,
   players <- get_cr_players(cr_data = cr, players = players, ...)
 
   h2h_long <- get_cr_matchups(cr_data = cr) %>%
-    filter_(.dots = list(
-      ~ player1 %in% players, ~ player2 %in% players
-    )) %>%
-    group_by_("player1", "player2") %>%
-    do_(~ data.frame(h2hVal = h2h_fun(., ...))) %>%
+    filter(
+      .data$player1 %in% players,
+      .data$player2 %in% players
+    ) %>%
+    group_by(.data$player1, .data$player2) %>%
+    do(data.frame(h2hVal = h2h_fun(.data, ...))) %>%
     ungroup() %>%
-    mutate_(.dots = list(
-      player1 = ~ factor(player1, levels = players),
-      player2 = ~ factor(player2, levels = players)
-    )) %>%
+    mutate(
+      player1 = factor(.data$player1, levels = players),
+      player2 = factor(.data$player2, levels = players)
+    ) %>%
     complete_(cols = c("player1", "player2")) %>%
-    mutate_(.dots = list(
-      player1 = ~ as.character(player1),
-      player2 = ~ as.character(player2)
-    ))
+    mutate(
+      player1 = as.character(.data$player1),
+      player2 = as.character(.data$player2)
+    )
 
   players <- as.character(players)
   res <- matrix(NA_real_, nrow = length(players), ncol = length(players),

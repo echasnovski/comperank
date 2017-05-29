@@ -42,13 +42,9 @@
 to_pairgames <- function(cr_data) {
   cr_data %>%
     get_cr_matchups() %>%
-    group_by_("game") %>%
-    filter_(.dots = list(
-      ~ player1 < player2
-    )) %>%
+    group_by(.data$game) %>%
+    filter(.data$player1 < .data$player2) %>%
     ungroup() %>%
-    mutate_(.dots = list(
-      game = ~ 1:n()
-    )) %>%
+    mutate(game = 1:n()) %>%
     to_widecr(repair = FALSE)
 }

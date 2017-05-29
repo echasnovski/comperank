@@ -79,7 +79,7 @@ add_item_summary <- function(cr_data, item, summary_fun = NULL, ...) {
 
   if (need_repair_game) {
     res <- res %>%
-      select_(.dots = list(~ -game))
+      select(-.data$game)
   }
 
   res
