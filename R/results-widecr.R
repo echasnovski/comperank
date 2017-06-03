@@ -101,9 +101,11 @@ is_widecr <- function(cr_data) {
   }
 
   names_df <- names_df %>%
-    extract_(col = "name", into = c("group", "id"),
-             regex = ".*(player|score)([0-9]+)",
-             remove = TRUE) %>%
+    tidyr::extract_(
+      col = "name", into = c("group", "id"),
+      regex = ".*(player|score)([0-9]+)",
+      remove = TRUE
+    ) %>%
     mutate(
       group = factor(.data$group, levels = c("player", "score")),
       id = factor(.data$id),
@@ -191,8 +193,10 @@ repair_widecr <- function(cr_data, ...) {
       original = colnames(cr_data),
       stringsAsFactors = FALSE
     ) %>%
-    extract_(col = "original", into = c("group", "pair"),
-             regex = ".*(player|score)(.*)", remove = FALSE) %>%
+    tidyr::extract_(
+      col = "original", into = c("group", "pair"),
+      regex = ".*(player|score)(.*)", remove = FALSE
+    ) %>%
     filter(.data$group %in% c("player", "score"))
 
   if (nrow(repair_info) == 0) {
@@ -202,12 +206,12 @@ repair_widecr <- function(cr_data, ...) {
 
   repair_info <- repair_info %>%
     mutate(pair = as.integer(factor(.data$pair))) %>%
-    complete_(cols = c("group", "pair")) %>%
+    tidyr::complete_(cols = c("group", "pair")) %>%
     mutate(pair = formatC(.data$pair,
                           width = get_formatC_width(.data$pair),
                           format = "d", flag = "0")) %>%
     arrange(.data$pair, .data$group) %>%
-    unite_(col = "target", from = c("group", "pair"), sep = "")
+    tidyr::unite_(col = "target", from = c("group", "pair"), sep = "")
 
   res <- renamecreate_columns(cr_data, repair_info, fill = NA_integer_)
 

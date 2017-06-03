@@ -51,7 +51,7 @@ NULL
 #' @export
 summary_mean_sd_score <- function(cr_data, prefix = "", ...) {
   cr <- to_longcr(cr_data, repair = TRUE)
-  res <- c(mean(cr$score), sd(cr$score))
+  res <- c(mean(cr$score), stats::sd(cr$score))
   names(res) <- paste0(prefix, c("meanScore", "sdScore"))
 
   res
