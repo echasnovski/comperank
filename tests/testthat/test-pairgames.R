@@ -27,3 +27,10 @@ test_that("to_pairgames works", {
 
   expect_identical(to_pairgames(input), output)
 })
+
+
+# is_pairgames ------------------------------------------------------------
+test_that("is_pairgames works", {
+  expect_false(is_pairgames(input))
+  expect_true(is_pairgames(to_pairgames(input)))
+})

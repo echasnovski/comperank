@@ -1,11 +1,14 @@
-#' Convert competition results into pairgames
+#' Сompetition results with games between two players
 #'
-#' Function to convert competition results into games between two players.
+#' Functions for competition results with games between two players.
 #'
 #' @param cr_data Competition results in format ready for
 #'   \code{\link[=results-longcr]{to_longcr}}.
 #'
-#' @details \code{to_pairgames} is a function that converts competition results
+#' @details Pairgames is a term for competition results with games between two
+#'   players.
+#'
+#'   \code{to_pairgames} is a function that converts competition results
 #'   into pairwise games: it drops games with one player and for every game with
 #'   3 and more players this function transforms it into set of separate games
 #'   between unordered pairs of players. In other words the result is a set of
@@ -20,13 +23,16 @@
 #'   \code{score} will be dropped after conversion to
 #'   \code{\link[=results-longcr]{longcr}}.
 #'
-#'   \bold{Note} that in order for this function to work column \code{player}
+#'   \bold{Note} that in order for this function to work, column \code{player}
 #'   after conversion to \code{\link[=results-longcr]{longcr}} should be
 #'   comparable, i.e. function '<' can be used properly on its values (which is
 #'   true in most real-world cases).
 #'
-#' @return A competition results of pairwised games as
-#'   \link[=results-widecr]{widecr} object with two players.
+#' @return \code{to_pairgames} returns a competition results of pairwised games
+#'   as \link[=results-widecr]{widecr} object with two players.
+#'
+#'   \code{is_pairgames} returns a boolean value of whether \code{cr_data}
+#'   contains only games between two players.
 #'
 #' @examples
 #' cr_data <- data.frame(
@@ -37,7 +43,15 @@
 #' )
 #'
 #' to_pairgames(cr_data)
-#' @aliases pairgames
+#'
+#' # Checks
+#' is_pairgames(cr_data)
+#' is_pairgames(to_pairgames(cr_data))
+#'
+#' @name pairgames
+NULL
+
+#' @rdname pairgames
 #' @export
 to_pairgames <- function(cr_data) {
   cr_data %>%
@@ -47,4 +61,14 @@ to_pairgames <- function(cr_data) {
     ungroup() %>%
     mutate(game = 1:n()) %>%
     to_widecr(repair = FALSE)
+}
+
+#' @rdname pairgames
+#' @export
+is_pairgames <- function(cr_data) {
+  cr_data %>%
+    to_longcr(repair = TRUE) %>%
+    count(.data$game) %>%
+    summarise(isAllTwo = all(.data$n == 2)) %>%
+    "[["("isAllTwo")
 }
