@@ -95,3 +95,43 @@ assert_used_objects <- function(used, original, prefix = "",
 
   invisible(TRUE)
 }
+
+
+#' Convert between ratings as named vector and tibble
+#'
+#' Functions to convert between different forms of ratings.
+#'
+#' @param rating_vec Named vector of ratings.
+#' @param rating_tbl Tibble with columns 'player' and 'rating'.
+#'
+#' @return \code{to_rating_tbl} returns a \code{\link[=tbl_df]{tibble}} with
+#' two columns: 'player' and 'rating'.
+#'
+#' \code{to_rating_vec} returns named vector of ratings.
+#'
+#' @examples
+#' rating_vec <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)
+#' rating_tbl <- to_rating_tbl(rating_vec)
+#' rating_tbl
+#' to_rating_vec(rating_tbl)
+#'
+#' @name convert-rating
+NULL
+
+#' @rdname convert-rating
+#' @export
+to_rating_tbl <- function(rating_vec) {
+  tibble(
+    player = names(rating_vec),
+    rating = rating_vec
+  )
+}
+
+#' @rdname convert-rating
+#' @export
+to_rating_vec <- function(rating_tbl) {
+  res <- rating_tbl$rating
+  names(res) <- as.character(rating_tbl$player)
+
+  res
+}

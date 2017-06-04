@@ -110,3 +110,28 @@ test_that("assert_used_objects works", {
                                     data_name = "some data"))
 })
 
+
+# to_rating_tbl -----------------------------------------------------------
+test_that("to_rating_tbl works", {
+  input <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)
+  output <- dplyr::tbl_df(data.frame(
+    player = paste0("pl", 1:3),
+    rating = 10^(0:2),
+    stringsAsFactors = FALSE
+  ))
+
+  expect_equal(to_rating_tbl(input), output)
+})
+
+
+# to_rating_vec -----------------------------------------------------------
+test_that("to_rating_vec works", {
+  input <- dplyr::tbl_df(data.frame(
+    player = paste0("pl", 1:3),
+    rating = 10^(0:2),
+    stringsAsFactors = FALSE
+  ))
+  output <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)
+
+  expect_equal(to_rating_vec(input), output)
+})
