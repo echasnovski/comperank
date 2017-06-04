@@ -49,8 +49,10 @@
 #'
 #' @export
 rate_massey <- function(cr_data, players = NULL) {
-  cr <- to_longcr(cr_data, repair = TRUE) %>%
-    to_pairgames()
+  cr <- to_longcr(cr_data, repair = TRUE)
+  if (!is_pairgames(cr)) {
+    cr <- to_pairgames(cr)
+  }
 
   # Assert used players
   original_players <- get_cr_players(cr, players = NULL)

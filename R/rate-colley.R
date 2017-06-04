@@ -43,8 +43,10 @@
 #'
 #' @export
 rate_colley <- function(cr_data, players = NULL) {
-  cr <- to_longcr(cr_data, repair = TRUE) %>%
-    to_pairgames()
+  cr <- to_longcr(cr_data, repair = TRUE)
+  if (!is_pairgames(cr)) {
+    cr <- to_pairgames(cr)
+  }
 
   # Compute Colley ratings
   colley_mat <- - get_h2h(cr, h2h_num, players = players,
