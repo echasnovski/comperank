@@ -59,6 +59,15 @@ test_that("get_cr_players works", {
   expect_identical(get_cr_players(input, 21:10, extraArg = TRUE), 21:10)
 })
 
+test_that("get_cr_players handles NA values", {
+  input <- data.frame(
+    game = rep(1, 3),
+    player = c(1, NA, NaN),
+    score = 101:103
+  )
+  expect_equal(get_cr_players(input), c(NA, NaN, 1))
+})
+
 
 # get_cr_matchups ------------------------------------------------------------
 test_that("get_cr_matchups works", {

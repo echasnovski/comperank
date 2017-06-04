@@ -79,7 +79,8 @@ print.h2h <- function(x, ...) {
 #' @export
 get_cr_players <- function(cr_data, players = NULL, ...) {
   if (is.null(players)) {
-    players <- sort(unique(to_longcr(cr_data, repair = TRUE)$player))
+    players <- sort(unique(to_longcr(cr_data, repair = TRUE)$player),
+                    na.last = FALSE)
   }
 
   players
