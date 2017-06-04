@@ -23,10 +23,11 @@
 #'   \code{score} will be dropped after conversion to
 #'   \code{\link[=results-longcr]{longcr}}.
 #'
-#'   \bold{Note} that in order for this function to work, column \code{player}
-#'   after conversion to \code{\link[=results-longcr]{longcr}} should be
-#'   comparable, i.e. function '<' can be used properly on its values (which is
-#'   true in most real-world cases).
+#'   \bold{Note} that \code{NA} and \code{NaN} in \code{players} are allowed.
+#'   They are treated as different players.
+#'
+#'   \bold{Note} that \code{to_pairgames} is rather compute-intensive and can
+#'   take much time for competition results with many games.
 #'
 #' @return \code{to_pairgames} returns a competition results of pairwised games
 #'   as \link[=results-widecr]{widecr} object with two players.
@@ -44,6 +45,14 @@
 #'
 #' to_pairgames(cr_data)
 #'
+#' # Missing values
+#' cr_data_na <- data.frame(
+#'   game = rep(1L, 3),
+#'   player = c(1, NA, NA),
+#'   score = 1:3
+#' )
+#' to_pairgames(cr_data_na)
+#'
 #' # Checks
 #' is_pairgames(cr_data)
 #' is_pairgames(to_pairgames(cr_data))
@@ -54,14 +63,39 @@ NULL
 #' @rdname pairgames
 #' @export
 to_pairgames <- function(cr_data) {
-  cr_data %>%
-    get_cr_matchups() %>%
+  cr <- cr_data %>%
+    to_longcr(repair = TRUE)
+
+  multiple_players_games <- cr %>%
+    count(.data$game) %>%
+    filter(.data$n > 1)
+
+  # In raw pairgames game identifier is formed from 'game' and '..subGame'
+  raw_pairgames <- cr %>%
+    semi_join(y = multiple_players_games, by = "game") %>%
     group_by(.data$game) %>%
-    filter(.data$player1 < .data$player2) %>%
-    ungroup() %>%
-    mutate(game = 1:n()) %>%
+    do({
+      cr_pairs <- utils::combn(nrow(.data), 2)
+
+      .data %>%
+        slice(c(cr_pairs)) %>%
+        mutate(..subGame = rep(1:ncol(cr_pairs), each = 2))
+    }) %>%
+    ungroup()
+
+  # Compute new game identifiers
+  pairgames_ids <- raw_pairgames %>%
+    distinct(.data$game, .data[["..subGame"]]) %>%
+    mutate(..pairgameId = 1:n())
+
+  raw_pairgames %>%
+    left_join(y = pairgames_ids, by = c("game", "..subGame")) %>%
+    select(-.data$game, -.data[["..subGame"]]) %>%
+    select(game = .data$..pairgameId, everything()) %>%
+    to_longcr(repair = FALSE) %>%
     to_widecr(repair = FALSE)
 }
+
 
 #' @rdname pairgames
 #' @export

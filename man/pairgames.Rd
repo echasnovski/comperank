@@ -43,10 +43,11 @@ Pairgames is a term for competition results with games between two
   \code{score} will be dropped after conversion to
   \code{\link[=results-longcr]{longcr}}.
 
-  \bold{Note} that in order for this function to work, column \code{player}
-  after conversion to \code{\link[=results-longcr]{longcr}} should be
-  comparable, i.e. function '<' can be used properly on its values (which is
-  true in most real-world cases).
+  \bold{Note} that \code{NA} and \code{NaN} in \code{players} are allowed.
+  They are treated as different players.
+
+  \bold{Note} that \code{to_pairgames} is rather compute-intensive and can
+  take much time for competition results with many games.
 }
 \examples{
 cr_data <- data.frame(
@@ -57,6 +58,14 @@ cr_data <- data.frame(
 )
 
 to_pairgames(cr_data)
+
+# Missing values
+cr_data_na <- data.frame(
+  game = rep(1L, 3),
+  player = c(1, NA, NA),
+  score = 1:3
+)
+to_pairgames(cr_data_na)
 
 # Checks
 is_pairgames(cr_data)
