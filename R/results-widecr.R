@@ -5,6 +5,7 @@
 #' @param cr_data Data of competition results (convertable to tabular).
 #' @param repair Whether to repair input.
 #' @param ... Additional arguments to be passed to or from methods.
+#' @param x An object to print.
 #'
 #' @section Wide format of competition results:
 #' It is assumed that competition consists from multiple games (matches,
@@ -227,4 +228,12 @@ repair_widecr <- function(cr_data, ...) {
   }
 
   res
+}
+
+#' @rdname results-widecr
+#' @export
+print.widecr <- function(x, ...) {
+  cat("# A widecr object:\n")
+  class(x) <- class(x)[-1]
+  print(x, ...)
 }

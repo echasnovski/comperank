@@ -4,11 +4,14 @@
 \alias{results-longcr}
 \alias{is_longcr}
 \alias{to_longcr}
+\alias{print.longcr}
 \title{Long format of competition results}
 \usage{
 is_longcr(cr_data)
 
 to_longcr(cr_data, repair = TRUE, ...)
+
+\method{print}{longcr}(x, ...)
 }
 \arguments{
 \item{cr_data}{Data of competition results (convertable to tabular).}
@@ -16,6 +19,8 @@ to_longcr(cr_data, repair = TRUE, ...)
 \item{repair}{Whether to repair input.}
 
 \item{...}{Additional arguments to be passed to or from methods.}
+
+\item{x}{An object to print.}
 }
 \value{
 \code{is_longcr} returns TRUE if its argument is appropriate object

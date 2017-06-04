@@ -4,11 +4,14 @@
 \alias{results-widecr}
 \alias{is_widecr}
 \alias{to_widecr}
+\alias{print.widecr}
 \title{Wide format of competition results}
 \usage{
 is_widecr(cr_data)
 
 to_widecr(cr_data, repair = TRUE, ...)
+
+\method{print}{widecr}(x, ...)
 }
 \arguments{
 \item{cr_data}{Data of competition results (convertable to tabular).}
@@ -16,6 +19,8 @@ to_widecr(cr_data, repair = TRUE, ...)
 \item{repair}{Whether to repair input.}
 
 \item{...}{Additional arguments to be passed to or from methods.}
+
+\item{x}{An object to print.}
 }
 \value{
 \code{is_widecr} returns TRUE if its argument is appropriate object

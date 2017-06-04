@@ -279,3 +279,10 @@ test_that("to_longcr.longcr works", {
   class(to_longcr_res) <- "longcr"
   expect_error(to_longcr(to_longcr_res, repair = TRUE), "not.*longcr")
 })
+
+
+# print.longcr ------------------------------------------------------------
+test_that("print.longcr works", {
+  expect_output(print(to_longcr(input_good)),
+                "# A longcr object:\n# A tibble")
+})

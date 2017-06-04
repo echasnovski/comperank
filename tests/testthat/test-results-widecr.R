@@ -317,3 +317,10 @@ test_that("to_widecr.widecr works", {
   class(to_widecr_res) <- "widecr"
   expect_error(to_widecr(to_widecr_res, repair = TRUE), "not.*widecr")
 })
+
+
+# print.widecr ------------------------------------------------------------
+test_that("print.widecr works", {
+  expect_output(print(to_widecr(input_good)),
+                "# A widecr object:\n# A tibble")
+})
