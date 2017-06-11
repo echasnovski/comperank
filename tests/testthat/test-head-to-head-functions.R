@@ -14,11 +14,18 @@ matchup_data <- get_cr_matchups(cr_data)
 # h2h_mean_score_diff -----------------------------------------------------
 test_that("h2h_mean_score_diff works", {
   expect_equal(h2h_mean_score_diff(matchup_data), 0)
+  expect_equal(h2h_mean_score_diff(matchup_data[c(2, 6), ]), 1)
 
-  matchup_data_1 <- matchup_data[c(2, 6), ]
-  expect_equal(h2h_mean_score_diff(matchup_data_1), 1)
+  expect_silent(h2h_mean_score_diff(matchup_data, extraArg = TRUE))
+})
 
-  expect_silent(h2h_mean_score_diff(matchup_data_1, extraArg = TRUE))
+
+# h2h_mean_score_diff_pos -------------------------------------------------
+test_that("h2h_mean_score_diff_pos works", {
+  expect_equal(h2h_mean_score_diff_pos(matchup_data[c(2, 6), ]), 1)
+  expect_equal(h2h_mean_score_diff_pos(matchup_data[c(3, 7), ]), 0)
+
+  expect_silent(h2h_mean_score_diff_pos(matchup_data, extraArg = TRUE))
 })
 
 
@@ -42,14 +49,21 @@ test_that("h2h_sum_score_diff works", {
 })
 
 
+# h2h_sum_score_diff_pos --------------------------------------------------
+test_that("h2h_sum_score_diff_pos works", {
+  expect_equal(h2h_sum_score_diff_pos(matchup_data[c(2, 6), ]), 2)
+  expect_equal(h2h_sum_score_diff_pos(matchup_data[c(3, 7), ]), 0)
+
+  expect_silent(h2h_sum_score_diff_pos(matchup_data, extraArg = TRUE))
+})
+
+
 # h2h_sum_score -----------------------------------------------------------
 test_that("h2h_sum_score works", {
   expect_equal(h2h_sum_score(matchup_data), sum(matchup_data$score2))
+  expect_equal(h2h_sum_score(matchup_data[c(2, 6), ]), 66)
 
-  matchup_data_1 <- matchup_data[c(2, 6), ]
-  expect_equal(h2h_sum_score(matchup_data_1), 66)
-
-  expect_silent(h2h_sum_score(matchup_data_1, extraArg = TRUE))
+  expect_silent(h2h_sum_score(matchup_data, extraArg = TRUE))
 })
 
 

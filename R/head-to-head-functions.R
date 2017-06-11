@@ -12,9 +12,15 @@
 #' \describe{
 #'   \item{h2h_mean_score_diff}{Computes mean score difference of \code{player2}
 #'     compared to \code{player1};}
+#'   \item{h2h_mean_score_diff_pos}{Equivalent to \code{h2h_mean_score_diff}
+#'     but returns 0 if result is negative;}
 #'   \item{h2h_mean_score}{Computes mean score of \code{player2};}
 #'   \item{h2h_sum_score_diff}{Computes sum of score differences of
 #'     \code{player2} compared to \code{player1};}
+#'   \item{h2h_sum_score_diff_pos}{Equivalent to \code{h2h_sum_score_diff}
+#'     but returns 0 if result is negative;}
+#'   \item{h2h_mean_score_diff_pos}{Equivalent to \code{h2h_mean_score_diff}
+#'     but returns 0 if result is negative;}
 #'   \item{h2h_sum_score}{Computes sum of scores of \code{player2};}
 #'   \item{h2h_num_wins}{Computes number of matchups \code{player2} scored
 #'     \bold{more} than \code{player1}. If \code{half_for_draw} is \code{TRUE}
@@ -56,6 +62,12 @@ h2h_mean_score_diff <- function(matchup_data, ...) {
 
 #' @rdname head-to-head-functions
 #' @export
+h2h_mean_score_diff_pos <- function(matchup_data, ...) {
+  max(mean(matchup_data$score2 - matchup_data$score1), 0)
+}
+
+#' @rdname head-to-head-functions
+#' @export
 h2h_mean_score <- function(matchup_data, ...) {
   mean(matchup_data$score2)
 }
@@ -64,6 +76,12 @@ h2h_mean_score <- function(matchup_data, ...) {
 #' @export
 h2h_sum_score_diff <- function(matchup_data, ...) {
   sum(matchup_data$score2 - matchup_data$score1)
+}
+
+#' @rdname head-to-head-functions
+#' @export
+h2h_sum_score_diff_pos <- function(matchup_data, ...) {
+  max(sum(matchup_data$score2 - matchup_data$score1), 0)
 }
 
 #' @rdname head-to-head-functions

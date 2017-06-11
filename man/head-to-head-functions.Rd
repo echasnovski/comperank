@@ -3,8 +3,10 @@
 \name{head-to-head-functions}
 \alias{head-to-head-functions}
 \alias{h2h_mean_score_diff}
+\alias{h2h_mean_score_diff_pos}
 \alias{h2h_mean_score}
 \alias{h2h_sum_score_diff}
+\alias{h2h_sum_score_diff_pos}
 \alias{h2h_sum_score}
 \alias{h2h_num_wins}
 \alias{h2h_num}
@@ -12,9 +14,13 @@
 \usage{
 h2h_mean_score_diff(matchup_data, ...)
 
+h2h_mean_score_diff_pos(matchup_data, ...)
+
 h2h_mean_score(matchup_data, ...)
 
 h2h_sum_score_diff(matchup_data, ...)
+
+h2h_sum_score_diff_pos(matchup_data, ...)
 
 h2h_sum_score(matchup_data, ...)
 
@@ -43,9 +49,15 @@ This is a list of currently implemented \code{h2h_fun}s:
 \describe{
   \item{h2h_mean_score_diff}{Computes mean score difference of \code{player2}
     compared to \code{player1};}
+  \item{h2h_mean_score_diff_pos}{Equivalent to \code{h2h_mean_score_diff}
+    but returns 0 if result is negative;}
   \item{h2h_mean_score}{Computes mean score of \code{player2};}
   \item{h2h_sum_score_diff}{Computes sum of score differences of
     \code{player2} compared to \code{player1};}
+  \item{h2h_sum_score_diff_pos}{Equivalent to \code{h2h_sum_score_diff}
+    but returns 0 if result is negative;}
+  \item{h2h_mean_score_diff_pos}{Equivalent to \code{h2h_mean_score_diff}
+    but returns 0 if result is negative;}
   \item{h2h_sum_score}{Computes sum of scores of \code{player2};}
   \item{h2h_num_wins}{Computes number of matchups \code{player2} scored
     \bold{more} than \code{player1}. If \code{half_for_draw} is \code{TRUE}
