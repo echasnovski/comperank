@@ -78,24 +78,5 @@ test_that("normilize_keener handles extra arguments", {
   expect_silent(normalize_keener(h2h_mat, ncaa2005, extraArg = TRUE))
 })
 
-# get_pf_vec --------------------------------------------------------------
-test_that("get_pf_vec works", {
-  mat_bad <- matrix(c(1, -1, 1, 1), nrow = 2)
-  expect_error(get_pf_vec(mat_bad), "wrong.*Perron-Frobenius")
-
-  mat <- matrix(
-    c(8.75,   13,    6,  9.5, 11.25,
-      1.75, 34.5,    4, 4.25,  1.75,
-      5.25,  8.5, 12.5, 1.25,   7.5,
-      1.75, 6.25, 1.75, 18.5,    13,
-      0,    6.75, 0.75,  3.5,  33.5),
-    byrow = TRUE, nrow = 5
-  )
-  output_ref <- c(0.22469302509596, 0.222939414684547, 0.154163462172164,
-                  0.186664590660501, 0.211539507386828)
-
-  expect_equal(get_pf_vec(mat), output_ref)
-})
-
 
 

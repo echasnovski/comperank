@@ -151,25 +151,3 @@ normalize_keener <- function(h2h_mat, cr_data, ...) {
 
   h2h_mat / player_games
 }
-
-get_pf_vec <- function(mat) {
-  mat_eigen_data <- eigen(mat)
-
-  max_eigenvalue_ind <- which.max(abs(mat_eigen_data$value))
-  fp_val <- mat_eigen_data$value[max_eigenvalue_ind]
-
-  fp_vec <- mat_eigen_data$vectors[, max_eigenvalue_ind]
-  fp_vec <- fp_vec * sign(Re(fp_vec[1]))
-
-  is_value_real <- isTRUE(all.equal(Im(fp_val), 0))
-  is_value_pos <- Re(fp_val) > 0
-  is_all_real <- isTRUE(all.equal(Im(fp_vec), rep(0, length(fp_vec))))
-  is_all_pos <- all(Re(fp_vec) > 0)
-
-  if (!(is_value_real && is_value_pos && is_all_real && is_all_pos)) {
-    stop("Something is wrong with application of Perron-Frobenius theorem.")
-  }
-  fp_vec <- Re(fp_vec)
-
-  fp_vec / sum(fp_vec)
-}
