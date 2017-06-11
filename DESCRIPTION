@@ -20,5 +20,4 @@ Suggests: testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-Remotes: tidyverse/dplyr
 LinkingTo: Rcpp
