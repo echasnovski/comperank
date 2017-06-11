@@ -8,7 +8,7 @@
 #' @param ksi Normalization coefficient for Elo formula.
 #' @param players Vector of players for which rating is computed.
 #' @param initial_ratings Initial ratings (see
-#'   \link[=rate-iterative]{Iterative ratings}).
+#'   \link[=iterative]{Iterative ratings}).
 #' @param rating1 Rating of player1 before the game.
 #' @param score1 Score of player1 in the game.
 #' @param rating2 Rating of player2 before the game.
@@ -68,10 +68,10 @@
 #' elo((0:12)*100, 1, 0, 0, K = 10)
 #' elo((0:12)*10, 1, 0, 0, ksi = 40)
 #'
-#' @name rate-elo
+#' @name elo
 NULL
 
-#' @rdname rate-elo
+#' @rdname elo
 #' @export
 rate_elo <- function(cr_data, K = 30, ksi = 400,
                      players = NULL, initial_ratings = 0) {
@@ -83,7 +83,7 @@ rate_elo <- function(cr_data, K = 30, ksi = 400,
   )
 }
 
-#' @rdname rate-elo
+#' @rdname elo
 #' @export
 add_elo_ratings <- function(cr_data, K = 30, ksi = 400,
                             players = NULL, initial_ratings = 0) {
@@ -95,7 +95,7 @@ add_elo_ratings <- function(cr_data, K = 30, ksi = 400,
   )
 }
 
-#' @rdname rate-elo
+#' @rdname elo
 #' @export
 elo <- function(rating1, score1, rating2, score2, K = 30, ksi = 400) {
   prob_win1 <- 1 / (1 + 10^((rating2 - rating1) / ksi))

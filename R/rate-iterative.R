@@ -86,10 +86,10 @@
 #' # Ratings at the end of competition results.
 #' rate_iterative(cr_data, test_rate_fun)
 #'
-#' @name rate-iterative
+#' @name iterative
 NULL
 
-#' @rdname rate-iterative
+#' @rdname iterative
 #' @export
 rate_iterative <- function(cr_data, rate_fun, players = NULL,
                            initial_ratings = 0) {
@@ -116,7 +116,7 @@ rate_iterative <- function(cr_data, rate_fun, players = NULL,
     to_rating_vec()
 }
 
-#' @rdname rate-iterative
+#' @rdname iterative
 #' @export
 add_iterative_ratings <-
   function(cr_data, rate_fun, players = NULL, initial_ratings = 0) {

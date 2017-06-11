@@ -41,6 +41,8 @@
 #' rate_colley(ncaa2005, players = c("UNC", "Duke", "Miami", "UVA", "VT"))
 #' rate_colley(ncaa2005, players = c("UNC", "Miami", "UVA", "VT"))
 #'
+#' @aliases colley
+#'
 #' @export
 rate_colley <- function(cr_data, players = NULL) {
   cr <- to_longcr(cr_data, repair = TRUE)

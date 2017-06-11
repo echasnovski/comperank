@@ -47,6 +47,8 @@
 #' rate_massey(ncaa2005, players = c("UNC", "Duke", "Miami", "UVA", "VT"))
 #' rate_massey(ncaa2005, players = c("UNC", "Miami", "UVA", "VT"))
 #'
+#' @aliases massey
+#'
 #' @export
 rate_massey <- function(cr_data, players = NULL) {
   cr <- to_longcr(cr_data, repair = TRUE)

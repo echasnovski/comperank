@@ -2,6 +2,7 @@
 % Please edit documentation in R/rate-colley.R
 \name{rate_colley}
 \alias{rate_colley}
+\alias{colley}
 \title{Colley rating}
 \usage{
 rate_colley(cr_data, players = NULL)

@@ -2,6 +2,7 @@
 % Please edit documentation in R/rate-massey.R
 \name{rate_massey}
 \alias{rate_massey}
+\alias{massey}
 \title{Massey rating}
 \usage{
 rate_massey(cr_data, players = NULL)
