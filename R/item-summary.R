@@ -77,7 +77,7 @@ get_item_summary <- function(cr_data, item, summary_fun = NULL, ...) {
       ungroup()
   }
 
-  class(res) <- class(dplyr::as_tibble())
+  class(res) <- class(dplyr::tibble())
 
   res
 }

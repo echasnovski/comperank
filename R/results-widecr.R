@@ -174,7 +174,7 @@ to_widecr.longcr <- function(cr_data, repair = TRUE, ...) {
   if (repair) {
     res <- repair_widecr(res)
   }
-  class(res) <- c("widecr", "tbl_df", "tbl", "data.frame")
+  class(res) <- c("widecr", class(dplyr::tibble()))
 
   res
 }

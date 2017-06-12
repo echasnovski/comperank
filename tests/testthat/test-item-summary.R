@@ -28,7 +28,7 @@ test_that("get_item_summary works with not NULL summary_fun", {
       meanScore = seq(from = 31.5, to = 69.5, by = 2),
       sdScore = rep(0.707106781186548, 20)
     ),
-    class = c("tbl_df", "tbl", "data.frame"),
+    class = class(dplyr::tibble()),
     row.names = c(NA, -20L),
     .Names = c("game", "meanScore", "sdScore")
   )
@@ -52,7 +52,7 @@ test_that("get_item_summary works with multiple items", {
       meanScore = c(36:45, 56:65),
       sdScore = rep(7.07106781186548, 20)
     ),
-    class = c("tbl_df", "tbl", "data.frame"),
+    class = class(dplyr::tibble()),
     row.names = c(NA, -20L),
     .Names = c("season", "player", "meanScore", "sdScore")
   )
