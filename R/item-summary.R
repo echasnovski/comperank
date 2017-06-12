@@ -24,7 +24,7 @@
 #'   \code{prefix} as extra argument.
 #'
 #' @return If \code{summary_fun} is \code{NULL} then \code{get_item_summary}
-#'   returns a \code{\link[=tbl_df]{tibble}} with columns named as stored in
+#'   returns a \code{\link[dplyr]{tibble}} with columns named as stored in
 #'   argument \code{item} and which has all unique values of particular item
 #'   in \code{cr_data}. If not \code{NULL} then there will be extra columns for
 #'   every summary value that \code{summary_fun} produces.
@@ -73,11 +73,11 @@ get_item_summary <- function(cr_data, item, summary_fun = NULL, ...) {
   } else {
     res <- cr %>%
       group_by(rlang::UQS(rlang::syms(item))) %>%
-      do(tbl_df(as.list(summary_fun(.data, ...)))) %>%
+      do(dplyr::as_tibble(as.list(summary_fun(.data, ...)))) %>%
       ungroup()
   }
 
-  class(res) <- class(tbl_df(data.frame()))
+  class(res) <- class(dplyr::as_tibble())
 
   res
 }

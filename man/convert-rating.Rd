@@ -16,7 +16,7 @@ to_rating_vec(rating_tbl)
 \item{rating_tbl}{Tibble with columns 'player' and 'rating'.}
 }
 \value{
-\code{to_rating_tbl} returns a \code{\link[=tbl_df]{tibble}} with
+\code{to_rating_tbl} returns a \code{\link[dplyr]{tibble}} with
 two columns: 'player' and 'rating'.
 
 \code{to_rating_vec} returns named vector of ratings.

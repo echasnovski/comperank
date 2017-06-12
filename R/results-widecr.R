@@ -15,7 +15,7 @@
 #' that fully characterizes player's performance in particular game (in most
 #' cases it is some numeric value).
 #'
-#' \code{widecr} inherits from \code{\link[=tbl_df]{tibble}}. Data should be
+#' \code{widecr} inherits from \code{\link[dplyr]{tibble}}. Data should be
 #' organized in pairs of columns "player"-"score". Identifier of a pair should
 #' go after respective keyword and consist only from digits. For example:
 #' player1, score1, player2, score2. Order doesn't matter.
@@ -49,7 +49,7 @@
 #' Note that the order (and numeration) of pairs can change.
 #'
 #' If \code{repair} is \code{FALSE} it converts \code{cr_data} to
-#' \code{\link[=tbl_df]{tibble}} and adds \code{widecr} class to it.
+#' \code{\link[dplyr]{tibble}} and adds \code{widecr} class to it.
 #'
 #' When applying \code{to_widecr} to \code{longcr} object, conversion is made:
 #' \itemize{
@@ -129,7 +129,7 @@ to_widecr <- function(cr_data, repair = TRUE, ...) {
 
 #' @export
 to_widecr.default <- function(cr_data, repair = TRUE, ...) {
-  res <- dplyr::tbl_df(cr_data)
+  res <- dplyr::as_tibble(cr_data)
   if (repair) {
     res <- repair_widecr(res, ...)
   }

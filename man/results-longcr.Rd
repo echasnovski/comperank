@@ -48,7 +48,7 @@ to fix possible problems with the following actions:
     names.
 }
 If \code{repair} is \code{FALSE} it converts \code{cr_data} to
-\code{\link[=tbl_df]{tibble}} and adds \code{longcr} class to it.
+\code{\link[dplyr]{tibble}} and adds \code{longcr} class to it.
 
 When applying \code{to_longcr} to \code{widecr} object, conversion is made:
 \itemize{
@@ -73,7 +73,7 @@ In every game every player has some score: the value of arbitrary nature
 that fully characterizes player's performance in particular game (in most
 cases it is some numeric value).
 
-\code{longcr} inherits from \code{\link[=tbl_df]{tibble}}. Data should have
+\code{longcr} inherits from \code{\link[dplyr]{tibble}}. Data should have
   at least three columns with the following names:
   \itemize{
     \item "game" - game identifier;

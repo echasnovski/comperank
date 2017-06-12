@@ -44,7 +44,7 @@ results).
 returns vector of players present in \code{cr_data}. If not \code{NULL} then
 returns its argument \code{players}.
 
-\code{get_cr_matchups} returns a \code{\link[=tbl_df]{tibble}} of all
+\code{get_cr_matchups} returns a \code{\link[dplyr]{tibble}} of all
 matchups (pairs of players from one game) present in \code{cr_data}. It has
 following columns:
 \describe{

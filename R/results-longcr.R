@@ -15,7 +15,7 @@
 #' that fully characterizes player's performance in particular game (in most
 #' cases it is some numeric value).
 #'
-#' \code{longcr} inherits from \code{\link[=tbl_df]{tibble}}. Data should have
+#' \code{longcr} inherits from \code{\link[dplyr]{tibble}}. Data should have
 #'   at least three columns with the following names:
 #'   \itemize{
 #'     \item "game" - game identifier;
@@ -43,7 +43,7 @@
 #'     names.
 #' }
 #' If \code{repair} is \code{FALSE} it converts \code{cr_data} to
-#' \code{\link[=tbl_df]{tibble}} and adds \code{longcr} class to it.
+#' \code{\link[dplyr]{tibble}} and adds \code{longcr} class to it.
 #'
 #' When applying \code{to_longcr} to \code{widecr} object, conversion is made:
 #' \itemize{
@@ -94,7 +94,7 @@ to_longcr <- function(cr_data, repair = TRUE, ...) {
 
 #' @export
 to_longcr.default <- function(cr_data, repair = TRUE, ...) {
-  res <- dplyr::tbl_df(cr_data)
+  res <- dplyr::as_tibble(cr_data)
   if (repair) {
     res <- repair_longcr(res, ...)
   }

@@ -25,7 +25,7 @@ get_player_summary(cr_data, summary_fun = NULL, ...)
 }
 \value{
 If \code{summary_fun} is \code{NULL} then \code{get_item_summary}
-  returns a \code{\link[=tbl_df]{tibble}} with columns named as stored in
+  returns a \code{\link[dplyr]{tibble}} with columns named as stored in
   argument \code{item} and which has all unique values of particular item
   in \code{cr_data}. If not \code{NULL} then there will be extra columns for
   every summary value that \code{summary_fun} produces.

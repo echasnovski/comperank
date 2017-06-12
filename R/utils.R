@@ -104,7 +104,7 @@ assert_used_objects <- function(used, original, prefix = "",
 #' @param rating_vec Named vector of ratings.
 #' @param rating_tbl Tibble with columns 'player' and 'rating'.
 #'
-#' @return \code{to_rating_tbl} returns a \code{\link[=tbl_df]{tibble}} with
+#' @return \code{to_rating_tbl} returns a \code{\link[dplyr]{tibble}} with
 #' two columns: 'player' and 'rating'.
 #'
 #' \code{to_rating_vec} returns named vector of ratings.
