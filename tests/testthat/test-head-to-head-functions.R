@@ -79,9 +79,9 @@ test_that("h2h_num_wins works", {
   matchup_data_1 <- matchup_data
   matchup_data_1 <- dplyr::bind_rows(
     matchup_data_1,
-    dplyr::tbl_df(data.frame(
+    dplyr::tibble(
       game = 3, player1 = 1, score1 = 10, player2 = 2, score2 = 10
-    ))
+    )
   )
 
   expect_equal(h2h_num_wins(matchup_data_1[c(2, 6, 9), ],

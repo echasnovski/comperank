@@ -12,7 +12,7 @@ input <- data.frame(
 
 # to_pairgames ------------------------------------------------------------
 test_that("to_pairgames works", {
-  output <- dplyr::tbl_df(data.frame(
+  output <- dplyr::tibble(
     game = 1:16,
     player1 = c(1, 1, 2, 4, 4, 5, 2, 2, 3, 5,
                 5, 1, 3, 3, 4, 1),
@@ -22,7 +22,7 @@ test_that("to_pairgames works", {
                 2, 2, 4, 5, 5, 2),
     score2 = c(102L, 103L, 103L, 105L, 106L, 106L, 108L, 109L, 109L, 111L,
                112L, 112L, 114L, 115L, 115L, 117L)
-  ))
+  )
   output <- add_class(output, "widecr")
 
   expect_identical(to_pairgames(input), output)
@@ -34,13 +34,13 @@ test_that("to_pairgames handles NA and NaN", {
     player = c(1, NA, NaN),
     score = 1:3
   )
-  output_na <- dplyr::tbl_df(data.frame(
+  output_na <- dplyr::tibble(
     game = 1:3,
     player1 = c(1, 1, NA),
     score1 = c(1L, 1L, 2L),
     player2 = c(NA_real_, NaN, NaN),
     score2 = c(2L, 3L, 3L)
-  ))
+  )
   output_na <- add_class(output_na, "widecr")
 
   expect_identical(to_pairgames(input_na), output_na)

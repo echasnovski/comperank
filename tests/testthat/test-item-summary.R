@@ -12,7 +12,7 @@ input <- data.frame(
 
 # get_item_summary ---------------------------------------------------------
 test_that("get_item_summary works with NULL summary_fun", {
-  output <- dplyr::tbl_df(data.frame(game = 1:20))
+  output <- dplyr::tibble(game = 1:20)
 
   expect_identical(
     get_item_summary(cr_data = input, item = "game",
@@ -81,7 +81,7 @@ test_that("get_item_summary works with extra arguments", {
 
 # get_game_summary --------------------------------------------------------
 test_that("get_game_summary works", {
-  output <- dplyr::tbl_df(data.frame(game = 1:20))
+  output <- dplyr::tibble(game = 1:20)
 
   expect_identical(
     get_game_summary(cr_data = input,
@@ -92,7 +92,7 @@ test_that("get_game_summary works", {
 
 # get_player_summary ------------------------------------------------------
 test_that("get_player_summary works", {
-  output <- dplyr::tbl_df(data.frame(player = 1:10))
+  output <- dplyr::tibble(player = 1:10)
 
   expect_identical(
     get_player_summary(cr_data = input,

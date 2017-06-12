@@ -15,14 +15,14 @@ input_good <- data.frame(
   score = 101:110
 )
 
-input_widecr <- dplyr::tbl_df(data.frame(
+input_widecr <- dplyr::tibble(
   player1 = 11:20,
   score1 = 101:110,
   player2 = 12:21,
   score2 = 102:111,
   game = 2:11,
   otherCol = -(1:10)
-))
+)
 input_widecr <- add_class(input_widecr, "widecr")
 
 
@@ -61,7 +61,7 @@ test_that("to_longcr.default handles missing columns correctly", {
 })
 
 test_that("to_longcr.default works properly on good inputs", {
-  output_good <- dplyr::tbl_df(input_good)
+  output_good <- dplyr::as_tibble(input_good)
   output_good <- add_class(output_good, "longcr")
 
   expect_identical(to_longcr(input_good, repair = TRUE), output_good)
@@ -134,7 +134,7 @@ test_that("to_longcr.default preserves column types", {
 })
 
 test_that("to_longcr.default works without repairing", {
-  output_3 <- dplyr::tbl_df(input)
+  output_3 <- dplyr::as_tibble(input)
   output_3 <- add_class(output_3, "longcr")
 
   expect_identical(to_longcr(input, repair = FALSE), output_3)
@@ -148,12 +148,12 @@ test_that("to_longcr.default handles extra arguments", {
 
 # to_longcr.widecr --------------------------------------------------------
 test_that("to_longcr.widecr does simple converting", {
-  output_longcr_from_widecr <- dplyr::tbl_df(data.frame(
+  output_longcr_from_widecr <- dplyr::tibble(
     game = rep(2:11, each = 2),
     player = c(11L, rep(12:20, each = 2), 21L),
     score = c(101L, rep(102:110, each = 2), 111L),
     otherCol = rep(-(1:10), each = 2)
-  ))
+  )
   output_longcr_from_widecr <- add_class(output_longcr_from_widecr, "longcr")
 
   to_longcr_res <- to_longcr(input_widecr, repair = TRUE)
@@ -163,12 +163,12 @@ test_that("to_longcr.widecr does simple converting", {
 
 test_that("to_longcr.widecr preserves column types", {
   input_types <- input_widecr
-  output_types <- dplyr::tbl_df(data.frame(
+  output_types <- dplyr::tibble(
     game = rep(2:11, each = 2),
     player = c(11L, rep(12:20, each = 2), 21L),
     score = c(101L, rep(102:110, each = 2), 111L),
     otherCol = rep(-(1:10), each = 2)
-  ))
+  )
   output_types <- add_class(output_types, "longcr")
 
   input_types1 <- input_types
@@ -232,12 +232,12 @@ test_that("to_longcr.widecr removes duplicated 'game'-'player'
   input_dupl <- input_widecr
   input_dupl$player2[1] <- 11L
 
-  output_dupl <- dplyr::tbl_df(data.frame(
+  output_dupl <- dplyr::tibble(
     game = rep(2:11, each = 2),
     player = c(11L, rep(12:20, each = 2), 21L),
     score = c(101L, rep(102:110, each = 2), 111L),
     otherCol = rep(-(1:10), each = 2)
-  ))
+  )
   output_dupl <- output_dupl[-2, ]
   output_dupl <- add_class(output_dupl, "longcr")
 
@@ -245,12 +245,12 @@ test_that("to_longcr.widecr removes duplicated 'game'-'player'
 })
 
 test_that("to_longcr.widecr works without column 'game'", {
-  output_longcr_from_widecr <- dplyr::tbl_df(data.frame(
+  output_longcr_from_widecr <- dplyr::tibble(
     game = rep(2:11, each = 2),
     player = c(11L, rep(12:20, each = 2), 21L),
     score = c(101L, rep(102:110, each = 2), 111L),
     otherCol = rep(-(1:10), each = 2)
-  ))
+  )
   output_longcr_from_widecr <- add_class(output_longcr_from_widecr, "longcr")
 
   input_widecr_nogame <- input_widecr[, setdiff(colnames(input_widecr), "game")]

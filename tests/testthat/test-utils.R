@@ -71,24 +71,24 @@ test_that("renamecreate_columns works", {
 # reduce_full_join --------------------------------------------------------
 test_that("reduce_full_join works", {
   input <- list(
-    dplyr::tbl_df(data.frame(
+    dplyr::tibble(
       game = 1:10,
       player1 = 11:20,
       score1 = 101:110
-    )),
-    dplyr::tbl_df(data.frame(
+    ),
+    dplyr::tibble(
       game = 1:5,
       player2 = 12:16,
       score2 = 102:106
-    ))
+    )
   )
-  output <- dplyr::tbl_df(data.frame(
+  output <- dplyr::tibble(
     game = 1:10,
     player1 = 11:20,
     score1 = 101:110,
     player2 = c(12:16, rep(NA, 5)),
     score2 = c(102:106, rep(NA, 5))
-  ))
+  )
 
   expect_identical(reduce_full_join(input, by = "game"), output)
   expect_identical(reduce_full_join(input[1], by = "game"), input[[1]])
@@ -114,11 +114,10 @@ test_that("assert_used_objects works", {
 # to_rating_tbl -----------------------------------------------------------
 test_that("to_rating_tbl works", {
   input <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)
-  output <- dplyr::tbl_df(data.frame(
+  output <- dplyr::tibble(
     player = paste0("pl", 1:3),
-    rating = 10^(0:2),
-    stringsAsFactors = FALSE
-  ))
+    rating = 10^(0:2)
+  )
 
   expect_equal(to_rating_tbl(input), output)
 })
@@ -126,11 +125,11 @@ test_that("to_rating_tbl works", {
 
 # to_rating_vec -----------------------------------------------------------
 test_that("to_rating_vec works", {
-  input <- dplyr::tbl_df(data.frame(
+  input <- dplyr::tibble(
     player = paste0("pl", 1:3),
     rating = 10^(0:2),
     stringsAsFactors = FALSE
-  ))
+  )
   output <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)
 
   expect_equal(to_rating_vec(input), output)
