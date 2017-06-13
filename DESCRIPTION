@@ -11,8 +11,8 @@ LazyData: true
 URL: https://github.com/echasnovski/comperank
 BugReports: https://github.com/echasnovski/comperank/issues
 RoxygenNote: 6.0.1
+Depends: comperes (>= 0.1.0)
 Imports: dplyr (>= 0.6.0),
-    tidyr (>= 0.6.1),
     rlang (>= 0.1.0),
     Rcpp
 Suggests: testthat,
@@ -21,3 +21,4 @@ Suggests: testthat,
     rmarkdown
 VignetteBuilder: knitr
 LinkingTo: Rcpp
+Remotes: echasnovski/comperes
