@@ -1,4 +1,4 @@
-context("rate-iterative")
+context("iterative")
 
 
 # Input, output and functions ---------------------------------------------

@@ -1,4 +1,4 @@
-context("rate-keener")
+context("keener")
 
 
 # rate_keener -------------------------------------------------------------

@@ -1,4 +1,4 @@
-context("rate-colley")
+context("colley")
 
 
 # Input and output data ---------------------------------------------------

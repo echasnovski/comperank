@@ -1,4 +1,4 @@
-context("rate-massey")
+context("massey")
 
 
 # Input and output data ---------------------------------------------------

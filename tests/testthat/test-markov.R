@@ -1,4 +1,4 @@
-context("rate-markov")
+context("markov")
 
 
 # Input data --------------------------------------------------------------
