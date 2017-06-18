@@ -1,9 +1,32 @@
-# Competition results -----------------------------------------------------
+# General -----------------------------------------------------------------
 add_class <- function(obj, class_char) {
   class(obj) <- c(class_char, class(obj))
 
   obj
 }
+
+to_list <- function(x) {
+  if (!is.list(x)) {
+    x <- list(x)
+  }
+
+  x
+}
+
+is_function_list <- function(x) {
+  all(sapply(x, rlang::is_function))
+}
+
+to_function_list <- function(x, var_name = "input") {
+  x <- to_list(x)
+
+  if (!is_function_list(x)) {
+    stop("Object '", var_name, "' should be function or list of functions.")
+  }
+
+  x
+}
+
 
 # Rating methods ----------------------------------------------------------
 assert_used_objects <- function(used, original, prefix = "",
@@ -57,6 +80,7 @@ to_rating_vec <- function(rating_tbl) {
 
   res
 }
+
 
 #' Compute Perron-Frobenius vector
 #'

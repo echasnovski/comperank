@@ -6,8 +6,8 @@
 \title{Markov rating}
 \usage{
 rate_markov(cr_data, h2h_fun, players = NULL, transpose = FALSE,
-  stoch_modify = teleport(0.15), weights = 1, force_nonneg_h2h = TRUE,
-  ...)
+  self_play = NULL, stoch_modify = teleport(0.15), weights = 1,
+  force_nonneg_h2h = TRUE, ...)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
@@ -20,6 +20,9 @@ Details).}
 
 \item{transpose}{Logical vector: whether to transpose Head-to-Head matrix for
 the respective \code{h2h_fun}.}
+
+\item{self_play}{NULL, numeric vector or list of them: how to modify
+Head-to-Head values for self-play matchups (see \code{\link{get_h2h}}).}
 
 \item{stoch_modify}{A single function to modify stochastic matrix or a list
 of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).}
@@ -45,8 +48,9 @@ better. Algorithm is as follows:
   \item 'Voting' is done with \link[=head-to-head]{Head-to-Head} values via
     \code{h2h_fun}: the more Head-to-Head value the more votes gets player2
     from player1. One can use \code{transpose} to transpose resulting
-    Head-to-Head matrix and \code{force_nonneg_h2h} to force nonnegative
-    values. \bold{Note} that Head-to-Head values should be non-negative;
+    Head-to-Head matrix, \code{self_play} to modify values for self-play
+    matchups and \code{force_nonneg_h2h} to force nonnegative values.
+    \bold{Note} that Head-to-Head values should be non-negative;
   \item Head-to-Head matrix is normalized to be stochastic (sum of
     rows should be equal to 1) Markov matrix \emph{S};
   \item \emph{S} is modified with \code{stoch_modify} to deal with possible
@@ -60,7 +64,8 @@ Considering common values and structure of stochastic matrices one can
 naturally combine different 'votings' in one stochastic matrix:
 \enumerate{
   \item Different Head-to-Head matrices are computed with \code{h2h_fun}
-    (which in this case should be a list of Head-to-Head functions);
+    (which in this case should be a list of Head-to-Head functions) and
+    optional parameters to \code{get_h2h};
   \item Each matrix is normalized to stochastic;
   \item Each stochastic matrix is modified with respective modifier which is
     stored in \code{stoch_modify} (which can be a list of functions);
@@ -68,9 +73,10 @@ naturally combine different 'votings' in one stochastic matrix:
     modified stochastic matrices.
 }
 
-For arguments \code{h2h_fun}, \code{transpose} and \code{stoch_modify}
-general R recycling rule is applied. If \code{h2h_fun} or \code{stoch_modify}
-is function it is transformed to list with one function.
+For arguments \code{h2h_fun}, \code{transpose}, \code{self_play} and
+\code{stoch_modify} general R recycling rule is applied. If \code{h2h_fun} or
+\code{stoch_modify} is function it is transformed to list with one function.
+If \code{self_play} is not list it is transformed to list with one element.
 
 \code{weights} is recycled to the maximum length of three mentioned recycled
 arguments and then is normalized to sum to 1.

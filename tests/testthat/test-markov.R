@@ -5,7 +5,6 @@ context("rate-markov")
 input_stoch <- matrix(c(0.3, 0.7,
                         0.2, 0.8),
                       ncol = 2, byrow = TRUE)
-input_fun <- function(x) {x}
 
 
 # rate_markov -------------------------------------------------------------
@@ -53,6 +52,37 @@ test_that("rate_markov simply works", {
   expect_equal(round(output_3, 3), output_ref_3)
 })
 
+test_that("rate_markov handles extra arguments for `get_h2h`", {
+  output_1 <- rate_markov(
+    cr_data = ncaa2005,
+    h2h_fun = h2h_num_wins,
+    players = NULL,
+    transpose = TRUE,
+    stoch_modify = vote_equal,
+    weights = 1,
+    force_nonneg_h2h = FALSE
+  )
+  output_ref_1 <- c(0.438, 0.088, 0.146, 0.219, 0.109)
+  names(output_ref_1) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+
+  expect_equal(round(output_1, 3), output_ref_1)
+
+  output_2 <- rate_markov(
+    cr_data = ncaa2005,
+    h2h_fun = h2h_num_wins,
+    players = NULL,
+    transpose = FALSE,
+    self_play = 10,
+    stoch_modify = teleport(0.15),
+    weights = 1,
+    force_nonneg_h2h = FALSE
+  )
+  output_ref_2 <- c(0.076, 0.457, 0.141, 0.1, 0.225)
+  names(output_ref_2) <- names(output_ref_1)
+
+  expect_equal(round(output_2, 3), output_ref_2)
+})
+
 test_that("rate_markov handles functions and lists as inputs", {
   expect_identical(rate_markov(ncaa2005, h2h_num),
                    rate_markov(ncaa2005, list(h2h_num)))
@@ -65,40 +95,49 @@ test_that("rate_markov handles functions and lists as inputs", {
 test_that("rate_markov does recycling", {
   h2h_fun <- list(h2h_num_wins, h2h_num)
   transpose <- c(TRUE, FALSE)
+  self_play <- list(NULL, 1)
   weights <- c(1, 1)
   stoch_modify <- list(vote_equal, vote_self)
 
   expect_identical(
     rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun[1],
-                transpose = transpose, stoch_modify = stoch_modify,
-                weights = weights),
+                transpose = transpose, self_play = self_play,
+                stoch_modify = stoch_modify, weights = weights),
     rate_markov(cr_data = ncaa2005, h2h_fun = rep(h2h_fun[1], 2),
-                transpose = transpose, stoch_modify = stoch_modify,
-                weights = weights)
+                transpose = transpose, self_play = self_play,
+                stoch_modify = stoch_modify, weights = weights)
   )
   expect_identical(
     rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose[1], stoch_modify = stoch_modify,
-                weights = weights),
+                transpose = transpose[1], self_play = self_play,
+                stoch_modify = stoch_modify, weights = weights),
     rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = rep(transpose[1], 2), stoch_modify = stoch_modify,
-                weights = weights)
+                transpose = rep(transpose[1], 2), self_play = self_play,
+                stoch_modify = stoch_modify, weights = weights)
   )
   expect_identical(
     rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose, stoch_modify = stoch_modify[1],
-                weights = weights),
+                transpose = transpose, self_play = self_play[1],
+                stoch_modify = stoch_modify, weights = weights),
     rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose, stoch_modify = rep(stoch_modify[1], 2),
-                weights = weights)
+                transpose = transpose, self_play = rep(self_play[1], 2),
+                stoch_modify = stoch_modify, weights = weights)
   )
   expect_identical(
     rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose, stoch_modify = stoch_modify,
-                weights = weights[1]),
+                transpose = transpose, self_play = self_play,
+                stoch_modify = stoch_modify[1], weights = weights),
     rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose, stoch_modify = stoch_modify,
-                weights = rep(weights[1], 1))
+                transpose = transpose, self_play = self_play,
+                stoch_modify = rep(stoch_modify[1], 2), weights = weights)
+  )
+  expect_identical(
+    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
+                transpose = transpose, self_play = self_play,
+                stoch_modify = stoch_modify, weights = weights[1]),
+    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
+                transpose = transpose, self_play = self_play,
+                stoch_modify = stoch_modify, weights = rep(weights[1], 1))
   )
 })
 
@@ -111,27 +150,6 @@ test_that("rate_markov throws errors", {
                "function")
   expect_error(rate_markov(ncaa2005, h2h_num_wins,
                            stoch_modify = list(vote_equal, "a")),
-               "function")
-})
-
-
-# is_function_list --------------------------------------------------------
-test_that("is_function_list works", {
-  expect_false(is_function_list(input_fun))
-  expect_true(is_function_list(list(input_fun, input_fun)))
-  expect_false(is_function_list(list(input_fun, input_fun, "a")))
-})
-
-
-# to_function_list --------------------------------------------------------
-test_that("to_function_list works", {
-  expect_equal(to_function_list(input_fun), list(input_fun))
-
-  input_fun_list <- list(input_fun, input_fun)
-  expect_identical(to_function_list(input_fun_list), input_fun_list)
-
-  input_bad_fun_list <- list(input_fun, "a")
-  expect_error(to_function_list(input_bad_fun_list),
                "function")
 })
 

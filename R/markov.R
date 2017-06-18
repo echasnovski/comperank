@@ -9,6 +9,8 @@
 #' @param players Vector of players for which rating is computed.
 #' @param transpose Logical vector: whether to transpose Head-to-Head matrix for
 #'   the respective \code{h2h_fun}.
+#' @param self_play NULL, numeric vector or list of them: how to modify
+#'   Head-to-Head values for self-play matchups (see \code{\link{get_h2h}}).
 #' @param stoch_modify A single function to modify stochastic matrix or a list
 #'  of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).
 #' @param weights Weights for different stochastic matrices.
@@ -22,8 +24,9 @@
 #'   \item 'Voting' is done with \link[=head-to-head]{Head-to-Head} values via
 #'     \code{h2h_fun}: the more Head-to-Head value the more votes gets player2
 #'     from player1. One can use \code{transpose} to transpose resulting
-#'     Head-to-Head matrix and \code{force_nonneg_h2h} to force nonnegative
-#'     values. \bold{Note} that Head-to-Head values should be non-negative;
+#'     Head-to-Head matrix, \code{self_play} to modify values for self-play
+#'     matchups and \code{force_nonneg_h2h} to force nonnegative values.
+#'     \bold{Note} that Head-to-Head values should be non-negative;
 #'   \item Head-to-Head matrix is normalized to be stochastic (sum of
 #'     rows should be equal to 1) Markov matrix \emph{S};
 #'   \item \emph{S} is modified with \code{stoch_modify} to deal with possible
@@ -37,7 +40,8 @@
 #' naturally combine different 'votings' in one stochastic matrix:
 #' \enumerate{
 #'   \item Different Head-to-Head matrices are computed with \code{h2h_fun}
-#'     (which in this case should be a list of Head-to-Head functions);
+#'     (which in this case should be a list of Head-to-Head functions) and
+#'     optional parameters to \code{get_h2h};
 #'   \item Each matrix is normalized to stochastic;
 #'   \item Each stochastic matrix is modified with respective modifier which is
 #'     stored in \code{stoch_modify} (which can be a list of functions);
@@ -45,9 +49,10 @@
 #'     modified stochastic matrices.
 #' }
 #'
-#' For arguments \code{h2h_fun}, \code{transpose} and \code{stoch_modify}
-#' general R recycling rule is applied. If \code{h2h_fun} or \code{stoch_modify}
-#' is function it is transformed to list with one function.
+#' For arguments \code{h2h_fun}, \code{transpose}, \code{self_play} and
+#' \code{stoch_modify} general R recycling rule is applied. If \code{h2h_fun} or
+#' \code{stoch_modify} is function it is transformed to list with one function.
+#' If \code{self_play} is not list it is transformed to list with one element.
 #'
 #' \code{weights} is recycled to the maximum length of three mentioned recycled
 #' arguments and then is normalized to sum to 1.
@@ -76,7 +81,7 @@
 #'
 #' @export
 rate_markov <- function(cr_data, h2h_fun, players = NULL,
-                        transpose = FALSE,
+                        transpose = FALSE, self_play = NULL,
                         stoch_modify = teleport(0.15),
                         weights = 1,
                         force_nonneg_h2h = TRUE,
@@ -92,27 +97,31 @@ rate_markov <- function(cr_data, h2h_fun, players = NULL,
   # Prepare h2h_fun and stoch_modify
   h2h_fun <- to_function_list(h2h_fun, var_name = "h2h_fun")
   stoch_modify <- to_function_list(stoch_modify, var_name = "stoch_modify")
+  self_play <- to_list(self_play)
 
   # Manual recycling of weights
-  max_length <- max(length(h2h_fun), length(stoch_modify), length(transpose))
+  max_length <- max(length(h2h_fun), length(stoch_modify),
+                    length(transpose), length(self_play))
   weights <- rep(weights, length.out = max_length)
   weights <- weights / sum(weights)
 
   # Construct stochastic matrix
   stoch <- mapply(
-    function(cur_h2h_fun, cur_transpose, cur_stoch_modify, cur_weight) {
+    function(cur_h2h_fun, cur_transpose, cur_self_play,
+             cur_stoch_modify, cur_weight) {
       get_h2h(
         cr_data = cr_data,
         h2h_fun = cur_h2h_fun,
         players = players,
         transpose = cur_transpose,
+        self_play = cur_self_play,
         ...) %>%
         force_nonneg(force_nonneg_h2h) %>%
         to_stoch_mat() %>%
         cur_stoch_modify() %>%
         "*"(cur_weight)
     },
-    h2h_fun, transpose, stoch_modify, weights,
+    h2h_fun, transpose, self_play, stoch_modify, weights,
     SIMPLIFY = FALSE, USE.NAMES = FALSE
   ) %>%
     Reduce(f = `+`)
@@ -122,22 +131,6 @@ rate_markov <- function(cr_data, h2h_fun, players = NULL,
   names(res) <- rownames(stoch)
 
   res
-}
-
-is_function_list <- function(x) {
-  all(sapply(x, rlang::is_function))
-}
-
-to_function_list <- function(x, var_name = "input") {
-  if (rlang::is_function(x)) {
-    x <- list(x)
-  }
-
-  if (!is_function_list(x)) {
-    stop("Object '", var_name, "' should be function or list of functions.")
-  }
-
-  x
 }
 
 

@@ -1,6 +1,10 @@
 context("utils")
 
 
+# Input data --------------------------------------------------------------
+input_fun <- function(x) {x}
+
+
 # add_class ---------------------------------------------------------------
 test_that("add_class works", {
   input <- 1:10
@@ -10,6 +14,36 @@ test_that("add_class works", {
 
   expect_identical(add_class(input, class_char = "class2"),
                    output)
+})
+
+
+# to_list -----------------------------------------------------------------
+test_that("to_list works", {
+  input <- 1:2
+
+  expect_identical(to_list(input), list(input))
+  expect_identical(to_list(list(input)), list(input))
+})
+
+
+# is_function_list --------------------------------------------------------
+test_that("is_function_list works", {
+  expect_false(is_function_list(input_fun))
+  expect_true(is_function_list(list(input_fun, input_fun)))
+  expect_false(is_function_list(list(input_fun, input_fun, "a")))
+})
+
+
+# to_function_list --------------------------------------------------------
+test_that("to_function_list works", {
+  expect_equal(to_function_list(input_fun), list(input_fun))
+
+  input_fun_list <- list(input_fun, input_fun)
+  expect_identical(to_function_list(input_fun_list), input_fun_list)
+
+  input_bad_fun_list <- list(input_fun, "a")
+  expect_error(to_function_list(input_bad_fun_list),
+               "function")
 })
 
 
