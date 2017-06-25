@@ -44,6 +44,46 @@ test_that("rate_od works", {
 })
 
 
+# rank_od -----------------------------------------------------------------
+test_that("rank_od works", {
+  output_ref_1 <- matrix(
+    c(5, 1, 4, 3, 2,
+      5, 2, 4, 3, 1,
+      5, 2, 4, 3, 1),
+    ncol = 3,
+    dimnames = list(
+      c("Duke", "Miami", "UNC", "UVA", "VT"),
+      c("off", "def", "od")
+    )
+  )
+
+  output_1 <- rank_od(
+    cr_data = ncaa2005,
+    h2h_fun = h2h_mean_score,
+    self_play = 0,
+    eps = 1e-3,
+    tol = 1e-4,
+    max_iterations = 100
+  )
+
+  expect_equal(output_1, output_ref_1)
+
+  output_ref_2 <- output_ref_1
+  output_ref_2[, ] <- 3
+
+  output_2 <- rank_od(
+    cr_data = ncaa2005,
+    h2h_fun = h2h_num,
+    self_play = 0,
+    eps = 1e-3,
+    tol = 1e-4,
+    max_iterations = 100
+  )
+
+  expect_equal(output_2, output_ref_2)
+})
+
+
 # od_def_iteration --------------------------------------------------------
 test_that("od_def_iteration works", {
   input_vec <- 1:5

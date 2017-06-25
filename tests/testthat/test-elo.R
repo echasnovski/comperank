@@ -13,6 +13,14 @@ test_that("rate_elo works", {
 })
 
 
+# rank_elo ----------------------------------------------------------------
+test_that("rank_elo works", {
+  output_ref <- c(5, 1, 3, 4, 2)
+  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+
+  expect_equal(rank_elo(ncaa2005), output_ref)
+})
+
 # add_elo_ratings ---------------------------------------------------------
 test_that("add_elo_ratings works", {
   output_ref <- to_widecr(ncaa2005)

@@ -1,6 +1,6 @@
-#' Offense-Defense rating
+#' Offense-Defense method
 #'
-#' Function to compute rating using Offense-Defense method.
+#' Functions to compute rating and ranking using Offense-Defense method.
 #'
 #' @param cr_data Competition results in format ready for
 #'   \code{\link[=results-longcr]{to_longcr}}.
@@ -12,6 +12,9 @@
 #' @param tol Tolerance value for iterative algorithm.
 #' @param max_iterations Maximum number of iterations for iterative algorithm.
 #' @param ... Additional arguments to be passed to methods.
+#' @param ties Value for \code{ties} in \code{\link{round_rank}}.
+#' @param round_digits Value for \code{round_digits} in
+#'   \code{\link{round_rank}}.
 #'
 #' @details Offense-Defense (OD) rating is designed for games in which player's
 #'   goal is to make higher score than opponent(s). To describe competition
@@ -55,12 +58,16 @@
 #'     \item Compute OD ratings: \code{OD = off / def}.
 #'   }
 #'
-#' @return Matrix with rows named by players and the following three columns:
-#' \itemize{
-#'   \item \code{off} - offensive ratings of players;
-#'   \item \code{def} - defensive ratings of players;
-#'   \item \code{od} - Offense-Defense ratings of players;
-#' }
+#' @return \code{rate_od} returns a matrix with rows named by players and the
+#'   following three columns:
+#'   \itemize{
+#'     \item \code{off} - offensive rating of players;
+#'     \item \code{def} - defensive rating of players;
+#'     \item \code{od} - Offense-Defense rating of players;
+#'   }
+#'
+#'   \code{rank_od} returns a matrix of the same structure as \code{rate_od} but
+#'   with \link[=rating-ranking]{rankings} using \code{\link{round_rank}}.
 #'
 #' @references Amy N. Langville, Carl D. Meyer (2012) \emph{Who’s #1?: The
 #'   science of rating and ranking}.
@@ -69,11 +76,14 @@
 #' Convergence and applications.}. SIAM Journal of Matrix Analysis,
 #' 30(1):261–275, 2008 (For stopping rule of iterative algorithm).
 #'
-#' @aliases offense-defense
-#'
 #' @examples
 #' rate_od(ncaa2005, h2h_mean_score, self_play = 0)
+#' rank_od(ncaa2005, h2h_mean_score, self_play = 0)
 #'
+#' @name offense-defense
+NULL
+
+#' @rdname offense-defense
 #' @export
 rate_od <- function(cr_data, h2h_fun, players = NULL,
                     force_nonneg_h2h = TRUE,
@@ -108,6 +118,32 @@ rate_od <- function(cr_data, h2h_fun, players = NULL,
 
   res <- cbind(off_ratings, def_ratings, od_ratings)
   colnames(res) <- c("off", "def", "od")
+
+  res
+}
+
+#' @rdname offense-defense
+#' @export
+rank_od <- function(cr_data, h2h_fun, players = NULL,
+                    force_nonneg_h2h = TRUE,
+                    eps = 1e-3, tol = 1e-4, max_iterations = 100,
+                    ties = c("average", "first", "last",
+                             "random", "max", "min"),
+                    round_digits = 7,
+                    ...) {
+  res <- rate_od(
+    cr_data = cr_data, h2h_fun = h2h_fun, players = players,
+    force_nonneg_h2h = force_nonneg_h2h,
+    eps = eps, tol = tol, max_iterations = max_iterations,
+    ...
+  )
+
+  res[, "off"] <- round_rank(res[, "off", drop = TRUE], type = "desc",
+                             ties = ties, round_digits = round_digits)
+  res[, "def"] <- round_rank(res[, "def", drop = TRUE], type = "asc",
+                             ties = ties, round_digits = round_digits)
+  res[, "od"] <- round_rank(res[, "od", drop = TRUE], type = "desc",
+                            ties = ties, round_digits = round_digits)
 
   res
 }

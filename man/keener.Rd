@@ -3,13 +3,19 @@
 \name{keener}
 \alias{keener}
 \alias{rate_keener}
+\alias{rank_keener}
 \alias{skew_keener}
 \alias{normalize_keener}
-\title{Keener rating}
+\title{Keener method}
 \usage{
 rate_keener(cr_data, h2h_fun, players = NULL, force_nonneg_h2h = TRUE,
   skew_fun = skew_keener, normalize_fun = normalize_keener, eps = 0.001,
   ...)
+
+rank_keener(cr_data, h2h_fun, players = NULL, force_nonneg_h2h = TRUE,
+  skew_fun = skew_keener, normalize_fun = normalize_keener, eps = 0.001,
+  ties = c("average", "first", "last", "random", "max", "min"),
+  round_digits = 7, ...)
 
 skew_keener(x, ...)
 
@@ -34,16 +40,24 @@ matrix.}
 
 \item{...}{Additional arguments to be passed to methods.}
 
+\item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
+
+\item{round_digits}{Value for \code{round_digits} in
+\code{\link{round_rank}}.}
+
 \item{x}{Argument for \code{skew_keener}.}
 
 \item{h2h_mat}{Argument for \code{normalize_keener}.}
 }
 \value{
-Named vector of the Keener rating. The sum of all ratings should be
-  equal to 1.
+\code{rate_keener} returns a named vector of the Keener rating. The
+  sum of all ratings should be equal to 1.
+
+  \code{rank_keener} returns a named vector of
+  \link[=rating-ranking]{ranking} using \code{\link{round_rank}}.
 }
 \description{
-Function to compute rating using Keener method.
+Functions to compute rating and ranking using Keener method.
 }
 \details{
 Keener rating method is based on Head-to-Head matrix of the
@@ -90,6 +104,7 @@ Keener rating method is based on Head-to-Head matrix of the
 \examples{
 # Use transpose = TRUE is correct in this case
 rate_keener(ncaa2005, h2h_sum_score, transpose = TRUE)
+rank_keener(ncaa2005, h2h_sum_score, transpose = TRUE)
 
 # Impact of skewing
 rate_keener(ncaa2005, h2h_sum_score, transpose = TRUE,

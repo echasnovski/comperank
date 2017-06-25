@@ -1,10 +1,13 @@
-#' Massey rating
+#' Massey method
 #'
-#' Function to compute rating using Massey method.
+#' Functions to compute rating and ranking using Massey method.
 #'
 #' @param cr_data Competition results in format ready for
 #'   \code{\link[=results-longcr]{to_longcr}}.
 #' @param players Vector of players for which rating is computed.
+#' @param ties Value for \code{ties} in \code{\link{round_rank}}.
+#' @param round_digits Value for \code{round_digits} in
+#'   \code{\link{round_rank}}.
 #'
 #' @details This rating method was initially designed for games between two
 #'   players. That is why competition results are transformed into pairwise
@@ -37,18 +40,26 @@
 #'     \item Solve the SLE. The solution is the Massey rating.
 #'   }
 #'
-#' @return Named vector of the Massey rating. The sum of all ratings should be
-#'   equal to 0.
+#' @return \code{rate_massey} returns a named vector of the Massey rating. The
+#'   sum of all ratings should be equal to 0.
+#'
+#'   \code{rank_massey} returns a named vector of
+#'   \link[=rating-ranking]{ranking} using \code{\link{round_rank}}.
 #'
 #' @references Kenneth Massey (1997) \emph{Statistical models applied to the
 #'   rating of sports teams}. Bachelor’s thesis, Bluefield College.
 #'
-#' @examples rate_massey(ncaa2005)
+#' @examples
+#' rate_massey(ncaa2005)
+#' rank_massey(ncaa2005)
+#'
 #' rate_massey(ncaa2005, players = c("UNC", "Duke", "Miami", "UVA", "VT"))
 #' rate_massey(ncaa2005, players = c("UNC", "Miami", "UVA", "VT"))
 #'
-#' @aliases massey
-#'
+#' @name massey
+NULL
+
+#' @rdname massey
 #' @export
 rate_massey <- function(cr_data, players = NULL) {
   cr <- to_longcr(cr_data, repair = TRUE)
@@ -84,4 +95,16 @@ rate_massey <- function(cr_data, players = NULL) {
   score_diff_mod[length(score_diff_mod)] <- 0
 
   solve(massey_mat_mod, score_diff_mod)
+}
+
+#' @rdname massey
+#' @export
+rank_massey <- function(cr_data, players = NULL,
+                        ties = c("average", "first", "last",
+                                 "random", "max", "min"),
+                        round_digits = 7) {
+  round_rank(
+    rate_massey(cr_data = cr_data, players = players),
+    type = "desc", ties = ties, round_digits = round_digits
+  )
 }

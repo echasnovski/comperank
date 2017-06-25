@@ -69,6 +69,21 @@ test_that("rate_iterative handles different 'players'", {
 })
 
 
+# rank_iterative ----------------------------------------------------------
+test_that("rank_iterative works", {
+  output_rankings <- c(2.5, 2.5, 1, 4, 5)
+  names(output_rankings) <- as.character(1:5)
+
+  expect_equal(
+    rank_iterative(
+      cr_data = input, rate_fun = test_rate_fun, players = NULL,
+      initial_ratings = c('1' = 3, '2' = 0, '3' = 0, '4' = 0, '5' = 0)
+    ),
+    output_rankings
+  )
+
+})
+
 # add_iterative_ratings ---------------------------------------------------
 test_that("add_iterative_ratings simply works", {
   expect_is(output, "widecr")

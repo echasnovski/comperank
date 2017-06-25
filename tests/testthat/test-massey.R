@@ -53,3 +53,13 @@ test_that("rate_massey correctly works with not pair games", {
 
   expect_equal(rate_massey(input_nonpair), output)
 })
+
+
+# rank_massey -------------------------------------------------------------
+test_that("rank_massey works", {
+  rank_output <- output
+  rank_output[] <- c(5, 1, 4, 3, 2)
+
+  expect_equal(rank_massey(input), rank_output)
+})
+

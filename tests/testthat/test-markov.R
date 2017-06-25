@@ -154,6 +154,24 @@ test_that("rate_markov throws errors", {
 })
 
 
+# rank_markov -------------------------------------------------------------
+test_that("rank_markov works", {
+  output <- rank_markov(
+    cr_data = ncaa2005,
+    h2h_fun = h2h_num_wins,
+    players = NULL,
+    transpose = FALSE,
+    stoch_modify = vote_equal,
+    weights = 1,
+    force_nonneg_h2h = FALSE
+  )
+  output_ref <- c(5, 1, 3, 4, 2)
+  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+
+  expect_equal(output, output_ref)
+})
+
+
 # teleport ----------------------------------------------------------------
 test_that("teleport works", {
   teleport_fun <- teleport(0.5)

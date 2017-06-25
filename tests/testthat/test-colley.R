@@ -47,3 +47,12 @@ test_that("rate_colley correctly works with not pair games", {
 
   expect_equal(rate_colley(input_nonpair), output)
 })
+
+
+# rank_colley -------------------------------------------------------------
+test_that("rank_colley works", {
+  output_ref <- output
+  output_ref[] <- c(5, 1, 3, 4, 2)
+
+  expect_equal(rank_colley(input), output_ref)
+})

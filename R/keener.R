@@ -1,6 +1,6 @@
-#' Keener rating
+#' Keener method
 #'
-#' Function to compute rating using Keener method.
+#' Functions to compute rating and ranking using Keener method.
 #'
 #' @param cr_data Competition results in format ready for
 #'   \code{\link[=results-longcr]{to_longcr}}.
@@ -12,6 +12,9 @@
 #' @param normalize_fun Normalization function.
 #' @param eps Coefficient for forcing irreducibility.
 #' @param ... Additional arguments to be passed to methods.
+#' @param ties Value for \code{ties} in \code{\link{round_rank}}.
+#' @param round_digits Value for \code{round_digits} in
+#'   \code{\link{round_rank}}.
 #' @param x Argument for \code{skew_keener}.
 #' @param h2h_mat Argument for \code{normalize_keener}.
 #'
@@ -56,8 +59,11 @@
 #'     rating vector.
 #' }
 #'
-#' @return Named vector of the Keener rating. The sum of all ratings should be
-#'   equal to 1.
+#' @return \code{rate_keener} returns a named vector of the Keener rating. The
+#'   sum of all ratings should be equal to 1.
+#'
+#'   \code{rank_keener} returns a named vector of
+#'   \link[=rating-ranking]{ranking} using \code{\link{round_rank}}.
 #'
 #' @references James P. Keener (1993) \emph{The Perron-Frobenius theorem and the
 #'   ranking of football teams}. SIAM Review, 35(1):80–93, 1993.
@@ -65,6 +71,7 @@
 #' @examples
 #' # Use transpose = TRUE is correct in this case
 #' rate_keener(ncaa2005, h2h_sum_score, transpose = TRUE)
+#' rank_keener(ncaa2005, h2h_sum_score, transpose = TRUE)
 #'
 #' # Impact of skewing
 #' rate_keener(ncaa2005, h2h_sum_score, transpose = TRUE,
@@ -113,6 +120,30 @@ rate_keener <- function(cr_data, h2h_fun, players = NULL,
   names(res) <- rownames(h2h_mat)
 
   res
+}
+
+#' @rdname keener
+#' @export
+rank_keener <- function(cr_data, h2h_fun, players = NULL,
+                        force_nonneg_h2h = TRUE,
+                        skew_fun = skew_keener,
+                        normalize_fun = normalize_keener,
+                        eps = 0.001,
+                        ties = c("average", "first", "last",
+                                 "random", "max", "min"),
+                        round_digits = 7,
+                        ...) {
+  round_rank(
+    rate_keener(
+      cr_data = cr_data, h2h_fun = h2h_fun, players = players,
+      force_nonneg_h2h = force_nonneg_h2h,
+      skew_fun = skew_fun,
+      normalize_fun = normalize_fun,
+      eps = eps,
+      ...
+    ),
+    type = "desc", ties = ties, round_digits = round_digits
+  )
 }
 
 force_nonneg <- function(x, force = TRUE) {

@@ -3,10 +3,15 @@
 \name{iterative}
 \alias{iterative}
 \alias{rate_iterative}
+\alias{rank_iterative}
 \alias{add_iterative_ratings}
-\title{Iterative ratings}
+\title{Iterative rating method}
 \usage{
 rate_iterative(cr_data, rate_fun, players = NULL, initial_ratings = 0)
+
+rank_iterative(cr_data, rate_fun, players = NULL, initial_ratings = 0,
+  type = "desc", ties = c("average", "first", "last", "random", "max",
+  "min"), round_digits = 7)
 
 add_iterative_ratings(cr_data, rate_fun, players = NULL,
   initial_ratings = 0)
@@ -20,10 +25,21 @@ add_iterative_ratings(cr_data, rate_fun, players = NULL,
 \item{players}{Vector of players for which rating is computed.}
 
 \item{initial_ratings}{Initial ratings (see Details).}
+
+\item{type}{Value for \code{type} in \code{\link{round_rank}}.}
+
+\item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
+
+\item{round_digits}{Value for \code{round_digits} in
+\code{\link{round_rank}}.}
 }
 \value{
 \code{rate_iterative} returns a named vector of iterative ratings by
   the end of competition results.
+
+  \code{rank_iterative} returns a named vector of
+  \link[=rating-ranking]{ranking} using \code{\link{round_rank}} based on
+  specified \code{type}.
 
   \code{add_iterative_ratings} returns a
   \code{\link[=results-widecr]{widecr}} form of \code{cr_data} with four
@@ -37,7 +53,7 @@ add_iterative_ratings(cr_data, rate_fun, players = NULL,
 }
 \description{
 Functions to compute iterative numeric ratings, i.e. which are recomputed
-after every game.
+after every game, and corresponding rankings.
 }
 \details{
 Iterative ratings of group of players are recomputed after every
@@ -101,7 +117,8 @@ add_iterative_ratings(cr_data, test_rate_fun, initial_ratings = 10)
 add_iterative_ratings(cr_data, test_rate_fun, players = 1:3,
                       initial_ratings = c("1" = 1, "2" = 2, "3" = 3))
 
-# Ratings at the end of competition results.
+# Ratings and ranking at the end of competition results.
 rate_iterative(cr_data, test_rate_fun)
+rank_iterative(cr_data, test_rate_fun, type = "desc")
 
 }

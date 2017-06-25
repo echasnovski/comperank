@@ -1,10 +1,13 @@
-#' Colley rating
+#' Colley method
 #'
-#' Function to compute rating using Colley method.
+#' Functions to compute rating and ranking using Colley method.
 #'
 #' @param cr_data Competition results in format ready for
 #'   \code{\link[=results-longcr]{to_longcr}}.
 #' @param players Vector of players for which rating is computed.
+#' @param ties Value for \code{ties} in \code{\link{round_rank}}.
+#' @param round_digits Value for \code{round_digits} in
+#'   \code{\link{round_rank}}.
 #'
 #' @details This rating method was initially designed for games between two
 #'   players. That is why competition results are transformed into pairwise
@@ -31,18 +34,26 @@
 #'     \item Solve the SLE. The solution is the Colley rating.
 #'   }
 #'
-#' @return Named vector of the Colley rating. The mean rating should be 0.5.
+#' @return \code{rate_colley} returns a named vector of the Colley rating. The
+#'   mean rating should be 0.5.
+#'
+#'   \code{rank_colley} returns a named vector of
+#'   \link[=rating-ranking]{ranking} using \code{\link{round_rank}}.
 #'
 #' @references Wesley N. Colley (2002) \emph{Colley’s Bias Free College Football
 #'   Ranking Method: The Colley Matrix Explained}. Available online at
 #'   \url{http://www.colleyrankings.com}
 #'
 #' @examples rate_colley(ncaa2005)
+#' rank_colley(ncaa2005)
+#'
 #' rate_colley(ncaa2005, players = c("UNC", "Duke", "Miami", "UVA", "VT"))
 #' rate_colley(ncaa2005, players = c("UNC", "Miami", "UVA", "VT"))
 #'
-#' @aliases colley
-#'
+#' @name colley
+NULL
+
+#' @rdname colley
 #' @export
 rate_colley <- function(cr_data, players = NULL) {
   cr <- to_longcr(cr_data, repair = TRUE)
@@ -63,4 +74,17 @@ rate_colley <- function(cr_data, players = NULL) {
   right_hand <- 1 + 0.5*(colSums(win_mat) - rowSums(win_mat))
 
   solve(colley_mat, right_hand)
+}
+
+#' @rdname colley
+#' @export
+rank_colley <- function(cr_data, players = NULL,
+                        ties = c("average", "first", "last",
+                                 "random", "max", "min"),
+                        round_digits = 7) {
+
+  round_rank(
+    rate_colley(cr_data = cr_data, players = players),
+    type = "desc", ties = ties, round_digits = round_digits
+  )
 }

@@ -1,13 +1,17 @@
-#' Iterative ratings
+#' Iterative rating method
 #'
 #' Functions to compute iterative numeric ratings, i.e. which are recomputed
-#' after every game.
+#' after every game, and corresponding rankings.
 #'
 #' @param cr_data Competition results of \link{pairgames} in format ready for
 #'   \code{\link[=results-longcr]{to_longcr}}.
 #' @param rate_fun Rating function (see Details).
 #' @param players Vector of players for which rating is computed.
 #' @param initial_ratings Initial ratings (see Details).
+#' @param type Value for \code{type} in \code{\link{round_rank}}.
+#' @param ties Value for \code{ties} in \code{\link{round_rank}}.
+#' @param round_digits Value for \code{round_digits} in
+#'   \code{\link{round_rank}}.
 #'
 #' @details Iterative ratings of group of players are recomputed after every
 #'   game based on players' game scores and their ratings just before the game.
@@ -54,6 +58,10 @@
 #' @return \code{rate_iterative} returns a named vector of iterative ratings by
 #'   the end of competition results.
 #'
+#'   \code{rank_iterative} returns a named vector of
+#'   \link[=rating-ranking]{ranking} using \code{\link{round_rank}} based on
+#'   specified \code{type}.
+#'
 #'   \code{add_iterative_ratings} returns a
 #'   \code{\link[=results-widecr]{widecr}} form of \code{cr_data} with four
 #'   rating columns added:
@@ -83,8 +91,9 @@
 #' add_iterative_ratings(cr_data, test_rate_fun, players = 1:3,
 #'                       initial_ratings = c("1" = 1, "2" = 2, "3" = 3))
 #'
-#' # Ratings at the end of competition results.
+#' # Ratings and ranking at the end of competition results.
 #' rate_iterative(cr_data, test_rate_fun)
+#' rank_iterative(cr_data, test_rate_fun, type = "desc")
 #'
 #' @name iterative
 NULL
@@ -114,6 +123,23 @@ rate_iterative <- function(cr_data, rate_fun, players = NULL,
     slice(n()) %>%
     ungroup() %>%
     to_rating_vec()
+}
+
+#' @rdname iterative
+#' @export
+rank_iterative <- function(cr_data, rate_fun, players = NULL,
+                           initial_ratings = 0,
+                           type = "desc",
+                           ties = c("average", "first", "last",
+                                    "random", "max", "min"),
+                           round_digits = 7) {
+  round_rank(
+    rate_iterative(
+      cr_data = cr_data, rate_fun = rate_fun, players = players,
+      initial_ratings = initial_ratings
+    ),
+    type = type, ties = ties, round_digits = round_digits
+  )
 }
 
 #' @rdname iterative

@@ -11,12 +11,28 @@ test_that("rate_keener works", {
 })
 
 test_that("rate_keener handles extra arguments", {
-  output <- rate_keener(ncaa2005, h2h_fun = h2h_sum_score, trans = TRUE)
+  output <- rate_keener(ncaa2005, h2h_fun = h2h_sum_score, transpose = TRUE)
   output_ref <- c(0.0670593277911044, 0.350554576300443, 0.158498338171409,
                   0.160517490640876, 0.263370267096167)
   names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
 
   expect_equal(output, output_ref)
+})
+
+
+# rank_keener -------------------------------------------------------------
+test_that("rank_keener works", {
+  output_1 <- rank_keener(ncaa2005, h2h_fun = h2h_sum_score, transpose = TRUE)
+  output_ref_1 <- c(5, 1, 4, 3, 2)
+  names(output_ref_1) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+
+  expect_equal(output_1, output_ref_1)
+
+  output_2 <- rank_keener(ncaa2005, h2h_fun = h2h_num)
+  output_ref_2 <- output_ref_1
+  output_ref_2[] <- rep(3, 5)
+
+  expect_equal(output_2, output_ref_2)
 })
 
 # force_nonneg ----------------------------------------------------------

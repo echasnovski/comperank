@@ -1,6 +1,6 @@
-#' Elo ratings
+#' Elo method
 #'
-#' Functions to compute Elo ratings.
+#' Functions to compute rating and ranking using Elo method.
 #'
 #' @param cr_data Competition results of \link{pairgames} in format ready for
 #'   \code{\link[=results-longcr]{to_longcr}}.
@@ -13,6 +13,9 @@
 #' @param score1 Score of player1 in the game.
 #' @param rating2 Rating of player2 before the game.
 #' @param score2 Score of player2 in the game.
+#' @param ties Value for \code{ties} in \code{\link{round_rank}}.
+#' @param round_digits Value for \code{round_digits} in
+#'   \code{\link{round_rank}}.
 #'
 #' @details \code{rate_elo} and \code{add_elo_ratings} are wrappers around
 #'   \code{\link{rate_iterative}} and \code{\link{add_iterative_ratings}}
@@ -39,8 +42,11 @@
 #'   of its not appropriate output format, but rather its non-vectorized
 #'   reimplementation is.
 #'
-#' @return \code{rate_elo} returns a named vector of Elo ratings by the end of
+#' @return \code{rate_elo} returns a named vector of Elo rating by the end of
 #'   competition results.
+#'
+#'   \code{rank_elo} returns a named vector of \link[=rating-ranking]{ranking}
+#'   using \code{\link{round_rank}}.
 #'
 #'   \code{add_elo_ratings} returns a
 #'   \code{\link[=results-widecr]{widecr}} form of \code{cr_data} with four
@@ -61,6 +67,7 @@
 #' @examples
 #' # Elo ratings
 #' rate_elo(ncaa2005)
+#' rank_elo(ncaa2005)
 #' add_elo_ratings(ncaa2005, initial_ratings = 100)
 #'
 #' # Elo function
@@ -80,6 +87,20 @@ rate_elo <- function(cr_data, K = 30, ksi = 400,
     rate_fun = elo_fgen(K = K, ksi = ksi),
     players = players,
     initial_ratings = initial_ratings
+  )
+}
+
+#' @rdname elo
+#' @export
+rank_elo <- function(cr_data, K = 30, ksi = 400,
+                     players = NULL, initial_ratings = 0,
+                     ties = c("average", "first", "last",
+                              "random", "max", "min"),
+                     round_digits = 7) {
+  round_rank(
+    rate_elo(cr_data = cr_data, K = K, ksi = ksi, players = players,
+             initial_ratings = initial_ratings),
+    type = "desc", ties = ties, round_digits = round_digits
   )
 }
 

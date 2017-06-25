@@ -3,12 +3,17 @@
 \name{elo}
 \alias{elo}
 \alias{rate_elo}
+\alias{rank_elo}
 \alias{add_elo_ratings}
 \alias{elo}
-\title{Elo ratings}
+\title{Elo method}
 \usage{
 rate_elo(cr_data, K = 30, ksi = 400, players = NULL,
   initial_ratings = 0)
+
+rank_elo(cr_data, K = 30, ksi = 400, players = NULL,
+  initial_ratings = 0, ties = c("average", "first", "last", "random", "max",
+  "min"), round_digits = 7)
 
 add_elo_ratings(cr_data, K = 30, ksi = 400, players = NULL,
   initial_ratings = 0)
@@ -28,6 +33,11 @@ elo(rating1, score1, rating2, score2, K = 30, ksi = 400)
 \item{initial_ratings}{Initial ratings (see
 \link[=iterative]{Iterative ratings}).}
 
+\item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
+
+\item{round_digits}{Value for \code{round_digits} in
+\code{\link{round_rank}}.}
+
 \item{rating1}{Rating of player1 before the game.}
 
 \item{score1}{Score of player1 in the game.}
@@ -37,8 +47,11 @@ elo(rating1, score1, rating2, score2, K = 30, ksi = 400)
 \item{score2}{Score of player2 in the game.}
 }
 \value{
-\code{rate_elo} returns a named vector of Elo ratings by the end of
+\code{rate_elo} returns a named vector of Elo rating by the end of
   competition results.
+
+  \code{rank_elo} returns a named vector of \link[=rating-ranking]{ranking}
+  using \code{\link{round_rank}}.
 
   \code{add_elo_ratings} returns a
   \code{\link[=results-widecr]{widecr}} form of \code{cr_data} with four
@@ -54,7 +67,7 @@ elo(rating1, score1, rating2, score2, K = 30, ksi = 400)
   after the game. Rows represent games, columns - players.
 }
 \description{
-Functions to compute Elo ratings.
+Functions to compute rating and ranking using Elo method.
 }
 \details{
 \code{rate_elo} and \code{add_elo_ratings} are wrappers around
@@ -85,6 +98,7 @@ Functions to compute Elo ratings.
 \examples{
 # Elo ratings
 rate_elo(ncaa2005)
+rank_elo(ncaa2005)
 add_elo_ratings(ncaa2005, initial_ratings = 100)
 
 # Elo function

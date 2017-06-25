@@ -1,6 +1,6 @@
-#' Markov rating
+#' Markov method
 #'
-#' Function to compute rating using Markov method.
+#' Functions to compute rating and ranking using Markov method.
 #'
 #' @param cr_data Competition results in format ready for
 #'   \code{\link[=results-longcr]{to_longcr}}.
@@ -17,6 +17,9 @@
 #' @param force_nonneg_h2h Whether to force nonnegative values in Head-to-Head
 #'   matrix.
 #' @param ... Additional arguments to be passed to methods.
+#' @param ties Value for \code{ties} in \code{\link{round_rank}}.
+#' @param round_digits Value for \code{round_digits} in
+#'   \code{\link{round_rank}}.
 #'
 #' @details Markov ratings are based on players 'voting' for other players being
 #' better. Algorithm is as follows:
@@ -57,14 +60,22 @@
 #' \code{weights} is recycled to the maximum length of three mentioned recycled
 #' arguments and then is normalized to sum to 1.
 #'
-#' @return A named vector of the Markov ratings. The sum of all ratings should
-#'   be equal to 1.
+#' @return \code{rate_markov} returns a named vector of the Markov rating. The
+#'   sum of all ratings should be equal to 1.
+#'
+#'   \code{rank_markov} returns a named vector of
+#'   \link[=rating-ranking]{ranking} using \code{\link{round_rank}}.
 #'
 #' @references \href{https://en.wikipedia.org/wiki/Markov_chain}{Wikipedia
 #'   page} for Markov chain.
 #'
 #' @examples
 #' rate_markov(
+#'   cr_data = ncaa2005,
+#'   h2h_fun = h2h_num_wins,
+#'   stoch_modify = vote_equal
+#' )
+#' rank_markov(
 #'   cr_data = ncaa2005,
 #'   h2h_fun = h2h_num_wins,
 #'   stoch_modify = vote_equal
@@ -77,8 +88,10 @@
 #'   weights = c(0.3, 0.7)
 #' )
 #'
-#' @aliases markov
-#'
+#' @name markov
+NULL
+
+#' @rdname markov
 #' @export
 rate_markov <- function(cr_data, h2h_fun, players = NULL,
                         transpose = FALSE, self_play = NULL,
@@ -131,6 +144,30 @@ rate_markov <- function(cr_data, h2h_fun, players = NULL,
   names(res) <- rownames(stoch)
 
   res
+}
+
+#' @rdname markov
+#' @export
+rank_markov <- function(cr_data, h2h_fun, players = NULL,
+                        transpose = FALSE, self_play = NULL,
+                        stoch_modify = teleport(0.15),
+                        weights = 1,
+                        force_nonneg_h2h = TRUE,
+                        ties = c("average", "first", "last",
+                                 "random", "max", "min"),
+                        round_digits = 7,
+                        ...) {
+  round_rank(
+    rate_markov(
+      cr_data = cr_data, h2h_fun = h2h_fun, players = players,
+      transpose = transpose, self_play = self_play,
+      stoch_modify = stoch_modify,
+      weights = weights,
+      force_nonneg_h2h = force_nonneg_h2h,
+      ...
+    ),
+    type = "desc", ties = ties, round_digits = round_digits
+  )
 }
 
 
