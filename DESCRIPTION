@@ -1,9 +1,9 @@
 Package: comperank
-Title: Ranking Methods for Competition Results
+Title: Ranking and Rating Methods for Competition Results
 Version: 0.0.0.9000
 Authors@R: person("Evgnei", "Chasnovski", email = "evgeni.chasnovski@gmail.com",
     role = c("aut", "cre"))
-Description: Compute ranking based on competition results.
+Description: Compute ranking and rating based on competition results.
 Depends: R (>= 3.4.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
