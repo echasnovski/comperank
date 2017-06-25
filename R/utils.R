@@ -27,6 +27,56 @@ to_function_list <- function(x, var_name = "input") {
   x
 }
 
+#' Rank vector after rounding
+#'
+#' Function for ranking vector after rounding.
+#'
+#' @param x A numeric, complex, character or logical vector.
+#' @param type Type of ranking.
+#' @param na.last For controlling the treatment of NAs. If TRUE, missing values
+#'   in the data are put last; if FALSE, they are put first; if NA, they are
+#'   removed; if "keep" they are kept with rank NA.
+#' @param ties A character string specifying how ties are treated, see
+#'   ‘Details’; can be abbreviated.
+#' @param round_digits Value of \code{digits} for \code{\link{round}}.
+#'
+#' @details This is basically a wrapper around \code{\link{rank}} in which
+#'   \code{x} is pre-modified by rounding to specific number of digits
+#'   \code{round_digits}.
+#'
+#'   \code{type} can have two values: "desc" for ranking in descending order
+#'   (rank 1 is given to the biggest value in \code{x}) and "asc" (rank 1 is
+#'   given to the smallest value in \code{x}). Any other value will cause error.
+#'
+#' @return A numeric vector of the same length as x with names copied from x
+#'   (unless na.last = NA, when missing values are removed). The vector is of
+#'   integer type unless x is a long vector or ties = "average" when it
+#'   is of double type (whether or not there are any ties).
+#'
+#' @examples
+#' round_rank(10:1, type = "desc")
+#' round_rank(10:1, type = "asc")
+#'
+#' set.seed(334)
+#' x <- 10^(-10) * runif(10)
+#' round_rank(x)
+#'
+#' @export
+round_rank <- function(x, type = "desc", na.last = TRUE,
+                       ties = c("average", "first", "last",
+                                "random", "max", "min"),
+                       round_digits = 7) {
+  x <- round(x, digits = round_digits)
+
+  if (type == "desc") {
+    return(rank(-xtfrm(x), na.last = na.last, ties.method = ties))
+  } else if (type == "asc") {
+    return(rank(x, na.last = na.last, ties.method = ties))
+  } else {
+    stop("Wrong value of argument 'type'.")
+  }
+}
+
 
 # Rating methods ----------------------------------------------------------
 assert_used_objects <- function(used, original, prefix = "",

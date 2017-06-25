@@ -47,6 +47,37 @@ test_that("to_function_list works", {
 })
 
 
+# round_rank ---------------------------------------------------------------
+test_that("round_rank works", {
+  set.seed(220)
+  input <- runif(10)
+  output_1 <- round_rank(input, type = "desc")
+  output_ref_1 <- c(9, 1, 3, 7, 10, 4, 2, 8, 6, 5)
+
+  expect_equal(output_1, output_ref_1)
+
+  output_2 <- round_rank(input, type = "asc")
+  output_ref_2 <- c(2, 10, 8, 4, 1, 7, 9, 3, 5, 6)
+
+  expect_equal(output_2, output_ref_2)
+
+  expect_error(round_rank(input, type = "aesc"))
+})
+
+test_that("round_rank rounds", {
+  set.seed(515)
+  input_1 <- rep(0.2, 5) + 10^(-7) * runif(5)
+
+  expect_equal(round_rank(input_1, round_digits = 6), rep(3, 5))
+
+  set.seed(516)
+  input_2 <- c((1:4)/4, 1) + 10^(-7) * runif(5)
+
+  expect_equal(round_rank(input_2, type = "desc", round_digits = 6),
+               c(5, 4, 3, 1.5, 1.5))
+})
+
+
 # assert_used_objects -----------------------------------------------------
 test_that("assert_used_objects works", {
   used <- c("a", "b", "c")
