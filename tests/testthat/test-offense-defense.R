@@ -16,8 +16,7 @@ test_that("rate_od works", {
 
   output_1 <- rate_od(
     cr_data = ncaa2005,
-    h2h_fun = h2h_mean_score,
-    self_play = 0,
+    ifelse(player1[1] == player2[1], 0, mean(score2)),
     eps = 1e-3,
     tol = 1e-4,
     max_iterations = 100
@@ -33,7 +32,7 @@ test_that("rate_od works", {
 
   output_2 <- rate_od(
     cr_data = ncaa2005,
-    h2h_fun = h2h_mean_score,
+    mean(score2),
     self_play = NULL,
     eps = 1e-3,
     tol = 1e-4,
@@ -41,6 +40,33 @@ test_that("rate_od works", {
   )
 
   expect_equal(round(output_2, 3), output_ref_2)
+})
+
+test_that("rate_od handles factor `player`", {
+  input <- ncaa2005
+  input$player <- factor(
+    input$player, levels = c("Duke", "Extra", "Miami")
+  )
+
+  output <- rate_od(
+    cr_data = input,
+    ifelse(player1[1] == player2[1], 0, mean(score2)),
+    eps = 1e-3,
+    tol = 1e-4,
+    max_iterations = 100
+  )
+  output_ref <- matrix(
+    c( 3.96, 0.127, 11.288,
+      4.659, 0.057,  1.826,
+       0.85, 2.216,  6.181),
+    ncol = 3,
+    dimnames = list(
+      c("Duke", "Extra", "Miami"),
+      c("off", "def", "od")
+    )
+  )
+
+  expect_equal(round(output, 3), output_ref)
 })
 
 
@@ -59,8 +85,7 @@ test_that("rank_od works", {
 
   output_1 <- rank_od(
     cr_data = ncaa2005,
-    h2h_fun = h2h_mean_score,
-    self_play = 0,
+    ifelse(player1[1] == player2[1], 0, mean(score2)),
     eps = 1e-3,
     tol = 1e-4,
     max_iterations = 100
@@ -73,14 +98,40 @@ test_that("rank_od works", {
 
   output_2 <- rank_od(
     cr_data = ncaa2005,
-    h2h_fun = h2h_num,
-    self_play = 0,
+    ifelse(player1[1] == player2[1], 0, length(score1)),
     eps = 1e-3,
     tol = 1e-4,
     max_iterations = 100
   )
 
   expect_equal(output_2, output_ref_2)
+})
+
+test_that("rank_od handles factor `player`", {
+  input <- ncaa2005
+  input$player <- factor(
+    input$player, levels = c("Duke", "Extra", "Miami")
+  )
+
+  output <- rank_od(
+    cr_data = input,
+    ifelse(player1[1] == player2[1], 0, mean(score2)),
+    eps = 1e-3,
+    tol = 1e-4,
+    max_iterations = 100
+  )
+  output_ref <- matrix(
+    c(2, 3, 1,
+      3, 1, 2,
+      3, 2, 1),
+    ncol = 3,
+    dimnames = list(
+      c("Duke", "Extra", "Miami"),
+      c("off", "def", "od")
+    )
+  )
+
+  expect_equal(output, output_ref)
 })
 
 
