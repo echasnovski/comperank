@@ -8,26 +8,25 @@
 \alias{normalize_keener}
 \title{Keener method}
 \usage{
-rate_keener(cr_data, h2h_fun, players = NULL, force_nonneg_h2h = TRUE,
-  skew_fun = skew_keener, normalize_fun = normalize_keener, eps = 0.001,
-  ...)
+rate_keener(cr_data, ..., fill = 0, force_nonneg_h2h = TRUE,
+  skew_fun = skew_keener, normalize_fun = normalize_keener, eps = 0.001)
 
-rank_keener(cr_data, h2h_fun, players = NULL, force_nonneg_h2h = TRUE,
+rank_keener(cr_data, ..., fill = 0, force_nonneg_h2h = TRUE,
   skew_fun = skew_keener, normalize_fun = normalize_keener, eps = 0.001,
   ties = c("average", "first", "last", "random", "max", "min"),
-  round_digits = 7, ...)
+  round_digits = 7)
 
-skew_keener(x, ...)
+skew_keener(x)
 
-normalize_keener(h2h_mat, cr_data, ...)
+normalize_keener(mat, cr_data)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=results-longcr]{as_longcr}}.}
+\code{\link[=as_longcr]{as_longcr()}}.}
 
-\item{h2h_fun}{Head-to-Head function to compute Head-to-Head matrix.}
+\item{...}{Name-value pairs of Head-to-Head functions (see \link{h2h_mat}).}
 
-\item{players}{Vector of players for which rating is computed.}
+\item{fill}{A single value to use instead of NA for missing pairs.}
 
 \item{force_nonneg_h2h}{Whether to force nonnegative values in Head-to-Head
 matrix.}
@@ -38,8 +37,6 @@ matrix.}
 
 \item{eps}{Coefficient for forcing irreducibility.}
 
-\item{...}{Additional arguments to be passed to methods.}
-
 \item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
 
 \item{round_digits}{Value for \code{round_digits} in
@@ -47,75 +44,81 @@ matrix.}
 
 \item{x}{Argument for \code{skew_keener}.}
 
-\item{h2h_mat}{Argument for \code{normalize_keener}.}
+\item{mat}{Argument for \code{normalize_keener}.}
 }
 \value{
 \code{rate_keener} returns a named vector of the Keener rating. The
-  sum of all ratings should be equal to 1.
+sum of all ratings should be equal to 1.
 
-  \code{rank_keener} returns a named vector of
-  \link[=rating-ranking]{ranking} using \code{\link{round_rank}}.
+\code{rank_keener} returns a named vector of \link[=rating-ranking]{ranking}
+using \code{\link{round_rank}}.
 }
 \description{
 Functions to compute rating and ranking using Keener method.
 }
 \details{
 Keener rating method is based on Head-to-Head matrix of the
-  competition results. Therefore it can be used for competitions with
-  variable number of players. Its algorithm is as follows:
+competition results. Therefore it can be used for competitions with
+variable number of players. Its algorithm is as follows:
 \enumerate{
-  \item Compute Head-to-Head matrix of competition results for \code{players}
-    with \code{h2h_fun} via \code{\link{get_h2h}}. Ensure that there are no
-    \code{NA}s. Absent in \code{cr_data} players are dropped. If
-    \code{force_nonneg_h2h} is \code{TRUE} then the minimum value is
-    subtracted (in case some Head-to-Head value is strictly negative).
-    \bold{Note} that Keener method is designed for Head-to-Head matrix with
-    the following property: the more value in row \bold{i} and column
-    \bold{j} the better player from row \bold{i} performed than player from
-    column \bold{j}. Extra argument \code{transpose} for
-    \code{\link{get_h2h}} can be used to ensure that;
+  \item Compute Head-to-Head matrix of competition results based on
+    Head-to-Head expression supplied in \code{...} (see \link{h2h_mat}).
+    Head-to-Head values are computed based only on the games between players
+    of interest (see Players). Ensure that there are no \code{NA}s by using
+    \code{fill} argument. If \code{force_nonneg_h2h} is \code{TRUE} then the
+    minimum value is subtracted (in case some Head-to-Head value is strictly
+    negative). \bold{Note} that Keener method is designed for Head-to-Head
+    matrix with the following property: the more value in row \bold{i} and
+    column \bold{j} the better player from row \bold{i} performed than player
+    from column \bold{j}. Supply Head-to-Head expression appropriately.
   \item Update raw Head-to-Head values (denoted as S) with the
     pair-normalization: a_{ij} = (S_ij + 1) / (S_ij + S_ji + 2). This step
-    should make comparing different players more reasonable;
+    should make comparing different players more reasonable.
   \item Skew Head-to-Head values with applying \code{skew_fun} to them.
-    \code{skew_fun} should take numeric vector as first argument and
-    \code{...} as second. It should return skewed vector. The default skew
-    function is \code{skew_keener}. This step should make abnormal results
-    not very abnormal. To omit this step use \code{\link{skip_action}};
+    \code{skew_fun} should take numeric vector as only argument. It should
+    return skewed vector. The default skew function is \code{skew_keener}.
+    This step should make abnormal results not very abnormal. To omit this
+    step supply \code{skew_fun = NULL}.
   \item Normalize Head-to-Head values with \code{normalize_fun} using
     \code{cr_data}. \code{normalize_fun} should take Head-to-Head matrix as
-    the first argument, \code{cr_data} as second and \code{...} as third. It
-    should return normalized matrix. The default normalization is
-    \code{normalize_keener} which divides Head-to-Head value of
-    'player1'-'player2' matchup by the number of games played by 'player1'.
-    This step should take into account possibly not equal number of games
-    played by players. To omit this step use \code{\link{skip_action}};
+    the first argument and \code{cr_data} as second. It should return
+    normalized matrix. The default normalization is \code{normalize_keener}
+    which divides Head-to-Head value of 'player1'-'player2' matchup divided
+    by the number of games played by 'player1'. This step should take into
+    account possibly not equal number of games played by players. To omit
+    this step supply \code{skew_fun = NULL}.
   \item Add small value to Head-to-Head matrix to ensure its irreducibility.
     If all values are strictly positive then this step is omitted. In other
     case small value is computed as the smallest non-zero Head-to-Head value
     multiplied by \code{eps}. This step is done to ensure applicability of
-    Perron-Frobenius theorem;
+    Perron-Frobenius theorem.
   \item Compute Perron-Frobenius vector of the resultant matrix, i.e. the
     strictly positive real eigenvector (which values sum to 1) for eigenvalue
     (which is real) of the maximum absolute value. This vector is Keener
     rating vector.
 }
 }
+\section{Players}{
+
+
+\code{comperes} offers a possibility to handle certain set of players. It is
+done by having \code{player} column (in \link[=as_longcr]{longcr} format) as
+factor with levels specifying all players of interest. In case of factor the
+result is returned only for players from its levels. Otherwise - for all
+present players.
+}
+
 \examples{
 # Use transpose = TRUE is correct in this case
-rate_keener(ncaa2005, h2h_sum_score, transpose = TRUE)
-rank_keener(ncaa2005, h2h_sum_score, transpose = TRUE)
+rate_keener(ncaa2005, sum(score1))
+rank_keener(ncaa2005, sum(score1))
 
 # Impact of skewing
-rate_keener(ncaa2005, h2h_sum_score, transpose = TRUE,
-            skew_fun = skip_action)
+rate_keener(ncaa2005, sum(score1), skew_fun = NULL)
 
-# Impact of normalization. Use fill = 0 to ensure no NA after get_h2h
-rate_keener(ncaa2005[-(1:2), ], h2h_sum_score,
-            transpose = TRUE, fill = 0)
-rate_keener(ncaa2005[-(1:2), ], h2h_sum_score,
-            normalize_fun = skip_action,
-            transpose = TRUE, fill = 0)
+# Impact of normalization.
+rate_keener(ncaa2005[-(1:2), ], sum(score1))
+rate_keener(ncaa2005[-(1:2), ], sum(score1), normalize_fun = NULL)
 
 }
 \references{

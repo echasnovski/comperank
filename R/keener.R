@@ -2,145 +2,140 @@
 #'
 #' Functions to compute rating and ranking using Keener method.
 #'
-#' @param cr_data Competition results in format ready for
-#'   \code{\link[=results-longcr]{as_longcr}}.
-#' @param h2h_fun Head-to-Head function to compute Head-to-Head matrix.
-#' @param players Vector of players for which rating is computed.
+#' @inheritParams rate_massey
+#' @param ... Name-value pairs of Head-to-Head functions (see \link{h2h_mat}).
+#' @param fill A single value to use instead of NA for missing pairs.
 #' @param force_nonneg_h2h Whether to force nonnegative values in Head-to-Head
 #'   matrix.
 #' @param skew_fun Skew function.
 #' @param normalize_fun Normalization function.
 #' @param eps Coefficient for forcing irreducibility.
-#' @param ... Additional arguments to be passed to methods.
 #' @param ties Value for \code{ties} in \code{\link{round_rank}}.
 #' @param round_digits Value for \code{round_digits} in
 #'   \code{\link{round_rank}}.
 #' @param x Argument for \code{skew_keener}.
-#' @param h2h_mat Argument for \code{normalize_keener}.
+#' @param mat Argument for \code{normalize_keener}.
 #'
 #' @details Keener rating method is based on Head-to-Head matrix of the
-#'   competition results. Therefore it can be used for competitions with
-#'   variable number of players. Its algorithm is as follows:
+#' competition results. Therefore it can be used for competitions with
+#' variable number of players. Its algorithm is as follows:
 #' \enumerate{
-#'   \item Compute Head-to-Head matrix of competition results for \code{players}
-#'     with \code{h2h_fun} via \code{\link{get_h2h}}. Ensure that there are no
-#'     \code{NA}s. Absent in \code{cr_data} players are dropped. If
-#'     \code{force_nonneg_h2h} is \code{TRUE} then the minimum value is
-#'     subtracted (in case some Head-to-Head value is strictly negative).
-#'     \bold{Note} that Keener method is designed for Head-to-Head matrix with
-#'     the following property: the more value in row \bold{i} and column
-#'     \bold{j} the better player from row \bold{i} performed than player from
-#'     column \bold{j}. Extra argument \code{transpose} for
-#'     \code{\link{get_h2h}} can be used to ensure that;
+#'   \item Compute Head-to-Head matrix of competition results based on
+#'     Head-to-Head expression supplied in \code{...} (see \link{h2h_mat}).
+#'     Head-to-Head values are computed based only on the games between players
+#'     of interest (see Players). Ensure that there are no \code{NA}s by using
+#'     \code{fill} argument. If \code{force_nonneg_h2h} is \code{TRUE} then the
+#'     minimum value is subtracted (in case some Head-to-Head value is strictly
+#'     negative). \bold{Note} that Keener method is designed for Head-to-Head
+#'     matrix with the following property: the more value in row \bold{i} and
+#'     column \bold{j} the better player from row \bold{i} performed than player
+#'     from column \bold{j}. Supply Head-to-Head expression appropriately.
 #'   \item Update raw Head-to-Head values (denoted as S) with the
 #'     pair-normalization: a_{ij} = (S_ij + 1) / (S_ij + S_ji + 2). This step
-#'     should make comparing different players more reasonable;
+#'     should make comparing different players more reasonable.
 #'   \item Skew Head-to-Head values with applying \code{skew_fun} to them.
-#'     \code{skew_fun} should take numeric vector as first argument and
-#'     \code{...} as second. It should return skewed vector. The default skew
-#'     function is \code{skew_keener}. This step should make abnormal results
-#'     not very abnormal. To omit this step use \code{\link{skip_action}};
+#'     \code{skew_fun} should take numeric vector as only argument. It should
+#'     return skewed vector. The default skew function is \code{skew_keener}.
+#'     This step should make abnormal results not very abnormal. To omit this
+#'     step supply \code{skew_fun = NULL}.
 #'   \item Normalize Head-to-Head values with \code{normalize_fun} using
 #'     \code{cr_data}. \code{normalize_fun} should take Head-to-Head matrix as
-#'     the first argument, \code{cr_data} as second and \code{...} as third. It
-#'     should return normalized matrix. The default normalization is
-#'     \code{normalize_keener} which divides Head-to-Head value of
-#'     'player1'-'player2' matchup by the number of games played by 'player1'.
-#'     This step should take into account possibly not equal number of games
-#'     played by players. To omit this step use \code{\link{skip_action}};
+#'     the first argument and \code{cr_data} as second. It should return
+#'     normalized matrix. The default normalization is \code{normalize_keener}
+#'     which divides Head-to-Head value of 'player1'-'player2' matchup divided
+#'     by the number of games played by 'player1'. This step should take into
+#'     account possibly not equal number of games played by players. To omit
+#'     this step supply \code{skew_fun = NULL}.
 #'   \item Add small value to Head-to-Head matrix to ensure its irreducibility.
 #'     If all values are strictly positive then this step is omitted. In other
 #'     case small value is computed as the smallest non-zero Head-to-Head value
 #'     multiplied by \code{eps}. This step is done to ensure applicability of
-#'     Perron-Frobenius theorem;
+#'     Perron-Frobenius theorem.
 #'   \item Compute Perron-Frobenius vector of the resultant matrix, i.e. the
 #'     strictly positive real eigenvector (which values sum to 1) for eigenvalue
 #'     (which is real) of the maximum absolute value. This vector is Keener
 #'     rating vector.
 #' }
 #'
-#' @return \code{rate_keener} returns a named vector of the Keener rating. The
-#'   sum of all ratings should be equal to 1.
+#' @inheritSection massey Players
 #'
-#'   \code{rank_keener} returns a named vector of
-#'   \link[=rating-ranking]{ranking} using \code{\link{round_rank}}.
+#' @return \code{rate_keener} returns a named vector of the Keener rating. The
+#' sum of all ratings should be equal to 1.
+#'
+#' \code{rank_keener} returns a named vector of \link[=rating-ranking]{ranking}
+#' using \code{\link{round_rank}}.
 #'
 #' @references James P. Keener (1993) \emph{The Perron-Frobenius theorem and the
 #'   ranking of football teams}. SIAM Review, 35(1):80–93, 1993.
 #'
 #' @examples
 #' # Use transpose = TRUE is correct in this case
-#' rate_keener(ncaa2005, h2h_sum_score, transpose = TRUE)
-#' rank_keener(ncaa2005, h2h_sum_score, transpose = TRUE)
+#' rate_keener(ncaa2005, sum(score1))
+#' rank_keener(ncaa2005, sum(score1))
 #'
 #' # Impact of skewing
-#' rate_keener(ncaa2005, h2h_sum_score, transpose = TRUE,
-#'             skew_fun = skip_action)
+#' rate_keener(ncaa2005, sum(score1), skew_fun = NULL)
 #'
-#' # Impact of normalization. Use fill = 0 to ensure no NA after get_h2h
-#' rate_keener(ncaa2005[-(1:2), ], h2h_sum_score,
-#'             transpose = TRUE, fill = 0)
-#' rate_keener(ncaa2005[-(1:2), ], h2h_sum_score,
-#'             normalize_fun = skip_action,
-#'             transpose = TRUE, fill = 0)
+#' # Impact of normalization.
+#' rate_keener(ncaa2005[-(1:2), ], sum(score1))
+#' rate_keener(ncaa2005[-(1:2), ], sum(score1), normalize_fun = NULL)
 #'
 #' @name keener
 NULL
 
 #' @rdname keener
 #' @export
-rate_keener <- function(cr_data, h2h_fun, players = NULL,
+rate_keener <- function(cr_data, ..., fill = 0,
                         force_nonneg_h2h = TRUE,
                         skew_fun = skew_keener,
                         normalize_fun = normalize_keener,
-                        eps = 0.001,
-                        ...) {
+                        eps = 0.001) {
   # Compute symmetrical Head-to-Head matrix
-  h2h_mat <- cr_data %>%
-    as_longcr(...) %>%
-    get_h2h(h2h_fun = h2h_fun, players = players,
-            absent_players = players_drop,
-            ...) %>%
+  mat <- cr_data %>%
+    as_longcr(repair = TRUE) %>%
+    h2h_mat(..., fill = fill) %>%
     force_nonneg(force = force_nonneg_h2h)
-  h2h_mat <- (h2h_mat + 1) / (h2h_mat + t(h2h_mat) + 2)
+  mat <- (mat + 1) / (mat + t(mat) + 2)
 
   # Skew
-  h2h_mat[, ] <- skew_fun(h2h_mat[, ], ...)
+  if (!identical(skew_fun, NULL)) {
+    mat[, ] <- skew_fun(mat[, ])
+  }
 
   # Normalize
-  h2h_mat <- normalize_fun(h2h_mat, cr_data, ...)
+  if (!identical(normalize_fun, NULL)) {
+    mat <- normalize_fun(mat, cr_data)
+  }
 
   # Force irreducibility
-  is_min_h2h_zero <- isTRUE(all.equal(min(h2h_mat), 0))
-  min_non_zero_h2h <- min(h2h_mat[h2h_mat > 0])
-  h2h_mat <- h2h_mat + eps * as.integer(is_min_h2h_zero) * min_non_zero_h2h
+  is_min_h2h_zero <- isTRUE(all.equal(min(mat), 0))
+  min_non_zero_h2h <- min(mat[mat > 0])
+  mat <- mat + eps * as.integer(is_min_h2h_zero) * min_non_zero_h2h
 
   # Compute Perron-Frobenius vector
-  res <- get_pf_vec(h2h_mat)
-  names(res) <- rownames(h2h_mat)
+  res <- get_pf_vec(mat)
+  names(res) <- rownames(mat)
 
   res
 }
 
 #' @rdname keener
 #' @export
-rank_keener <- function(cr_data, h2h_fun, players = NULL,
+rank_keener <- function(cr_data, ..., fill = 0,
                         force_nonneg_h2h = TRUE,
                         skew_fun = skew_keener,
                         normalize_fun = normalize_keener,
                         eps = 0.001,
                         ties = c("average", "first", "last",
                                  "random", "max", "min"),
-                        round_digits = 7,
-                        ...) {
+                        round_digits = 7) {
   round_rank(
     rate_keener(
-      cr_data = cr_data, h2h_fun = h2h_fun, players = players,
+      cr_data = cr_data, ..., fill = fill,
       force_nonneg_h2h = force_nonneg_h2h,
       skew_fun = skew_fun,
       normalize_fun = normalize_fun,
-      eps = eps,
-      ...
+      eps = eps
     ),
     type = "desc", ties = ties, round_digits = round_digits
   )
@@ -156,29 +151,17 @@ force_nonneg <- function(x, force = TRUE) {
 
 #' @rdname keener
 #' @export
-skew_keener <- function(x, ...) {
+skew_keener <- function(x) {
   (1 + sign(x - 0.5) * sqrt(abs(2*x - 1))) / 2
 }
 
 #' @rdname keener
 #' @export
-normalize_keener <- function(h2h_mat, cr_data, ...) {
-  player_games_df <- cr_data %>%
+normalize_keener <- function(mat, cr_data) {
+  player_num_games <- cr_data %>%
     as_longcr(repair = TRUE) %>%
-    count(.data$player) %>%
-    filter(.data$player %in% rownames(h2h_mat))
+    h2h_mat(!!h2h_funs[["num"]], fill = 0) %>%
+    diag()
 
-  player_games <- rep(0, nrow(h2h_mat))
-  names(player_games) <- rownames(h2h_mat)
-  player_games[player_games_df$player] <- player_games_df$n
-
-  assert_used_objects(
-    used = rownames(h2h_mat),
-    original = player_games_df$player,
-    prefix = "normalize_keener: ",
-    object_name = "row names of Head-to-Head matrix",
-    data_name = "players of cr_data"
-  )
-
-  h2h_mat / player_games
+  mat / player_num_games
 }
