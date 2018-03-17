@@ -7,9 +7,22 @@ test_that("rate_elo works", {
                   -29.2442777446668, 28.8099977983563)
   names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
 
-  expect_equal(rate_elo(ncaa2005, K = 30, ksi = 400,
-                        players = NULL, initial_ratings = 0),
+  expect_equal(rate_elo(ncaa2005, K = 30, ksi = 400, initial_ratings = 0),
                output_ref)
+})
+
+test_that("rate_elo handles factor `player`", {
+  input <- ncaa2005
+  input$player <- factor(
+    input$player, levels = c("Duke", "Miami", "UNC", "UVA", "VT", "Extra")
+  )
+
+  output <- rate_elo(input, K = 30, ksi = 400, initial_ratings = 0)
+  output_ref <- c(-56.2377413877926, 57.9315106719875, -1.25948933788439,
+                  -29.2442777446668, 28.8099977983563, 0)
+  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT", "Extra")
+
+  expect_equal(output, output_ref)
 })
 
 
@@ -20,6 +33,20 @@ test_that("rank_elo works", {
 
   expect_equal(rank_elo(ncaa2005), output_ref)
 })
+
+test_that("rank_elo handles factor `player`", {
+  input <- ncaa2005
+  input$player <- factor(
+    input$player, levels = c("Duke", "Miami", "UNC", "UVA", "VT", "Extra")
+  )
+
+  output <- rank_elo(input, K = 30, ksi = 400, initial_ratings = 0)
+  output_ref <- c(6, 1, 4, 5, 2, 3)
+  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT", "Extra")
+
+  expect_equal(output, output_ref)
+})
+
 
 # add_elo_ratings ---------------------------------------------------------
 test_that("add_elo_ratings works", {
@@ -41,8 +68,7 @@ test_that("add_elo_ratings works", {
       -0.619258154115673, -0.563787585218492, -0.510723544860779,
       -15.5661824421677, 15.1319024958571, 28.8099977983563)
 
-  output <- add_elo_ratings(ncaa2005, K = 30, ksi = 400,
-                            players = NULL, initial_ratings = 0)
+  output <- add_elo_ratings(ncaa2005, K = 30, ksi = 400, initial_ratings = 0)
 
   expect_is(output, "widecr")
   expect_identical(output[, 1:5], output_ref[, 1:5])
@@ -88,6 +114,7 @@ test_that("elo returns a matrix", {
 # elo_fgen ----------------------------------------------------------------
 test_that("elo_fgen works", {
   elo_generated <- elo_fgen(K = 10, ksi = 100)
+
   expect_equal(
     sapply((0:12)*10, elo_generated,
            score1 = 1, rating2 = 0, score2 = 0),
