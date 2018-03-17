@@ -143,7 +143,7 @@ rank_keener <- function(cr_data, ..., fill = 0,
 
 force_nonneg <- function(x, force = TRUE) {
   if (force) {
-    x <- x - min(min(x), 0)
+    x <- x - min(min(x, na.rm = TRUE), 0)
   }
 
   x

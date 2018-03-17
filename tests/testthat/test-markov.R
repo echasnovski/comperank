@@ -1,5 +1,7 @@
 context("markov")
 
+library(comperes)
+library(rlang)
 
 # Input data --------------------------------------------------------------
 input_stoch <- matrix(c(0.3, 0.7,
@@ -11,9 +13,9 @@ input_stoch <- matrix(c(0.3, 0.7,
 test_that("rate_markov simply works", {
   output_1 <- rate_markov(
     cr_data = ncaa2005,
-    h2h_fun = h2h_num_wins,
-    players = NULL,
-    transpose = FALSE,
+    # player1 "votes" for player2 if player2 won
+    win = num_wins(score2, score1, half_for_draw = FALSE),
+    fill = list(win = 0),
     stoch_modify = vote_equal,
     weights = 1,
     force_nonneg_h2h = FALSE
@@ -25,9 +27,10 @@ test_that("rate_markov simply works", {
 
   output_2 <- rate_markov(
     cr_data = ncaa2005,
-    h2h_fun = h2h_mean_score_diff_pos,
-    players = NULL,
-    transpose = FALSE,
+    # player1 "votes" for player2 by the amount player2 scored more in direct
+    # confrontations
+    score_diff = max(mean(score2 - score1), 0),
+    fill = list(score_diff = 0),
     stoch_modify = vote_equal,
     weights = 1,
     force_nonneg_h2h = FALSE
@@ -36,118 +39,105 @@ test_that("rate_markov simply works", {
   names(output_ref_2) <- names(output_ref_1)
 
   expect_equal(round(output_2, 3), output_ref_2)
-
-  output_3 <- rate_markov(
-    cr_data = ncaa2005,
-    h2h_fun = list(h2h_num_wins, h2h_mean_score_diff_pos),
-    players = NULL,
-    transpose = FALSE,
-    stoch_modify = vote_equal,
-    weights = c(0.3, 0.7),
-    force_nonneg_h2h = FALSE
-  )
-  output_ref_3 <- c(0.088, 0.44, 0.11, 0.11, 0.252)
-  names(output_ref_3) <- names(output_ref_1)
-
-  expect_equal(round(output_3, 3), output_ref_3)
 })
 
-test_that("rate_markov handles extra arguments for `get_h2h`", {
-  output_1 <- rate_markov(
-    cr_data = ncaa2005,
-    h2h_fun = h2h_num_wins,
-    players = NULL,
-    transpose = TRUE,
+test_that("rate_markov handles factor `player`", {
+  input <- ncaa2005
+  input$player <- factor(
+    input$player, levels = c("Duke", "Miami", "UNC", "UVA", "Extra", "VT")
+  )
+
+  output <- rate_markov(
+    cr_data = input,
+    # player1 "votes" for player2 if player2 won
+    win = num_wins(score2, score1, half_for_draw = FALSE),
+    fill = list(win = 0),
     stoch_modify = vote_equal,
     weights = 1,
     force_nonneg_h2h = FALSE
   )
-  output_ref_1 <- c(0.438, 0.088, 0.146, 0.219, 0.109)
+  output_ref <- c(0.081, 0.403, 0.134, 0.101, 0.081, 0.201)
+  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "Extra", "VT")
+
+  expect_equal(round(output, 3), output_ref)
+})
+
+test_that("rate_markov handles multiple Head-to-Head values", {
+  output_1 <- rate_markov(
+    cr_data = ncaa2005,
+    win = num_wins(score2, score1, half_for_draw = FALSE),
+    score_diff = max(mean(score2 - score1), 0),
+    fill = list(win = 0, score_diff = 0),
+    stoch_modify = vote_equal,
+    weights = c(0.3, 0.7),
+    force_nonneg_h2h = FALSE
+  )
+  output_ref_1 <- c(0.088, 0.44, 0.11, 0.11, 0.252)
   names(output_ref_1) <- c("Duke", "Miami", "UNC", "UVA", "VT")
 
   expect_equal(round(output_1, 3), output_ref_1)
 
   output_2 <- rate_markov(
     cr_data = ncaa2005,
-    h2h_fun = h2h_num_wins,
-    players = NULL,
-    transpose = FALSE,
-    self_play = 10,
-    stoch_modify = teleport(0.15),
-    weights = 1,
+    win = num_wins(score2, score1, half_for_draw = FALSE),
+    score_diff = max(mean(score2 - score1), 0),
+    fill = list(win = 0, score_diff = 0),
+    stoch_modify = list(vote_equal, teleport(0.15)),
+    weights = c(0.8, 0.2),
     force_nonneg_h2h = FALSE
   )
-  output_ref_2 <- c(0.076, 0.457, 0.141, 0.1, 0.225)
+  output_ref_2 <- c(0.09, 0.432, 0.139, 0.112, 0.228)
   names(output_ref_2) <- names(output_ref_1)
 
   expect_equal(round(output_2, 3), output_ref_2)
 })
 
-test_that("rate_markov handles functions and lists as inputs", {
-  expect_identical(rate_markov(ncaa2005, h2h_num),
-                   rate_markov(ncaa2005, list(h2h_num)))
-  expect_identical(rate_markov(ncaa2005, h2h_num,
-                               stoch_modify = vote_equal),
-                   rate_markov(ncaa2005, h2h_num,
-                               stoch_modify = list(vote_equal)))
+test_that("rate_markov uses argument `fill`", {
+  input <- ncaa2005[-c(1, 2), ]
+  output <- rate_markov(
+    cr_data = input,
+    win = num_wins(score2, score1, half_for_draw = FALSE),
+    score_diff = max(mean(score2 - score1), 0),
+    fill = list(win = 0.5, score_diff = 10),
+    stoch_modify = list(vote_equal, teleport(0.15)),
+    weights = c(0.8, 0.2),
+    force_nonneg_h2h = FALSE
+  )
+  output_ref <- c(0.305, 0.308, 0.103, 0.094, 0.191)
+  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+
+  expect_equal(round(output, 3), output_ref)
+})
+
+test_that("rate_markov handles function and list `stoch_modify`", {
+  expect_identical(
+    rate_markov(ncaa2005, !!h2h_funs[["num"]], stoch_modify = vote_equal),
+    rate_markov(ncaa2005, !!h2h_funs[["num"]], stoch_modify = list(vote_equal))
+  )
 })
 
 test_that("rate_markov does recycling", {
-  h2h_fun <- list(h2h_num_wins, h2h_num)
-  transpose <- c(TRUE, FALSE)
-  self_play <- list(NULL, 1)
+  h2h_fun_list <- h2h_funs[c("num_wins", "num")]
   weights <- c(1, 1)
   stoch_modify <- list(vote_equal, vote_self)
 
   expect_identical(
-    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun[1],
-                transpose = transpose, self_play = self_play,
-                stoch_modify = stoch_modify, weights = weights),
-    rate_markov(cr_data = ncaa2005, h2h_fun = rep(h2h_fun[1], 2),
-                transpose = transpose, self_play = self_play,
-                stoch_modify = stoch_modify, weights = weights)
-  )
-  expect_identical(
-    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose[1], self_play = self_play,
-                stoch_modify = stoch_modify, weights = weights),
-    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = rep(transpose[1], 2), self_play = self_play,
-                stoch_modify = stoch_modify, weights = weights)
-  )
-  expect_identical(
-    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose, self_play = self_play[1],
-                stoch_modify = stoch_modify, weights = weights),
-    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose, self_play = rep(self_play[1], 2),
-                stoch_modify = stoch_modify, weights = weights)
-  )
-  expect_identical(
-    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose, self_play = self_play,
+    rate_markov(cr_data = ncaa2005, !!!h2h_fun_list,
                 stoch_modify = stoch_modify[1], weights = weights),
-    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose, self_play = self_play,
+    rate_markov(cr_data = ncaa2005, !!!h2h_fun_list,
                 stoch_modify = rep(stoch_modify[1], 2), weights = weights)
   )
   expect_identical(
-    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose, self_play = self_play,
+    rate_markov(cr_data = ncaa2005, !!!h2h_fun_list,
                 stoch_modify = stoch_modify, weights = weights[1]),
-    rate_markov(cr_data = ncaa2005, h2h_fun = h2h_fun,
-                transpose = transpose, self_play = self_play,
+    rate_markov(cr_data = ncaa2005, !!!h2h_fun_list,
                 stoch_modify = stoch_modify, weights = rep(weights[1], 1))
   )
 })
 
 test_that("rate_markov throws errors", {
-  expect_error(rate_markov(ncaa2005, h2h_num_wins, transpose = "a"),
-               "logical")
   expect_error(rate_markov(ncaa2005, h2h_num_wins, weights = "a"),
                "numeric")
-  expect_error(rate_markov(ncaa2005, list(h2h_num_wins, "a")),
-               "function")
   expect_error(rate_markov(ncaa2005, h2h_num_wins,
                            stoch_modify = list(vote_equal, "a")),
                "function")
@@ -158,9 +148,7 @@ test_that("rate_markov throws errors", {
 test_that("rank_markov works", {
   output <- rank_markov(
     cr_data = ncaa2005,
-    h2h_fun = h2h_num_wins,
-    players = NULL,
-    transpose = FALSE,
+    num_wins(score2, score1, half_for_draw = FALSE),
     stoch_modify = vote_equal,
     weights = 1,
     force_nonneg_h2h = FALSE
@@ -169,6 +157,44 @@ test_that("rank_markov works", {
   names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
 
   expect_equal(output, output_ref)
+})
+
+test_that("rank_markov handles factor `player`", {
+  input <- ncaa2005
+  input$player <- factor(
+    input$player, levels = c("Duke", "Miami", "UNC", "UVA", "Extra", "VT")
+  )
+
+  output <- rank_markov(
+    cr_data = input,
+    # player1 "votes" for player2 if player2 won
+    win = num_wins(score2, score1, half_for_draw = FALSE),
+    fill = list(win = 0),
+    stoch_modify = vote_equal,
+    weights = 1,
+    force_nonneg_h2h = FALSE
+  )
+  output_ref <- c(5.5, 1, 3, 4, 5.5, 2)
+  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "Extra", "VT")
+
+  expect_equal(output, output_ref)
+})
+
+test_that("rank_markov uses argument `fill`", {
+  input <- ncaa2005[-c(1, 2), ]
+  output <- rank_markov(
+    cr_data = input,
+    win = num_wins(score2, score1, half_for_draw = FALSE),
+    score_diff = max(mean(score2 - score1), 0),
+    fill = list(win = 0.5, score_diff = 10),
+    stoch_modify = list(vote_equal, teleport(0.15)),
+    weights = c(0.8, 0.2),
+    force_nonneg_h2h = FALSE
+  )
+  output_ref <- c(2, 1, 4, 5, 3)
+  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+
+  expect_equal(round(output, 3), output_ref)
 })
 
 

@@ -6,29 +6,21 @@
 \alias{rank_markov}
 \title{Markov method}
 \usage{
-rate_markov(cr_data, h2h_fun, players = NULL, transpose = FALSE,
-  self_play = NULL, stoch_modify = teleport(0.15), weights = 1,
-  force_nonneg_h2h = TRUE, ...)
+rate_markov(cr_data, ..., fill = list(), stoch_modify = teleport(0.15),
+  weights = 1, force_nonneg_h2h = TRUE)
 
-rank_markov(cr_data, h2h_fun, players = NULL, transpose = FALSE,
-  self_play = NULL, stoch_modify = teleport(0.15), weights = 1,
-  force_nonneg_h2h = TRUE, ties = c("average", "first", "last", "random",
-  "max", "min"), round_digits = 7, ...)
+rank_markov(cr_data, ..., fill = list(), stoch_modify = teleport(0.15),
+  weights = 1, force_nonneg_h2h = TRUE, ties = c("average", "first",
+  "last", "random", "max", "min"), round_digits = 7)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=results-longcr]{as_longcr}}.}
+\code{\link[=as_longcr]{as_longcr()}}.}
 
-\item{h2h_fun}{A single Head-to-Head function or a list of them (see
-Details).}
+\item{...}{Name-value pairs of Head-to-Head functions (see \link{h2h_long}).}
 
-\item{players}{Vector of players for which rating is computed.}
-
-\item{transpose}{Logical vector: whether to transpose Head-to-Head matrix for
-the respective \code{h2h_fun}.}
-
-\item{self_play}{NULL, numeric vector or list of them: how to modify
-Head-to-Head values for self-play matchups (see \code{\link{get_h2h}}).}
+\item{fill}{A named list that for each Head-to-Head function supplies a
+single value to use instead of NA for missing pairs (see \link{h2h_long}).}
 
 \item{stoch_modify}{A single function to modify stochastic matrix or a list
 of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).}
@@ -38,8 +30,6 @@ of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).}
 \item{force_nonneg_h2h}{Whether to force nonnegative values in Head-to-Head
 matrix.}
 
-\item{...}{Additional arguments to be passed to methods.}
-
 \item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
 
 \item{round_digits}{Value for \code{round_digits} in
@@ -47,10 +37,10 @@ matrix.}
 }
 \value{
 \code{rate_markov} returns a named vector of the Markov rating. The
-  sum of all ratings should be equal to 1.
+sum of all ratings should be equal to 1.
 
-  \code{rank_markov} returns a named vector of
-  \link[=rating-ranking]{ranking} using \code{\link{round_rank}}.
+\code{rank_markov} returns a named vector of \link[=rating-ranking]{ranking}
+using \code{\link{round_rank}}.
 }
 \description{
 Functions to compute rating and ranking using Markov method.
@@ -59,16 +49,19 @@ Functions to compute rating and ranking using Markov method.
 Markov ratings are based on players 'voting' for other players being
 better. Algorithm is as follows:
 \enumerate{
-  \item 'Voting' is done with \link[=head-to-head]{Head-to-Head} values via
-    \code{h2h_fun}: the more Head-to-Head value the more votes gets player2
-    from player1. One can use \code{transpose} to transpose resulting
-    Head-to-Head matrix, \code{self_play} to modify values for self-play
-    matchups and \code{force_nonneg_h2h} to force nonnegative values.
-    \bold{Note} that Head-to-Head values should be non-negative;
+  \item 'Voting' is done with \link[=h2h_long]{Head-to-Head} values supplied
+    in \code{...}: the more Head-to-Head value the more votes gets player2
+    from player1. Take special care of Head-to-Head values for self plays
+    (when player1 equals player2). \bold{Note} that Head-to-Head values
+    should be non-negative. Use \code{force_nonneg_h2h = TRUE} to force that
+    by subtracting minimum Head-to-Head value (in case some Head-to-Head
+    value is strictly negative).
   \item Head-to-Head matrix is normalized to be stochastic (sum of
-    rows should be equal to 1) Markov matrix \emph{S};
+    rows should be equal to 1) Markov matrix \emph{S}. \bold{Note} that all
+    missing values are converted into 0. To specify other value use `fill`
+    argument.
   \item \emph{S} is modified with \code{stoch_modify} to deal with possible
-    problems behind \emph{S}, such as reducibility and rows with all 0;
+    problems behind \emph{S}, such as reducibility and rows with all 0.
   \item Stationary vector is computed based on \emph{S} as probability
     transition matrix of Markov chain process. The result is declared as
     Markov ratings.
@@ -77,41 +70,60 @@ better. Algorithm is as follows:
 Considering common values and structure of stochastic matrices one can
 naturally combine different 'votings' in one stochastic matrix:
 \enumerate{
-  \item Different Head-to-Head matrices are computed with \code{h2h_fun}
-    (which in this case should be a list of Head-to-Head functions) and
-    optional parameters to \code{get_h2h};
-  \item Each matrix is normalized to stochastic;
+  \item Long format of Head-to-Head values is computed using \code{...}
+    (which in this case should be several expressiong for Head-to-Head
+    functions).
+  \item Each matrix is normalized to stochastic.
   \item Each stochastic matrix is modified with respective modifier which is
     stored in \code{stoch_modify} (which can be a list of functions);
   \item The resulting stochastic matrix is computed as weighted average of
     modified stochastic matrices.
 }
 
-For arguments \code{h2h_fun}, \code{transpose}, \code{self_play} and
-\code{stoch_modify} general R recycling rule is applied. If \code{h2h_fun} or
-\code{stoch_modify} is function it is transformed to list with one function.
-If \code{self_play} is not list it is transformed to list with one element.
+For Head-to-Head functions in \code{...} (considered as list) and argument
+\code{stoch_modify} general R recycling rule is applied. If
+\code{stoch_modify} is a function it is transformed to list with one
+function.
 
-\code{weights} is recycled to the maximum length of three mentioned recycled
-arguments and then is normalized to sum to 1.
+\code{weights} is recycled to the maximum length of two mentioned recycled
+elements and then is normalized to sum to 1.
+
+Ratings are computed based only on games between players of interest (see
+Players).
 }
+\section{Players}{
+
+
+\code{comperes} offers a possibility to handle certain set of players. It is
+done by having \code{player} column (in \link[=as_longcr]{longcr} format) as
+factor with levels specifying all players of interest. In case of factor the
+result is returned only for players from its levels. Otherwise - for all
+present players.
+}
+
 \examples{
 rate_markov(
   cr_data = ncaa2005,
-  h2h_fun = h2h_num_wins,
+  # player1 "votes" for player2 if player2 won
+  comperes::num_wins(score2, score1, half_for_draw = FALSE),
   stoch_modify = vote_equal
 )
+
 rank_markov(
   cr_data = ncaa2005,
-  h2h_fun = h2h_num_wins,
+  comperes::num_wins(score2, score1, half_for_draw = FALSE),
   stoch_modify = vote_equal
 )
 
 rate_markov(
-  cr_data = ncaa2005,
-  h2h_fun = list(h2h_num_wins, h2h_mean_score_diff_pos),
-  stoch_modify = teleport(0.15),
-  weights = c(0.3, 0.7)
+  cr_data = ncaa2005[-(1:2), ],
+  win = num_wins(score2, score1, half_for_draw = FALSE),
+  # player1 "votes" for player2 by the amount player2 scored more
+  # in direct confrontations
+  score_diff = max(mean(score2 - score1), 0),
+  fill = list(win = 0.5, score_diff = 10),
+  stoch_modify = list(vote_equal, teleport(0.15)),
+  weights = c(0.8, 0.2)
 )
 
 }

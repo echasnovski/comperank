@@ -2,21 +2,15 @@
 #'
 #' Functions to compute rating and ranking using Markov method.
 #'
-#' @param cr_data Competition results in format ready for
-#'   \code{\link[=results-longcr]{as_longcr}}.
-#' @param h2h_fun A single Head-to-Head function or a list of them (see
-#'   Details).
-#' @param players Vector of players for which rating is computed.
-#' @param transpose Logical vector: whether to transpose Head-to-Head matrix for
-#'   the respective \code{h2h_fun}.
-#' @param self_play NULL, numeric vector or list of them: how to modify
-#'   Head-to-Head values for self-play matchups (see \code{\link{get_h2h}}).
+#' @inheritParams rate_massey
+#' @param ... Name-value pairs of Head-to-Head functions (see \link{h2h_long}).
+#' @param fill A named list that for each Head-to-Head function supplies a
+#'   single value to use instead of NA for missing pairs (see \link{h2h_long}).
 #' @param stoch_modify A single function to modify stochastic matrix or a list
 #'  of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).
 #' @param weights Weights for different stochastic matrices.
 #' @param force_nonneg_h2h Whether to force nonnegative values in Head-to-Head
 #'   matrix.
-#' @param ... Additional arguments to be passed to methods.
 #' @param ties Value for \code{ties} in \code{\link{round_rank}}.
 #' @param round_digits Value for \code{round_digits} in
 #'   \code{\link{round_rank}}.
@@ -24,16 +18,19 @@
 #' @details Markov ratings are based on players 'voting' for other players being
 #' better. Algorithm is as follows:
 #' \enumerate{
-#'   \item 'Voting' is done with \link[=head-to-head]{Head-to-Head} values via
-#'     \code{h2h_fun}: the more Head-to-Head value the more votes gets player2
-#'     from player1. One can use \code{transpose} to transpose resulting
-#'     Head-to-Head matrix, \code{self_play} to modify values for self-play
-#'     matchups and \code{force_nonneg_h2h} to force nonnegative values.
-#'     \bold{Note} that Head-to-Head values should be non-negative;
+#'   \item 'Voting' is done with \link[=h2h_long]{Head-to-Head} values supplied
+#'     in \code{...}: the more Head-to-Head value the more votes gets player2
+#'     from player1. Take special care of Head-to-Head values for self plays
+#'     (when player1 equals player2). \bold{Note} that Head-to-Head values
+#'     should be non-negative. Use \code{force_nonneg_h2h = TRUE} to force that
+#'     by subtracting minimum Head-to-Head value (in case some Head-to-Head
+#'     value is strictly negative).
 #'   \item Head-to-Head matrix is normalized to be stochastic (sum of
-#'     rows should be equal to 1) Markov matrix \emph{S};
+#'     rows should be equal to 1) Markov matrix \emph{S}. \bold{Note} that all
+#'     missing values are converted into 0. To specify other value use `fill`
+#'     argument.
 #'   \item \emph{S} is modified with \code{stoch_modify} to deal with possible
-#'     problems behind \emph{S}, such as reducibility and rows with all 0;
+#'     problems behind \emph{S}, such as reducibility and rows with all 0.
 #'   \item Stationary vector is computed based on \emph{S} as probability
 #'     transition matrix of Markov chain process. The result is declared as
 #'     Markov ratings.
@@ -42,29 +39,34 @@
 #' Considering common values and structure of stochastic matrices one can
 #' naturally combine different 'votings' in one stochastic matrix:
 #' \enumerate{
-#'   \item Different Head-to-Head matrices are computed with \code{h2h_fun}
-#'     (which in this case should be a list of Head-to-Head functions) and
-#'     optional parameters to \code{get_h2h};
-#'   \item Each matrix is normalized to stochastic;
+#'   \item Long format of Head-to-Head values is computed using \code{...}
+#'     (which in this case should be several expressiong for Head-to-Head
+#'     functions).
+#'   \item Each matrix is normalized to stochastic.
 #'   \item Each stochastic matrix is modified with respective modifier which is
 #'     stored in \code{stoch_modify} (which can be a list of functions);
 #'   \item The resulting stochastic matrix is computed as weighted average of
 #'     modified stochastic matrices.
 #' }
 #'
-#' For arguments \code{h2h_fun}, \code{transpose}, \code{self_play} and
-#' \code{stoch_modify} general R recycling rule is applied. If \code{h2h_fun} or
-#' \code{stoch_modify} is function it is transformed to list with one function.
-#' If \code{self_play} is not list it is transformed to list with one element.
+#' For Head-to-Head functions in \code{...} (considered as list) and argument
+#' \code{stoch_modify} general R recycling rule is applied. If
+#' \code{stoch_modify} is a function it is transformed to list with one
+#' function.
 #'
-#' \code{weights} is recycled to the maximum length of three mentioned recycled
-#' arguments and then is normalized to sum to 1.
+#' \code{weights} is recycled to the maximum length of two mentioned recycled
+#' elements and then is normalized to sum to 1.
+#'
+#' Ratings are computed based only on games between players of interest (see
+#' Players).
+#'
+#' @inheritSection massey Players
 #'
 #' @return \code{rate_markov} returns a named vector of the Markov rating. The
-#'   sum of all ratings should be equal to 1.
+#' sum of all ratings should be equal to 1.
 #'
-#'   \code{rank_markov} returns a named vector of
-#'   \link[=rating-ranking]{ranking} using \code{\link{round_rank}}.
+#' \code{rank_markov} returns a named vector of \link[=rating-ranking]{ranking}
+#' using \code{\link{round_rank}}.
 #'
 #' @references \href{https://en.wikipedia.org/wiki/Markov_chain}{Wikipedia
 #'   page} for Markov chain.
@@ -72,20 +74,26 @@
 #' @examples
 #' rate_markov(
 #'   cr_data = ncaa2005,
-#'   h2h_fun = h2h_num_wins,
+#'   # player1 "votes" for player2 if player2 won
+#'   comperes::num_wins(score2, score1, half_for_draw = FALSE),
 #'   stoch_modify = vote_equal
 #' )
+#'
 #' rank_markov(
 #'   cr_data = ncaa2005,
-#'   h2h_fun = h2h_num_wins,
+#'   comperes::num_wins(score2, score1, half_for_draw = FALSE),
 #'   stoch_modify = vote_equal
 #' )
 #'
 #' rate_markov(
-#'   cr_data = ncaa2005,
-#'   h2h_fun = list(h2h_num_wins, h2h_mean_score_diff_pos),
-#'   stoch_modify = teleport(0.15),
-#'   weights = c(0.3, 0.7)
+#'   cr_data = ncaa2005[-(1:2), ],
+#'   win = num_wins(score2, score1, half_for_draw = FALSE),
+#'   # player1 "votes" for player2 by the amount player2 scored more
+#'   # in direct confrontations
+#'   score_diff = max(mean(score2 - score1), 0),
+#'   fill = list(win = 0.5, score_diff = 10),
+#'   stoch_modify = list(vote_equal, teleport(0.15)),
+#'   weights = c(0.8, 0.2)
 #' )
 #'
 #' @name markov
@@ -93,48 +101,39 @@ NULL
 
 #' @rdname markov
 #' @export
-rate_markov <- function(cr_data, h2h_fun, players = NULL,
-                        transpose = FALSE, self_play = NULL,
-                        stoch_modify = teleport(0.15),
-                        weights = 1,
-                        force_nonneg_h2h = TRUE,
-                        ...) {
+rate_markov <- function(cr_data, ..., fill = list(),
+                        stoch_modify = teleport(0.15), weights = 1,
+                        force_nonneg_h2h = TRUE) {
+  cr <- as_longcr(cr_data, repair = TRUE)
   # Assert arguments
-  if (!is.vector(transpose, mode = "logical")) {
-    stop("Object 'transpose' should be a logical vector.")
-  }
   if (!is.vector(weights, mode = "numeric")) {
     stop("Object 'weights' should be a numeric vector.")
   }
 
   # Prepare h2h_fun and stoch_modify
-  h2h_fun <- to_function_list(h2h_fun, var_name = "h2h_fun")
-  stoch_modify <- to_function_list(stoch_modify, var_name = "stoch_modify")
-  self_play <- to_list(self_play)
+  h2h_fun_list <- rlang::enexprs(...)
+  stoch_modify_list <- to_function_list(stoch_modify, var_name = "stoch_modify")
 
   # Manual recycling of weights
-  max_length <- max(length(h2h_fun), length(stoch_modify),
-                    length(transpose), length(self_play))
+  max_length <- max(length(h2h_fun_list), length(stoch_modify_list))
   weights <- rep(weights, length.out = max_length)
   weights <- weights / sum(weights)
 
+  # Compute long format of Head-to-Head values
+  res_h2h_long <- h2h_long(cr, ..., fill = fill)
+  h2h_names <- setdiff(colnames(res_h2h_long), c("player1", "player2"))
+
   # Construct stochastic matrix
   stoch <- mapply(
-    function(cur_h2h_fun, cur_transpose, cur_self_play,
-             cur_stoch_modify, cur_weight) {
-      get_h2h(
-        cr_data = cr_data,
-        h2h_fun = cur_h2h_fun,
-        players = players,
-        transpose = cur_transpose,
-        self_play = cur_self_play,
-        ...) %>%
+    function(cur_h2h_name, cur_stoch_modify, cur_weight) {
+      res_h2h_long %>%
+        to_h2h_mat(value = cur_h2h_name) %>%
         force_nonneg(force_nonneg_h2h) %>%
         to_stoch_mat() %>%
         cur_stoch_modify() %>%
         "*"(cur_weight)
     },
-    h2h_fun, transpose, self_play, stoch_modify, weights,
+    h2h_names, stoch_modify_list, weights,
     SIMPLIFY = FALSE, USE.NAMES = FALSE
   ) %>%
     Reduce(f = `+`)
@@ -148,23 +147,17 @@ rate_markov <- function(cr_data, h2h_fun, players = NULL,
 
 #' @rdname markov
 #' @export
-rank_markov <- function(cr_data, h2h_fun, players = NULL,
-                        transpose = FALSE, self_play = NULL,
+rank_markov <- function(cr_data, ..., fill = list(),
                         stoch_modify = teleport(0.15),
                         weights = 1,
                         force_nonneg_h2h = TRUE,
                         ties = c("average", "first", "last",
                                  "random", "max", "min"),
-                        round_digits = 7,
-                        ...) {
+                        round_digits = 7) {
   round_rank(
     rate_markov(
-      cr_data = cr_data, h2h_fun = h2h_fun, players = players,
-      transpose = transpose, self_play = self_play,
-      stoch_modify = stoch_modify,
-      weights = weights,
-      force_nonneg_h2h = force_nonneg_h2h,
-      ...
+      cr_data = cr_data, ..., fill = fill, stoch_modify = stoch_modify,
+      weights = weights, force_nonneg_h2h = force_nonneg_h2h
     ),
     type = "desc", ties = ties, round_digits = round_digits
   )
@@ -231,7 +224,7 @@ teleport <- function(teleport_prob = 0.15) {
 vote_equal <- function(stoch) {
   assert_square_mat(stoch)
 
-  is_zero_row <- dplyr::near(rowSums(stoch), 0)
+  is_zero_row <- dplyr::near(rowSums(stoch, na.rm = TRUE), 0)
   if (any(is_zero_row)) {
     stoch[is_zero_row, ] <- 1 / ncol(stoch)
   }
@@ -244,7 +237,7 @@ vote_equal <- function(stoch) {
 vote_self <- function(stoch) {
   assert_square_mat(stoch)
 
-  is_zero_row <- dplyr::near(rowSums(stoch), 0)
+  is_zero_row <- dplyr::near(rowSums(stoch, na.rm = TRUE), 0)
   if (any(is_zero_row)) {
     zero_row_inds <- which(is_zero_row)
     stoch[cbind(zero_row_inds, zero_row_inds)] <- 1
@@ -254,6 +247,7 @@ vote_self <- function(stoch) {
 }
 
 to_stoch_mat <- function(mat) {
+  mat[, ] <- dplyr::if_else(is.na(c(mat)), 0, c(mat))
   row_sums <- rowSums(mat[, ])
   row_sums <- ifelse(dplyr::near(row_sums, 0),
                      sqrt(.Machine$double.eps),
