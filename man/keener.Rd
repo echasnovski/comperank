@@ -23,7 +23,7 @@ normalize_keener(h2h_mat, cr_data, ...)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=results-longcr]{to_longcr}}.}
+\code{\link[=results-longcr]{as_longcr}}.}
 
 \item{h2h_fun}{Head-to-Head function to compute Head-to-Head matrix.}
 

@@ -17,7 +17,7 @@ rank_markov(cr_data, h2h_fun, players = NULL, transpose = FALSE,
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=results-longcr]{to_longcr}}.}
+\code{\link[=results-longcr]{as_longcr}}.}
 
 \item{h2h_fun}{A single Head-to-Head function or a list of them (see
 Details).}

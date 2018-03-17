@@ -22,7 +22,7 @@ elo(rating1, score1, rating2, score2, K = 30, ksi = 400)
 }
 \arguments{
 \item{cr_data}{Competition results of \link{pairgames} in format ready for
-\code{\link[=results-longcr]{to_longcr}}.}
+\code{\link[=results-longcr]{as_longcr}}.}
 
 \item{K}{K-factor for Elo formula.}
 

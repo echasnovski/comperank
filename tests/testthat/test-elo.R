@@ -23,7 +23,7 @@ test_that("rank_elo works", {
 
 # add_elo_ratings ---------------------------------------------------------
 test_that("add_elo_ratings works", {
-  output_ref <- to_widecr(ncaa2005)
+  output_ref <- as_widecr(ncaa2005)
   output_ref$rating1Before <-
     c(0, -15, -29.3528000084656, -43.0885442384277,
       15, 29.9720581625813, 44.2715899777618,

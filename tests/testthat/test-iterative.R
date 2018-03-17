@@ -13,7 +13,7 @@ input <- data.frame(
   player = rep(1:5, times = 4),
   score = runif(20)
 )
-output <- to_widecr(to_longcr(input))
+output <- as_widecr(as_longcr(input))
 output$rating1Before <- c( 0,  0,  0, 1, -1,  0,  0,  0, 4, -4)
 output$rating2Before <- c( 0,  0, -1, 1, -1,  2, -2, -2, 2, -2)
 output$rating1After <-  c(-1,  1, -1, 2, -2, -2,  2, -2, 2, -2)
@@ -167,7 +167,7 @@ test_that("add_iterative_ratings handles NA in both player1 and player2", {
 })
 
 test_that("add_iterative_ratings handles different 'players", {
-  output_1 <- to_widecr(to_longcr(input[c(1, 2, 7, 8, 11, 12, 17, 18), ]))
+  output_1 <- as_widecr(as_longcr(input[c(1, 2, 7, 8, 11, 12, 17, 18), ]))
   output_1$rating1Before <- c( 0,  1, -1,  5)
   output_1$rating2Before <- c( 0,  0,  2, -1)
   output_1$rating1After <-  c(-1,  2, -4,  -1)

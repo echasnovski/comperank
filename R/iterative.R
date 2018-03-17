@@ -4,7 +4,7 @@
 #' after every game, and corresponding rankings.
 #'
 #' @param cr_data Competition results of \link{pairgames} in format ready for
-#'   \code{\link[=results-longcr]{to_longcr}}.
+#'   \code{\link[=results-longcr]{as_longcr}}.
 #' @param rate_fun Rating function (see Details).
 #' @param players Vector of players for which rating is computed.
 #' @param initial_ratings Initial ratings (see Details).
@@ -154,8 +154,8 @@ add_iterative_ratings <-
   ref_players <- used_players[!is.na(used_players)]
 
   cr <- cr_data %>%
-    to_longcr(repair = TRUE) %>%
-    to_widecr(repair = FALSE) %>%
+    as_longcr(repair = TRUE) %>%
+    as_widecr(repair = FALSE) %>%
     filter(
       .data$player1 %in% used_players,
       .data$player2 %in% used_players
@@ -181,7 +181,7 @@ add_iterative_ratings <-
   cr %>%
     bind_cols(y = ratings) %>%
     select(-.data$player1_id, -.data$player2_id) %>%
-    to_widecr(repair = FALSE)
+    as_widecr(repair = FALSE)
 }
 
 to_players_id <- function(players, ref_players) {

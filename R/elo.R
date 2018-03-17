@@ -3,7 +3,7 @@
 #' Functions to compute rating and ranking using Elo method.
 #'
 #' @param cr_data Competition results of \link{pairgames} in format ready for
-#'   \code{\link[=results-longcr]{to_longcr}}.
+#'   \code{\link[=results-longcr]{as_longcr}}.
 #' @param K K-factor for Elo formula.
 #' @param ksi Normalization coefficient for Elo formula.
 #' @param players Vector of players for which rating is computed.

@@ -13,7 +13,7 @@ rank_colley(cr_data, players = NULL, ties = c("average", "first", "last",
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=results-longcr]{to_longcr}}.}
+\code{\link[=results-longcr]{as_longcr}}.}
 
 \item{players}{Vector of players for which rating is computed.}
 

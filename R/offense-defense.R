@@ -3,7 +3,7 @@
 #' Functions to compute rating and ranking using Offense-Defense method.
 #'
 #' @param cr_data Competition results in format ready for
-#'   \code{\link[=results-longcr]{to_longcr}}.
+#'   \code{\link[=results-longcr]{as_longcr}}.
 #' @param h2h_fun Head-to-Head function to compute Head-to-Head matrix.
 #' @param players Vector of players for which rating is computed.
 #' @param force_nonneg_h2h Whether to force nonnegative values in Head-to-Head
@@ -90,7 +90,7 @@ rate_od <- function(cr_data, h2h_fun, players = NULL,
                     eps = 1e-3, tol = 1e-4, max_iterations = 100,
                     ...) {
   h2h_mat <- cr_data %>%
-    to_longcr(...) %>%
+    as_longcr(...) %>%
     get_h2h(h2h_fun = h2h_fun, players = players,
             absent_h2h = fill_h2h, fill = 0,
             ...) %>%

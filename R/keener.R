@@ -3,7 +3,7 @@
 #' Functions to compute rating and ranking using Keener method.
 #'
 #' @param cr_data Competition results in format ready for
-#'   \code{\link[=results-longcr]{to_longcr}}.
+#'   \code{\link[=results-longcr]{as_longcr}}.
 #' @param h2h_fun Head-to-Head function to compute Head-to-Head matrix.
 #' @param players Vector of players for which rating is computed.
 #' @param force_nonneg_h2h Whether to force nonnegative values in Head-to-Head
@@ -97,7 +97,7 @@ rate_keener <- function(cr_data, h2h_fun, players = NULL,
                         ...) {
   # Compute symmetrical Head-to-Head matrix
   h2h_mat <- cr_data %>%
-    to_longcr(...) %>%
+    as_longcr(...) %>%
     get_h2h(h2h_fun = h2h_fun, players = players,
             absent_players = players_drop,
             ...) %>%
@@ -164,7 +164,7 @@ skew_keener <- function(x, ...) {
 #' @export
 normalize_keener <- function(h2h_mat, cr_data, ...) {
   player_games_df <- cr_data %>%
-    to_longcr(repair = TRUE) %>%
+    as_longcr(repair = TRUE) %>%
     count(.data$player) %>%
     filter(.data$player %in% rownames(h2h_mat))
 

@@ -3,7 +3,7 @@
 #' Functions to compute rating and ranking using Colley method.
 #'
 #' @param cr_data Competition results in format ready for
-#'   \code{\link[=results-longcr]{to_longcr}}.
+#'   \code{\link[=results-longcr]{as_longcr}}.
 #' @param players Vector of players for which rating is computed.
 #' @param ties Value for \code{ties} in \code{\link{round_rank}}.
 #' @param round_digits Value for \code{round_digits} in
@@ -56,7 +56,7 @@ NULL
 #' @rdname colley
 #' @export
 rate_colley <- function(cr_data, players = NULL) {
-  cr <- to_longcr(cr_data, repair = TRUE)
+  cr <- as_longcr(cr_data, repair = TRUE)
   if (!is_pairgames(cr)) {
     cr <- to_pairgames(cr)
   }

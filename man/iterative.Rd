@@ -18,7 +18,7 @@ add_iterative_ratings(cr_data, rate_fun, players = NULL,
 }
 \arguments{
 \item{cr_data}{Competition results of \link{pairgames} in format ready for
-\code{\link[=results-longcr]{to_longcr}}.}
+\code{\link[=results-longcr]{as_longcr}}.}
 
 \item{rate_fun}{Rating function (see Details).}
 
