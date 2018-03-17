@@ -6,16 +6,14 @@
 \alias{rank_colley}
 \title{Colley method}
 \usage{
-rate_colley(cr_data, players = NULL)
+rate_colley(cr_data)
 
-rank_colley(cr_data, players = NULL, ties = c("average", "first", "last",
-  "random", "max", "min"), round_digits = 7)
+rank_colley(cr_data, ties = c("average", "first", "last", "random", "max",
+  "min"), round_digits = 7)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=results-longcr]{as_longcr}}.}
-
-\item{players}{Vector of players for which rating is computed.}
+\code{\link[=as_longcr]{as_longcr()}}.}
 
 \item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
 
@@ -24,46 +22,52 @@ rank_colley(cr_data, players = NULL, ties = c("average", "first", "last",
 }
 \value{
 \code{rate_colley} returns a named vector of the Colley rating. The
-  mean rating should be 0.5.
+mean rating should be 0.5.
 
-  \code{rank_colley} returns a named vector of
-  \link[=rating-ranking]{ranking} using \code{\link{round_rank}}.
+\code{rank_colley} returns a named vector of \link[=rating-ranking]{ranking}
+using \code{\link{round_rank}}.
 }
 \description{
 Functions to compute rating and ranking using Colley method.
 }
 \details{
 This rating method was initially designed for games between two
-  players. That is why competition results are transformed into pairwise
-  games \code{cr_pair} via \link{to_pairgames}. Data from \code{cr_pair} is
-  used in rating computation.
+players. That is why competition results are transformed into pairwise games
+\code{cr_pair} via \link{to_pairgames}. Data from \code{cr_pair} is used in
+rating computation.
 
-  It is assumed that score is numeric and higher values are better for
-  the player.
+It is assumed that score is numeric and higher values are better for the
+player.
 
-  Computation is done based only on the matchups between players in
-  argument \code{players}. If \code{NULL} then all players present in
-  \code{cr_data} are used. \bold{Note} that it isn't necessary for all
-  entries in \code{players} to be present in \code{cr_pair} but it might be
-  a good idea in order to obtain plausible outcome rating.
+Computation is done based only on the games between players of interest (see
+Players). \bold{Note} that it isn't necessary for all players of interest
+to be present in \code{cr_pair} but it might be a good idea in order to
+obtain plausible outcome rating.
 
-  The outline of the Colley method is as follows:
-  \enumerate{
-    \item Compute Colley matrix: diagonal elements are equal to number of
-      games played by certain player \emph{plus 2}, off-diagonal are equal to
-      minus number of common games played. This matrix will be the matrix of
-      system of linear equations (SLE);
-    \item Compute right-hand side of SLE as 1 + 0.5*("number of player's
-      wins" - "number of player's losses");
-    \item Solve the SLE. The solution is the Colley rating.
-  }
+The outline of the Colley method is as follows:
+\enumerate{
+  \item Compute Colley matrix: diagonal elements are equal to number of
+    games played by certain player \emph{plus 2}, off-diagonal are equal to
+    minus number of common games played. This matrix will be the matrix of
+    system of linear equations (SLE);
+  \item Compute right-hand side of SLE as 1 + 0.5*("number of player's
+    wins" - "number of player's losses");
+  \item Solve the SLE. The solution is the Colley rating.
 }
+}
+\section{Players}{
+
+
+\code{comperes} offers a possibility to handle certain set of players. It is
+done by having \code{player} column (in \link[=as_longcr]{longcr} format) as
+factor with levels specifying all players of interest. In case of factor the
+result is returned only for players from its levels. Otherwise - for all
+present players.
+}
+
 \examples{
 rate_colley(ncaa2005)
 rank_colley(ncaa2005)
-
-rate_colley(ncaa2005, players = c("UNC", "Duke", "Miami", "UVA", "VT"))
-rate_colley(ncaa2005, players = c("UNC", "Miami", "UVA", "VT"))
 
 }
 \references{

@@ -8,20 +8,22 @@ names(output) <- c("Duke", "Miami", "UNC", "UVA", "VT")
 
 
 # rate_colley -------------------------------------------------------------
-test_that("rate_colley works with NULL players", {
+test_that("rate_colley works", {
   expect_equal(round(rate_colley(input), 2), output)
-  expect_equal(round(rate_colley(input, players = NULL), 2), output)
 })
 
-test_that("rate_colley works with not NULL players", {
-  players <- names(output)[c(5, 2, 1, 3, 4)]
-  expect_equal(round(rate_colley(input, players = players), 2),
-               output[players])
+test_that("rate_colley works with factor `players`", {
+  players_1 <- names(output)[c(5, 2, 1, 3, 4)]
+  input_1 <- input
+  input_1$player <- factor(input_1$player, levels = players_1)
+  expect_equal(round(rate_colley(input_1), 2), output[players_1])
 
-  output_1 <- c(0.3, 0.7, 0.5)
-  names(output_1) <- names(output)[1:3]
-  expect_equal(rate_colley(input, players = names(output)[1:3]),
-               output_1)
+  players_2 <- names(output)[1:3]
+  input_2 <- input
+  input_2$player <- factor(input_2$player, levels = players_2)
+  output_2 <- c(0.3, 0.7, 0.5)
+  names(output_2) <- players_2
+  expect_equal(rate_colley(input_2), output_2)
 })
 
 test_that("rate_colley works with not all matchups present", {
@@ -30,7 +32,7 @@ test_that("rate_colley works with not all matchups present", {
                 0.571428571428571, 0.571428571428571)
   names(output_1) <- names(output)
 
-  expect_equal(rate_colley(input_1, players = NULL), output_1)
+  expect_equal(rate_colley(input_1), output_1)
 })
 
 test_that("rate_colley correctly works with not pair games", {
