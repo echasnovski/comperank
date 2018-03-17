@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // compute_iterative_ratings
 List compute_iterative_ratings(Function rate_fun, IntegerVector player1_id, NumericVector score1, IntegerVector player2_id, NumericVector score2, NumericVector initial_ratings);
-RcppExport SEXP comperank_compute_iterative_ratings(SEXP rate_funSEXP, SEXP player1_idSEXP, SEXP score1SEXP, SEXP player2_idSEXP, SEXP score2SEXP, SEXP initial_ratingsSEXP) {
+RcppExport SEXP _comperank_compute_iterative_ratings(SEXP rate_funSEXP, SEXP player1_idSEXP, SEXP score1SEXP, SEXP player2_idSEXP, SEXP score2SEXP, SEXP initial_ratingsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -23,7 +23,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"comperank_compute_iterative_ratings", (DL_FUNC) &comperank_compute_iterative_ratings, 6},
+    {"_comperank_compute_iterative_ratings", (DL_FUNC) &_comperank_compute_iterative_ratings, 6},
     {NULL, NULL, 0}
 };
 

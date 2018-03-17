@@ -41,6 +41,6 @@
 #' }
 #' @keywords internal
 compute_iterative_ratings <- function(rate_fun, player1_id, score1, player2_id, score2, initial_ratings) {
-    .Call('comperank_compute_iterative_ratings', PACKAGE = 'comperank', rate_fun, player1_id, score1, player2_id, score2, initial_ratings)
+    .Call('_comperank_compute_iterative_ratings', PACKAGE = 'comperank', rate_fun, player1_id, score1, player2_id, score2, initial_ratings)
 }
 

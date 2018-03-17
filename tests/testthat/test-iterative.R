@@ -27,8 +27,7 @@ test_that("rate_iterative works", {
 
   expect_equal(
     rate_iterative(
-      cr_data = input, rate_fun = test_rate_fun,
-      players = NULL, initial_ratings = 0
+      cr_data = input, rate_fun = test_rate_fun, initial_ratings = 0
     ),
     output_ratings
   )
@@ -41,30 +40,21 @@ test_that("rate_iterative works", {
 
   expect_equal(
     rate_iterative(
-      cr_data = input_1, rate_fun = test_rate_fun,
-      players = NULL, initial_ratings = 0
+      cr_data = input_1, rate_fun = test_rate_fun, initial_ratings = 0
     ),
     output_ratings_1
   )
 })
 
-test_that("rate_iterative handles different 'players'", {
-  output_1 <- c(-4, -1, 5)
-  names(output_1) <- as.character(1:3)
+test_that("rate_iterative handles factor `player`", {
+  input_1 <- input
+  input_1$player <- factor(input_1$player, levels = c(1:3, 6, 4:5, 0))
+  output_1 <- c(0, 2, 4, 0, -2, -4, 0)
+  names(output_1) <- as.character(c(1:3, 6, 4:5, 0))
 
   expect_equal(
-    rate_iterative(input, test_rate_fun, players = 1:3,
-                   initial_ratings = 0),
+    rate_iterative(input_1, test_rate_fun, initial_ratings = 0),
     output_1
-  )
-
-  output_2 <- c(0, 0, 2, 4, -2, -4, 0)
-  names(output_2) <- as.character(0:6)
-
-  expect_equal(
-    rate_iterative(input, test_rate_fun, players = 0:6,
-                   initial_ratings = 0),
-    output_2
   )
 })
 
@@ -76,12 +66,23 @@ test_that("rank_iterative works", {
 
   expect_equal(
     rank_iterative(
-      cr_data = input, rate_fun = test_rate_fun, players = NULL,
+      cr_data = input, rate_fun = test_rate_fun,
       initial_ratings = c('1' = 3, '2' = 0, '3' = 0, '4' = 0, '5' = 0)
     ),
     output_rankings
   )
+})
 
+test_that("rank_iterative handles factor `player`", {
+  input_1 <- input
+  input_1$player <- factor(input_1$player, levels = c(1:3, 6, 4:5, 0))
+  output_1 <- c(4, 2, 1, 4, 6, 7, 4)
+  names(output_1) <- as.character(c(1:3, 6, 4:5, 0))
+
+  expect_equal(
+    rank_iterative(input_1, test_rate_fun, initial_ratings = 0),
+    output_1
+  )
 })
 
 # add_iterative_ratings ---------------------------------------------------
@@ -106,15 +107,9 @@ test_that("add_iterative_ratings handles different scalar initial rating", {
   output_1$rating1After <- output_1$rating1After + 10
   output_1$rating2After <- output_1$rating2After + 10
 
-  expect_equal(add_iterative_ratings(input, test_rate_fun,
-                                     initial_ratings = 10),
-               output_1)
-})
-
-test_that("add_iterative_ratings handles data.frame of initial ratings", {
-  initial_ratings <- data.frame(
-    player = 1:5,
-    rating = 1:5
+  expect_equal(
+    add_iterative_ratings(input, test_rate_fun, initial_ratings = 10),
+    output_1
   )
 })
 
@@ -166,20 +161,33 @@ test_that("add_iterative_ratings handles NA in both player1 and player2", {
                output_1)
 })
 
-test_that("add_iterative_ratings handles different 'players", {
+test_that("add_iterative_ratings handles factor `player`", {
+  input_1 <- input
+  input_1$player <- factor(input_1$player, levels = c(1:3, 6))
+  input_1 <- input_1[input_1$game %in% c(1, 4, 6, 9), ]
+
   output_1 <- as_widecr(as_longcr(input[c(1, 2, 7, 8, 11, 12, 17, 18), ]))
+  output_1$player1 <- factor(output_1$player1, levels = c(1:3, 6))
+  output_1$player2 <- factor(output_1$player2, levels = c(1:3, 6))
   output_1$rating1Before <- c( 0,  1, -1,  5)
   output_1$rating2Before <- c( 0,  0,  2, -1)
   output_1$rating1After <-  c(-1,  2, -4,  -1)
   output_1$rating2After <-  c( 1, -1,  5,  5)
 
-  expect_equal(add_iterative_ratings(input, test_rate_fun, players = 1:3,
-                                     initial_ratings = 0),
-               output_1)
+  expect_equal(
+    add_iterative_ratings(input_1, test_rate_fun, initial_ratings = 0),
+    output_1
+  )
 
-  expect_equal(add_iterative_ratings(input, test_rate_fun, players = 1:11,
-                                     initial_ratings = 0),
-               output)
+  input_2 <- input
+  input_2$player <- factor(input_2$player, levels = 1:11)
+  output_2 <- output
+  output_2$player1 <- factor(output_2$player1, levels = 1:11)
+  output_2$player2 <- factor(output_2$player2, levels = 1:11)
+  expect_equal(
+    add_iterative_ratings(input_2, test_rate_fun, initial_ratings = 0),
+    output_2
+  )
 })
 
 
@@ -231,7 +239,7 @@ test_that("get_cr_initial_ratings drops NA in 'players'", {
 # get_ratings_after -------------------------------------------------------
 test_that("get_ratings_after works", {
   output_ratings_after <- dplyr::tibble(
-    player = rep(1:5, 4),
+    player = as.character(rep(1:5, 4)),
     rating = c(-1, 1, 1, -1, -1, 0, 2, 0, -2,  0,
                -2, 4, 2, -4, -2, 0, 2, 4, -2, -4)
   )
