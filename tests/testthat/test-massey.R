@@ -8,25 +8,30 @@ names(output) <- c("Duke", "Miami", "UNC", "UVA", "VT")
 
 
 # rate_massey -------------------------------------------------------------
-test_that("rate_massey works with NULL 'players'", {
+test_that("rate_massey works", {
   expect_equal(rate_massey(input), output)
-  expect_equal(rate_massey(input, players = NULL), output)
 })
 
-test_that("rate_massey works with not NULL 'players'", {
-  players <- names(output)[c(5, 2, 1, 3, 4)]
-  expect_equal(rate_massey(input, players = players), output[players])
+test_that("rate_massey works with factor `players`", {
+  players_1 <- names(output)[c(5, 2, 1, 3, 4)]
+  input_1 <- input
+  input_1$player <- factor(input_1$player, levels = players_1)
+  expect_equal(rate_massey(input_1), output[players_1])
 
-  output_1 <- rate_massey(input, players = names(output)[1:3])
-  output_2 <- rate_massey(input[c(1, 2, 3, 4, 9, 10), ], players = NULL)
+  players_2 <- names(output)[1:3]
+  input_2 <- input
+  input_2$player <- factor(input_2$player, levels = players_2)
+  output_1 <- rate_massey(input_2)
+  output_2 <- rate_massey(input[c(1, 2, 3, 4, 9, 10), ])
 
   expect_identical(output_1, output_2)
 })
 
-test_that("rate_massey handles players absent in 'cr_data'", {
+test_that("rate_massey handles players absent in `cr_data`", {
   players <- c(names(output)[c(5, 2, 1, 3, 4)], "extra")
+  input$player <- factor(input$player, levels = players)
   expect_message(
-    expect_error(rate_massey(input, players = players)),
+    expect_error(rate_massey(input)),
     "^rate_massey: .* players .*absent.*  extra"
   )
 })
@@ -36,7 +41,7 @@ test_that("rate_massey works with not all matchups present", {
   output_1 <- c(-24.8, 12.2, -13.8, 6.2, 20.2)
   names(output_1) <- names(output)
 
-  expect_equal(rate_massey(input_1, players = NULL), output_1)
+  expect_equal(rate_massey(input_1), output_1)
 })
 
 test_that("rate_massey correctly works with not pair games", {
