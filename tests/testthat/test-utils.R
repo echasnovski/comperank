@@ -120,6 +120,90 @@ test_that("to_rating_vec works", {
 })
 
 
+# unique_levels -----------------------------------------------------------
+test_that("unique_levels works", {
+  num_input <- c(NA, 2, -1, 10, NA, 1, 1, 10)
+  expect_identical(unique_levels(num_input), c(-1, 1, 2, 10, NA))
+  expect_identical(unique_levels(num_input, na.last = FALSE),
+                   c(NA, -1, 1, 2, 10))
+  expect_identical(unique_levels(num_input, na.last = NA), c(-1, 1, 2, 10))
+
+  expect_identical(unique_levels(factor(1)), factor(1))
+  expect_identical(unique_levels(factor(1, levels = 1:2)), factor(1:2))
+  expect_identical(unique_levels(factor(c(1, NA))), factor(1))
+  expect_identical(unique_levels(factor(c(1, NA), exclude = NULL)),
+                   factor(c(1, NA), exclude = NULL))
+})
+
+
+# enframe_vec -------------------------------------------------------------
+test_that("enframe_vec works", {
+  input_1 <- c(a = 1L, c = 2L, b = 3L)
+
+  expect_identical(
+    enframe_vec(input_1, name = "player", value = "rating"),
+    dplyr::tibble(player = c("a", "c", "b"), rating = c(1L, 2L, 3L))
+  )
+
+  input_2 <- c("1" = "a", "3" = "c", "2" = NA)
+
+  expect_identical(
+    enframe_vec(input_2, name = "player", value = "rating"),
+    dplyr::tibble(player = c("1", "3", "2"), rating = c("a", "c", NA))
+  )
+  expect_identical(
+    enframe_vec(input_2, ref = 1:3, name = "player", value = "rating"),
+    dplyr::tibble(player = 1:3, rating = c("a", NA, "c"))
+  )
+  expect_identical(
+    enframe_vec(input_2, ref = c(1L, 3L), name = "player", value = "rating"),
+    dplyr::tibble(player = c(1L, 3L), rating = c("a", "c"))
+  )
+  expect_identical(
+    enframe_vec(input_2, ref = factor(1:2, levels = 1:4),
+                name = "player", value = "rating"),
+    dplyr::tibble(player = factor(1:2, levels = 1:4),
+                  rating = c("a", NA))
+  )
+})
+
+test_that("add_ranking works", {
+  input <- data.frame(a = letters[1:5], b = c(3, 1, 1, -1, 4))
+
+  output_1 <- add_ranking(input, "b", "c")
+  output_ref_1 <- input[, 1, drop = FALSE]
+  output_ref_1[["c"]] <- c(2, 3.5, 3.5, 5, 1)
+
+  expect_equal(output_1, output_ref_1)
+
+  output_2 <- add_ranking(input, "b", "c", keep_rating = TRUE)
+  output_ref_2 <- input
+  output_ref_2[["c"]] <- c(2, 3.5, 3.5, 5, 1)
+
+  expect_equal(output_2, output_ref_2)
+
+  output_3 <- add_ranking(input, "b", "c", type = "asc")
+  output_ref_3 <- input[, 1, drop = FALSE]
+  output_ref_3[["c"]] <- c(4, 2.5, 2.5, 1, 5)
+
+  expect_equal(output_3, output_ref_3)
+
+  output_4 <- add_ranking(input, "b", "c", ties = "first")
+  output_ref_4 <- input[, 1, drop = FALSE]
+  output_ref_4[["c"]] <- c(2, 3, 4, 5, 1)
+
+  expect_equal(output_4, output_ref_4)
+
+  input_5 <- input
+  input_5[["b"]][2] <- 1.001
+  output_5 <- add_ranking(input_5, "b", "c", round_digits = 2)
+  output_ref_5 <- input[, 1, drop = FALSE]
+  output_ref_5[["c"]] <- c(2, 3.5, 3.5, 5, 1)
+
+  expect_equal(output_5, output_ref_5)
+})
+
+
 # get_pf_vec --------------------------------------------------------------
 test_that("get_pf_vec works", {
   mat_bad <- matrix(c(1, -1, 1, 1), nrow = 2)

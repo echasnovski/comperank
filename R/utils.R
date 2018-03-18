@@ -130,6 +130,49 @@ to_rating_vec <- function(rating_tbl) {
   res
 }
 
+unique_levels <- function(x, na.last = TRUE) {
+  if (is.null(levels(x))) {
+    sort(unique(x), na.last = na.last)
+  } else {
+    levs <- levels(x)
+    factor(levs, levels = levs, ordered = is.ordered(x), exclude = NULL)
+  }
+}
+
+enframe_vec <- function(x, ref = NULL, name = "name", value = "value") {
+  res_tbl <- tibble::enframe(x, name = name, value = value)
+
+  if (is.null(ref)) {
+    res_tbl
+  } else {
+    res <- tibble(ref = ref) %>%
+      mutate(ref_chr = as.character(ref)) %>%
+      left_join(y = res_tbl, by = c(ref_chr = name)) %>%
+      select(-.data$ref_chr)
+    colnames(res)[1] <- name
+
+    res
+  }
+}
+
+add_ranking <- function(df, rating_name, ranking_name,
+                        keep_rating = FALSE,
+                        type = "desc",
+                        ties = c("average", "first", "last",
+                                 "random", "max", "min"),
+                        round_digits = 7) {
+  df[[ranking_name]] <- round_rank(
+    df[[rating_name]], type = type,
+    ties = ties, round_digits = round_digits
+  )
+
+  if (!isTRUE(keep_rating)) {
+    df <- df[-match(rating_name, colnames(df))]
+  }
+
+  df
+}
+
 
 #' Compute Perron-Frobenius vector
 #'

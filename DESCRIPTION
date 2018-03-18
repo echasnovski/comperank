@@ -14,7 +14,8 @@ RoxygenNote: 6.0.1
 Imports: 
     dplyr (>= 0.6.0),
     rlang (>= 0.2.0),
-    Rcpp
+    Rcpp,
+    tibble
 Suggests: testthat,
     covr,
     knitr,
