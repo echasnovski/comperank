@@ -19,29 +19,27 @@ vote_self(stoch)
 \item{stoch}{Input stochastic matrix.}
 }
 \value{
-\code{teleport} returns a modifier function.
+\code{teleport()} returns a modifier function.
 
-\code{vote_equal} and \code{vote_self} are modifier functions and return
-modified version of input stochastic matrix.
+\code{vote_equal()} and \code{vote_self()} are modifier functions and return modified
+version of input stochastic matrix.
 }
 \description{
 Functions for stochastic matrix modifications.
 }
 \details{
 Modification logic behind \code{teleport} assumes that at each step
-  of Markov chain (described by stochastic matrix) the decision is made
-  whether to change state according to stochastic matrix or to 'teleport' to
-  any state with equal probability. Probability of 'teleport' is
-  \code{teleport_prob}. This modification is useful because it ensures
-  irreducibility of stochastic matrix (with \code{teleport_prob} in (0; 1)).
-  \bold{Note} that in order to obtain modifier one should call function
-  \code{teleport} with some parameter.
+of Markov chain (described by stochastic matrix) the decision is made whether
+to change state according to stochastic matrix or to 'teleport' to any state
+with equal probability. Probability of 'teleport' is \code{teleport_prob}. This
+modification is useful because it ensures irreducibility of stochastic matrix
+(with \code{teleport_prob} in (0; 1)). \strong{Note} that in order to obtain modifier
+one should call function \code{teleport} with some parameter.
 
-  \code{vote_equal} and \code{vote_self} modify rows with elements only equal
-  to 0. The former fills those rows with \code{1/ncol(stoch)} and the latter
-  changes only the respective diagonal element to 1. This is equivalent to
-  jump to any state with equal probability and to stay in the current state
-  respectively.
+\code{vote_equal()} and \code{vote_self()} modify rows with elements only equal to 0.
+The former fills those rows with \code{1/ncol(stoch)} and the latter changes only
+the respective diagonal element to 1. This is equivalent to jump to any state
+with equal probability and to stay in the current state respectively.
 }
 \examples{
 input_stoch <- matrix(c(  0,   0,

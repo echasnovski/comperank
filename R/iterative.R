@@ -6,69 +6,61 @@
 #' @inheritParams rate_massey
 #' @param rate_fun Rating function (see Details).
 #' @param initial_ratings Initial ratings (see Details).
-#' @param type Value for \code{type} in \code{\link{round_rank}}.
-#' @param ties Value for \code{ties} in \code{\link{round_rank}}.
-#' @param round_digits Value for \code{round_digits} in
-#'   \code{\link{round_rank}}.
+#' @param type Value for `type` in [round_rank()].
+#' @inheritParams rank_massey
 #'
 #' @details Iterative ratings of group of players are recomputed after every
 #' game based on players' game scores and their ratings just before the game.
 #' Theoretically this kind of ratings can be non-numeric and be computed on
 #' competition results with variable number of players but they rarely do. This
-#' package provides functions for computing iterative \bold{numeric} ratings for
-#' \link{pairgames} (competition results with games only between two players).
-#' Error is thrown if \code{cr_data} is not pairgames.
+#' package provides functions for computing iterative __numeric__ ratings for
+#' [pairgames][comperes::to_pairgames] (competition results with games only
+#' between two players). Error is thrown if `cr_data` is not pairgames.
 #'
-#' Games in \code{\link{widecr}} form are arranged in increasing order of values
-#' in column \code{game} (if it is present) and processed from first to last
-#' row.
+#' Games in [widecr][comperes::widecr()] form are arranged in increasing order
+#' of values in column `game` (if it is present) and processed from first to
+#' last row.
 #'
-#' \code{NA} values in column \code{player} are allowed. These players are
-#' treated as 'ghosts': players of the same rating as opponent before the game.
-#' 'Ghosts' are not actual players so they don't appear in the output of
-#' \code{rate_iterative}. For games between two 'ghosts' ratings before and
-#' after the game are set to 0.
+#' `NA` values in column `player` are allowed. These players are treated as
+#' 'ghosts': players of the same rating as opponent before the game. 'Ghosts'
+#' are not actual players so they don't appear in the output of
+#' `rate_iterative()`. For games between two 'ghosts' ratings before and after
+#' the game are set to 0.
 #'
-#' The core of the rating system is \code{rate_fun}. It should take the
+#' The core of the rating system is `rate_fun`. It should take the
 #' following arguments:
-#' \itemize{
-#'   \item rating1 - Rating of player1 before the game;
-#'   \item score1 - Score of player1 in the game;
-#'   \item rating2 - Rating of player2 before the game;
-#'   \item score2 - Score of player2 in the game.
-#' }
-#' \code{rate_fun} should return a numeric vector of length 2: first element
-#' being a rating of player1 after the game, second - of player2.
+#' - __rating1__ - Rating of player1 before the game.
+#' - __score1__ - Score of player1 in the game.
+#' - __rating2__ - Rating of player2 before the game.
+#' - __score2__ - Score of player2 in the game.
+#'
+#' `rate_fun` should return a numeric vector of length 2: first element being a
+#' rating of player1 after the game, second - of player2.
 #'
 #' Ratings are computed based only on games between players of interest (see
-#' Players) and \code{NA} values.
+#' Players) and `NA` values.
 #'
-#' Initial ratings should be defined with argument \code{initial_ratings}. It
+#' Initial ratings should be defined with argument `initial_ratings`. It
 #' can be:
-#' \itemize{
-#'   \item A single numeric value. In this case initial ratings for all
-#'     players are set to this value;
-#'   \item A named vector of ratings. All non-\code{NA} players, for which
-#'     rating is computed, should be present in its names.
-#' }
+#' - A single numeric value. In this case initial ratings for all players are
+#' set to this value.
+#' - A named vector of ratings. All non-`NA` players, for which rating is
+#' computed, should be present in its names.
 #'
 #' @inheritSection massey Players
 #'
-#' @return \code{rate_iterative} returns a named vector of iterative ratings by
+#' @return `rate_iterative()` returns a named vector of iterative ratings by
 #' the end of competition results (based on row order).
 #'
-#' \code{rank_iterative} returns a named vector of
-#' \link[=rating-ranking]{ranking} using \code{\link{round_rank}} based on
-#' specified \code{type}.
+#' `rank_iterative()` returns a named vector of [ranking][rating-ranking] using
+#' [round_rank()] based on specified `type`.
 #'
-#' \code{add_iterative_ratings} returns a \code{\link{widecr}}
-#' form of \code{cr_data} with four rating columns added:
-#' \itemize{
-#'   \item rating1Before - Rating of player1 before the game;
-#'   \item rating2Before - Rating of player2 before the game;
-#'   \item rating1After - Rating of player1 after the game;
-#'   \item rating2After - Rating of player2 after the game.
-#' }
+#' `add_iterative_ratings()` returns a [widecr][comperes::widecr()] form of
+#' `cr_data` with four rating columns added:
+#' - __rating1Before__ - Rating of player1 before the game.
+#' - __rating2Before__ - Rating of player2 before the game.
+#' - __rating1After__ - Rating of player1 after the game.
+#' - __rating2After__ - Rating of player2 after the game.
 #'
 #' @examples
 #' test_rate_fun <- function(rating1, score1, rating2, score2) {

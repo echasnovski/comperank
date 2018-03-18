@@ -12,32 +12,31 @@ round_rank(x, type = "desc", na.last = TRUE, ties = c("average", "first",
 
 \item{type}{Type of ranking.}
 
-\item{na.last}{For controlling the treatment of NAs. If TRUE, missing values
-in the data are put last; if FALSE, they are put first; if NA, they are
-removed; if "keep" they are kept with rank NA.}
+\item{na.last}{For controlling the treatment of \code{NA}s. If \code{TRUE}, missing
+values in the data are put last; if \code{FALSE}, they are put first; if \code{NA},
+they are removed; if \code{"keep"} they are kept with rank \code{NA}.}
 
-\item{ties}{A character string specifying how ties are treated, see
-‘Details’; can be abbreviated.}
+\item{ties}{A character string specifying how ties are treated (see Details).
+Can be abbreviated.}
 
-\item{round_digits}{Value of \code{digits} for \code{\link{round}}.}
+\item{round_digits}{Value of \code{digits} for \code{\link[=round]{round()}}.}
 }
 \value{
-A numeric vector of the same length as x with names copied from x
-  (unless na.last = NA, when missing values are removed). The vector is of
-  integer type unless x is a long vector or ties = "average" when it
-  is of double type (whether or not there are any ties).
+A numeric vector of the same length as \code{x} with names copied from \code{x}
+(unless \code{na.last = NA}, when missing values are removed). The vector is of
+integer type unless \code{x} is a long vector or \code{ties = "average"} when it is of
+double type (whether or not there are any ties).
 }
 \description{
 Function for ranking vector after rounding.
 }
 \details{
-This is basically a wrapper around \code{\link{rank}} in which
-  \code{x} is pre-modified by rounding to specific number of digits
-  \code{round_digits}.
+This is basically a wrapper around \code{\link[=rank]{rank()}} in which \code{x} is
+pre-modified by rounding to specific number of digits \code{round_digits}.
 
-  \code{type} can have two values: "desc" for ranking in descending order
-  (rank 1 is given to the biggest value in \code{x}) and "asc" (rank 1 is
-  given to the smallest value in \code{x}). Any other value will cause error.
+\code{type} can have two values: \code{"desc"} for ranking in descending order (rank 1
+is given to the biggest value in \code{x}) and \code{asc} (rank 1 is given to the
+smallest value in \code{x}). Any other value will cause error.
 }
 \examples{
 round_rank(10:1, type = "desc")

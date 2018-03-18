@@ -13,19 +13,18 @@ rank_colley(cr_data, ties = c("average", "first", "last", "random", "max",
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=as_longcr]{as_longcr()}}.}
+\link[comperes:as_longcr]{as_longcr()}.}
 
-\item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
+\item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
-\item{round_digits}{Value for \code{round_digits} in
-\code{\link{round_rank}}.}
+\item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
 }
 \value{
-\code{rate_colley} returns a named vector of the Colley rating. The
-mean rating should be 0.5.
+\code{rate_colley()} returns a named vector of the Colley rating. The mean
+rating should be 0.5.
 
-\code{rank_colley} returns a named vector of \link[=rating-ranking]{ranking}
-using \code{\link{round_rank}}.
+\code{rank_colley()} returns a named vector of \link[=rating-ranking]{ranking} using
+\code{\link[=round_rank]{round_rank()}}.
 }
 \description{
 Functions to compute rating and ranking using Colley method.
@@ -33,36 +32,36 @@ Functions to compute rating and ranking using Colley method.
 \details{
 This rating method was initially designed for games between two
 players. That is why competition results are transformed into pairwise games
-\code{cr_pair} via \link{to_pairgames}. Data from \code{cr_pair} is used in
-rating computation.
+\code{cr_pair} via \link[comperes:to_pairgames]{to_pairgames()}. Data from \code{cr_pair}
+is used in rating computation.
 
 It is assumed that score is numeric and higher values are better for the
 player.
 
 Computation is done based only on the games between players of interest (see
-Players). \bold{Note} that it isn't necessary for all players of interest
-to be present in \code{cr_pair} but it might be a good idea in order to
-obtain plausible outcome rating.
+Players). \strong{Note} that it isn't necessary for all players of interest to be
+present in \code{cr_pair} but it might be a good idea in order to obtain plausible
+outcome rating.
 
 The outline of the Colley method is as follows:
 \enumerate{
-  \item Compute Colley matrix: diagonal elements are equal to number of
-    games played by certain player \emph{plus 2}, off-diagonal are equal to
-    minus number of common games played. This matrix will be the matrix of
-    system of linear equations (SLE);
-  \item Compute right-hand side of SLE as 1 + 0.5*("number of player's
-    wins" - "number of player's losses");
-  \item Solve the SLE. The solution is the Colley rating.
+\item Compute Colley matrix: diagonal elements are equal to number of games
+played by certain player \emph{plus 2}, off-diagonal are equal to minus number of
+common games played. This matrix will be the matrix of system of linear
+equations (SLE).
+\item Compute right-hand side of SLE as 1 + 0.5*("number of player's wins" -
+"number of player's losses").
+\item Solve the SLE. The solution is the Colley rating.
 }
 }
 \section{Players}{
 
 
-\code{comperes} offers a possibility to handle certain set of players. It is
-done by having \code{player} column (in \link[=as_longcr]{longcr} format) as
-factor with levels specifying all players of interest. In case of factor the
-result is returned only for players from its levels. Otherwise - for all
-present players.
+\code{comperank} offers a possibility to handle certain set of players. It is done
+by having \code{player} column (in \link[comperes:as_longcr]{longcr} format) as factor
+with levels specifying all players of interest. In case of factor the result
+is returned only for players from its levels. Otherwise - for all present
+players.
 }
 
 \examples{
@@ -72,6 +71,6 @@ rank_colley(ncaa2005)
 }
 \references{
 Wesley N. Colley (2002) \emph{Colley’s Bias Free College Football
-  Ranking Method: The Colley Matrix Explained}. Available online at
-  \url{http://www.colleyrankings.com}
+Ranking Method: The Colley Matrix Explained}. Available online at
+\url{http://www.colleyrankings.com}
 }

@@ -33,25 +33,24 @@ to_function_list <- function(x, var_name = "input") {
 #'
 #' @param x A numeric, complex, character or logical vector.
 #' @param type Type of ranking.
-#' @param na.last For controlling the treatment of NAs. If TRUE, missing values
-#'   in the data are put last; if FALSE, they are put first; if NA, they are
-#'   removed; if "keep" they are kept with rank NA.
-#' @param ties A character string specifying how ties are treated, see
-#'   ‘Details’; can be abbreviated.
-#' @param round_digits Value of \code{digits} for \code{\link{round}}.
+#' @param na.last For controlling the treatment of `NA`s. If `TRUE`, missing
+#'   values in the data are put last; if `FALSE`, they are put first; if `NA`,
+#'   they are removed; if `"keep"` they are kept with rank `NA`.
+#' @param ties A character string specifying how ties are treated (see Details).
+#'   Can be abbreviated.
+#' @param round_digits Value of `digits` for [round()].
 #'
-#' @details This is basically a wrapper around \code{\link{rank}} in which
-#'   \code{x} is pre-modified by rounding to specific number of digits
-#'   \code{round_digits}.
+#' @details This is basically a wrapper around [rank()] in which `x` is
+#' pre-modified by rounding to specific number of digits `round_digits`.
 #'
-#'   \code{type} can have two values: "desc" for ranking in descending order
-#'   (rank 1 is given to the biggest value in \code{x}) and "asc" (rank 1 is
-#'   given to the smallest value in \code{x}). Any other value will cause error.
+#' `type` can have two values: `"desc"` for ranking in descending order (rank 1
+#' is given to the biggest value in `x`) and `asc` (rank 1 is given to the
+#' smallest value in `x`). Any other value will cause error.
 #'
-#' @return A numeric vector of the same length as x with names copied from x
-#'   (unless na.last = NA, when missing values are removed). The vector is of
-#'   integer type unless x is a long vector or ties = "average" when it
-#'   is of double type (whether or not there are any ties).
+#' @return A numeric vector of the same length as `x` with names copied from `x`
+#' (unless `na.last = NA`, when missing values are removed). The vector is of
+#' integer type unless `x` is a long vector or `ties = "average"` when it is of
+#' double type (whether or not there are any ties).
 #'
 #' @examples
 #' round_rank(10:1, type = "desc")
@@ -97,12 +96,12 @@ assert_used_objects <- function(used, original, prefix = "",
 #' Functions to convert between different forms of ratings.
 #'
 #' @param rating_vec Named vector of ratings.
-#' @param rating_tbl Tibble with columns 'player' and 'rating'.
+#' @param rating_tbl Tibble with columns `player` and `rating`.
 #'
-#' @return \code{to_rating_tbl} returns a \code{\link[dplyr]{tibble}} with
-#' two columns: 'player' and 'rating'.
+#' @return `to_rating_tbl()` returns a [tibble][tibble::tibble] with two
+#' columns: `player` and `rating`.
 #'
-#' \code{to_rating_vec} returns named vector of ratings.
+#' `to_rating_vec()` returns named vector of ratings.
 #'
 #' @examples
 #' rating_vec <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)

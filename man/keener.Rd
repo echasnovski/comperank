@@ -22,9 +22,9 @@ normalize_keener(mat, cr_data)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=as_longcr]{as_longcr()}}.}
+\link[comperes:as_longcr]{as_longcr()}.}
 
-\item{...}{Name-value pairs of Head-to-Head functions (see \link{h2h_mat}).}
+\item{...}{Head-to-Head expression (see \link[comperes:h2h_mat]{h2h_mat()}).}
 
 \item{fill}{A single value to use instead of NA for missing pairs.}
 
@@ -37,21 +37,20 @@ matrix.}
 
 \item{eps}{Coefficient for forcing irreducibility.}
 
-\item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
+\item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
-\item{round_digits}{Value for \code{round_digits} in
-\code{\link{round_rank}}.}
+\item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
 
-\item{x}{Argument for \code{skew_keener}.}
+\item{x}{Argument for \code{skew_keener()}.}
 
-\item{mat}{Argument for \code{normalize_keener}.}
+\item{mat}{Argument for \code{normalize_keener()}.}
 }
 \value{
-\code{rate_keener} returns a named vector of the Keener rating. The
+\code{rate_keener()} returns a named vector of the Keener rating. The
 sum of all ratings should be equal to 1.
 
-\code{rank_keener} returns a named vector of \link[=rating-ranking]{ranking}
-using \code{\link{round_rank}}.
+\code{rank_keener()} returns a named vector of \link[=rating-ranking]{ranking} using
+\code{\link[=round_rank]{round_rank()}}.
 }
 \description{
 Functions to compute rating and ranking using Keener method.
@@ -61,51 +60,48 @@ Keener rating method is based on Head-to-Head matrix of the
 competition results. Therefore it can be used for competitions with
 variable number of players. Its algorithm is as follows:
 \enumerate{
-  \item Compute Head-to-Head matrix of competition results based on
-    Head-to-Head expression supplied in \code{...} (see \link{h2h_mat}).
-    Head-to-Head values are computed based only on the games between players
-    of interest (see Players). Ensure that there are no \code{NA}s by using
-    \code{fill} argument. If \code{force_nonneg_h2h} is \code{TRUE} then the
-    minimum value is subtracted (in case some Head-to-Head value is strictly
-    negative). \bold{Note} that Keener method is designed for Head-to-Head
-    matrix with the following property: the more value in row \bold{i} and
-    column \bold{j} the better player from row \bold{i} performed than player
-    from column \bold{j}. Supply Head-to-Head expression appropriately.
-  \item Update raw Head-to-Head values (denoted as S) with the
-    pair-normalization: a_{ij} = (S_ij + 1) / (S_ij + S_ji + 2). This step
-    should make comparing different players more reasonable.
-  \item Skew Head-to-Head values with applying \code{skew_fun} to them.
-    \code{skew_fun} should take numeric vector as only argument. It should
-    return skewed vector. The default skew function is \code{skew_keener}.
-    This step should make abnormal results not very abnormal. To omit this
-    step supply \code{skew_fun = NULL}.
-  \item Normalize Head-to-Head values with \code{normalize_fun} using
-    \code{cr_data}. \code{normalize_fun} should take Head-to-Head matrix as
-    the first argument and \code{cr_data} as second. It should return
-    normalized matrix. The default normalization is \code{normalize_keener}
-    which divides Head-to-Head value of 'player1'-'player2' matchup divided
-    by the number of games played by 'player1'. This step should take into
-    account possibly not equal number of games played by players. To omit
-    this step supply \code{skew_fun = NULL}.
-  \item Add small value to Head-to-Head matrix to ensure its irreducibility.
-    If all values are strictly positive then this step is omitted. In other
-    case small value is computed as the smallest non-zero Head-to-Head value
-    multiplied by \code{eps}. This step is done to ensure applicability of
-    Perron-Frobenius theorem.
-  \item Compute Perron-Frobenius vector of the resultant matrix, i.e. the
-    strictly positive real eigenvector (which values sum to 1) for eigenvalue
-    (which is real) of the maximum absolute value. This vector is Keener
-    rating vector.
+\item Compute Head-to-Head matrix of competition results based on Head-to-Head
+expression supplied in \code{...} (see \link[comperes:h2h_mat]{h2h_mat()}).
+Head-to-Head values are computed based only on the games between players of
+interest (see Players). Ensure that there are no \code{NA}s by using \code{fill}
+argument. If \code{force_nonneg_h2h} is \code{TRUE} then the minimum value is
+subtracted (in case some Head-to-Head value is strictly negative). \strong{Note}
+that Keener method is designed for Head-to-Head matrix with the following
+property: the more value in row \strong{i} and column \strong{j} the better player from
+row \strong{i} performed than player from column \strong{j}. Supply Head-to-Head
+expression appropriately.
+\item Update raw Head-to-Head values (denoted as S) with the pair-normalization:
+a_{ij} = (S_ij + 1) / (S_ij + S_ji + 2). This step should make comparing
+different players more reasonable.
+\item Skew Head-to-Head values with applying \code{skew_fun} to them. \code{skew_fun}
+should take numeric vector as only argument. It should return skewed vector.
+The default skew function is \code{skew_keener()}. This step should make abnormal
+results not very abnormal. To omit this step supply \code{skew_fun = NULL}.
+\item Normalize Head-to-Head values with \code{normalize_fun} using \code{cr_data}.
+\code{normalize_fun} should take Head-to-Head matrix as the first argument and
+\code{cr_data} as second. It should return normalized matrix. The default
+normalization is \code{normalize_keener()} which divides Head-to-Head value of
+'player1'-'player2' matchup divided by the number of games played by
+'player1'. This step should take into account possibly not equal number of
+games played by players. To omit this step supply \code{normalize_keener = NULL}.
+\item Add small value to Head-to-Head matrix to ensure its irreducibility. If
+all values are strictly positive then this step is omitted. In other case
+small value is computed as the smallest non-zero Head-to-Head value
+multiplied by \code{eps}. This step is done to ensure applicability of
+Perron-Frobenius theorem.
+\item Compute Perron-Frobenius vector of the resultant matrix, i.e. the strictly
+positive real eigenvector (which values sum to 1) for eigenvalue (which is
+real) of the maximum absolute value. This vector is Keener rating vector.
 }
 }
 \section{Players}{
 
 
-\code{comperes} offers a possibility to handle certain set of players. It is
-done by having \code{player} column (in \link[=as_longcr]{longcr} format) as
-factor with levels specifying all players of interest. In case of factor the
-result is returned only for players from its levels. Otherwise - for all
-present players.
+\code{comperank} offers a possibility to handle certain set of players. It is done
+by having \code{player} column (in \link[comperes:as_longcr]{longcr} format) as factor
+with levels specifying all players of interest. In case of factor the result
+is returned only for players from its levels. Otherwise - for all present
+players.
 }
 
 \examples{
@@ -123,5 +119,5 @@ rate_keener(ncaa2005[-(1:2), ], sum(score1), normalize_fun = NULL)
 }
 \references{
 James P. Keener (1993) \emph{The Perron-Frobenius theorem and the
-  ranking of football teams}. SIAM Review, 35(1):80–93, 1993.
+ranking of football teams}. SIAM Review, 35(1):80–93, 1993.
 }

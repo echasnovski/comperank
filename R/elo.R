@@ -5,62 +5,55 @@
 #' @inheritParams rate_massey
 #' @param K K-factor for Elo formula.
 #' @param ksi Normalization coefficient for Elo formula.
-#' @param initial_ratings Initial ratings (see
-#'   \link[=iterative]{Iterative ratings}).
+#' @param initial_ratings Initial ratings (see [Iterative ratings][iterative]).
 #' @param rating1 Rating of player1 before the game.
 #' @param score1 Score of player1 in the game.
 #' @param rating2 Rating of player2 before the game.
 #' @param score2 Score of player2 in the game.
-#' @param ties Value for \code{ties} in \code{\link{round_rank}}.
-#' @param round_digits Value for \code{round_digits} in
-#'   \code{\link{round_rank}}.
+#' @inheritParams rank_massey
 #'
-#' @details \code{rate_elo} and \code{add_elo_ratings} are wrappers for
-#' \code{\link{rate_iterative}} and \code{\link{add_iterative_ratings}}
-#' correspondingly. Rate function is based on Elo algorithm of updating ratings:
-#' \itemize{
-#'   \item Probability of player1 (with rating r1) winning against player2
-#'     (with rating r2) is computed based on rating difference and sigmoid
-#'     function: \code{P = 1 / (1 + 10^( (r2 - r1) / ksi ) )}. \code{ksi}
-#'     defines the spread of ratings;
-#'   \item Result of the game from player1 perspective is computed based on
-#'     rule: \code{S = 1} (if \code{score1} > \code{score2}), \code{S = 0.5} (if
-#'     \code{score1} == \code{score2}) and \code{S = 0} (if \code{score1} <
-#'     \code{score2});
-#'   \item Rating delta is computed: \code{d = K * (S - P)}. The more the
-#'     \code{K} the more the delta (with other being equal);
-#'   \item New ratings are computed: \code{r1_new = r1 + d},
-#'     \code{r2_new = r2 - d}.
-#' }
+#' @details `rate_elo()` and `add_elo_ratings()` are wrappers for
+#' [rate_iterative()] and [add_iterative_ratings()] correspondingly. Rate
+#' function is based on Elo algorithm of updating ratings:
 #'
-#' \code{elo} function implements this algorithm. It is vectorized over all its
-#' arguments with standard R recycling functionality. \bold{Note} that not this
-#' function is used in \code{rate_elo} and \code{add_elo_ratings} because of its
-#' not appropriate output format, but rather its non-vectorized reimplementation
-#' is.
+#' 1. Probability of player1 (with rating r1) winning against player2 (with
+#' rating r2) is computed based on rating difference and sigmoid function:
+#' `P = 1 / (1 + 10^( (r2 - r1) / ksi ) )`. `ksi` defines the spread of ratings.
+#'
+#' 1. Result of the game from player1 perspective is computed based on rule:
+#' `S = 1` (if `score1` > `score2`), `S = 0.5` (if `score1` == `score2`) and
+#' `S = 0` (if `score1` < `score2`).
+#'
+#' 1. Rating delta is computed: `d = K * (S - P)`. The more the `K` the more the
+#' delta (with other being equal).
+#'
+#' 1. New ratings are computed: `r1_new = r1 + d`, `r2_new = r2 - d`.
+#'
+#' `elo()` function implements this algorithm. It is vectorized over all its
+#' arguments with standard R recycling functionality. __Note__ that not this
+#' function is used in `rate_elo()` and `add_elo_ratings()` because of its not
+#' appropriate output format, but rather its non-vectorized reimplementation is.
 #'
 #' Ratings are computed based only on games between players of interest (see
-#' Players) and \code{NA} values.
+#' Players) and `NA` values.
 #'
 #' @inheritSection massey Players
 #'
-#' @return \code{rate_elo} returns a named vector of Elo rating by the end of
-#' competition results.
+#' @return `rate_elo()` returns a named vector of Elo rating by the end of
+#'   competition results.
 #'
-#' \code{rank_elo} returns a named vector of \link[=rating-ranking]{ranking}
-#' using \code{\link{round_rank}}.
+#' `rank_elo()` returns a named vector of [ranking][rating-ranking] using
+#' [round_rank()].
 #'
-#' \code{add_elo_ratings} returns a \code{\link{widecr}} form of \code{cr_data}
+#' `add_elo_ratings()` returns a [widecr][comperes::widecr()] form of `cr_data`
 #' with four rating columns added:
-#' \itemize{
-#'   \item rating1Before - Rating of player1 before the game;
-#'   \item rating2Before - Rating of player2 before the game;
-#'   \item rating1After - Rating of player1 after the game;
-#'   \item rating2After - Rating of player2 after the game.
-#' }
+#' - __rating1Before__ - Rating of player1 before the game.
+#' - __rating2Before__ - Rating of player2 before the game.
+#' - __rating1After__ - Rating of player1 after the game.
+#' - __rating2After__ - Rating of player2 after the game.
 #'
-#' \code{elo} always returns a matrix with two columns containing ratings after
-#' the game. Rows represent games, columns - players.
+#' `elo()` always returns a matrix with two columns containing ratings after the
+#' game. Rows represent games, columns - players.
 #'
 #' @references \href{https://en.wikipedia.org/wiki/Elo_rating_system}{Wikipedia
 #'   page} for Elo rating system.

@@ -20,19 +20,17 @@ elo(rating1, score1, rating2, score2, K = 30, ksi = 400)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=as_longcr]{as_longcr()}}.}
+\link[comperes:as_longcr]{as_longcr()}.}
 
 \item{K}{K-factor for Elo formula.}
 
 \item{ksi}{Normalization coefficient for Elo formula.}
 
-\item{initial_ratings}{Initial ratings (see
-\link[=iterative]{Iterative ratings}).}
+\item{initial_ratings}{Initial ratings (see \link[=iterative]{Iterative ratings}).}
 
-\item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
+\item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
-\item{round_digits}{Value for \code{round_digits} in
-\code{\link{round_rank}}.}
+\item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
 
 \item{rating1}{Rating of player1 before the game.}
 
@@ -43,51 +41,47 @@ elo(rating1, score1, rating2, score2, K = 30, ksi = 400)
 \item{score2}{Score of player2 in the game.}
 }
 \value{
-\code{rate_elo} returns a named vector of Elo rating by the end of
+\code{rate_elo()} returns a named vector of Elo rating by the end of
 competition results.
 
-\code{rank_elo} returns a named vector of \link[=rating-ranking]{ranking}
-using \code{\link{round_rank}}.
+\code{rank_elo()} returns a named vector of \link[=rating-ranking]{ranking} using
+\code{\link[=round_rank]{round_rank()}}.
 
-\code{add_elo_ratings} returns a \code{\link{widecr}} form of \code{cr_data}
+\code{add_elo_ratings()} returns a \link[comperes:widecr]{widecr} form of \code{cr_data}
 with four rating columns added:
 \itemize{
-  \item rating1Before - Rating of player1 before the game;
-  \item rating2Before - Rating of player2 before the game;
-  \item rating1After - Rating of player1 after the game;
-  \item rating2After - Rating of player2 after the game.
+\item \strong{rating1Before} - Rating of player1 before the game.
+\item \strong{rating2Before} - Rating of player2 before the game.
+\item \strong{rating1After} - Rating of player1 after the game.
+\item \strong{rating2After} - Rating of player2 after the game.
 }
 
-\code{elo} always returns a matrix with two columns containing ratings after
-the game. Rows represent games, columns - players.
+\code{elo()} always returns a matrix with two columns containing ratings after the
+game. Rows represent games, columns - players.
 }
 \description{
 Functions to compute rating and ranking using Elo method.
 }
 \details{
-\code{rate_elo} and \code{add_elo_ratings} are wrappers for
-\code{\link{rate_iterative}} and \code{\link{add_iterative_ratings}}
-correspondingly. Rate function is based on Elo algorithm of updating ratings:
-\itemize{
-  \item Probability of player1 (with rating r1) winning against player2
-    (with rating r2) is computed based on rating difference and sigmoid
-    function: \code{P = 1 / (1 + 10^( (r2 - r1) / ksi ) )}. \code{ksi}
-    defines the spread of ratings;
-  \item Result of the game from player1 perspective is computed based on
-    rule: \code{S = 1} (if \code{score1} > \code{score2}), \code{S = 0.5} (if
-    \code{score1} == \code{score2}) and \code{S = 0} (if \code{score1} <
-    \code{score2});
-  \item Rating delta is computed: \code{d = K * (S - P)}. The more the
-    \code{K} the more the delta (with other being equal);
-  \item New ratings are computed: \code{r1_new = r1 + d},
-    \code{r2_new = r2 - d}.
+\code{rate_elo()} and \code{add_elo_ratings()} are wrappers for
+\code{\link[=rate_iterative]{rate_iterative()}} and \code{\link[=add_iterative_ratings]{add_iterative_ratings()}} correspondingly. Rate
+function is based on Elo algorithm of updating ratings:
+\enumerate{
+\item Probability of player1 (with rating r1) winning against player2 (with
+rating r2) is computed based on rating difference and sigmoid function:
+\code{P = 1 / (1 + 10^( (r2 - r1) / ksi ) )}. \code{ksi} defines the spread of ratings.
+\item Result of the game from player1 perspective is computed based on rule:
+\code{S = 1} (if \code{score1} > \code{score2}), \code{S = 0.5} (if \code{score1} == \code{score2}) and
+\code{S = 0} (if \code{score1} < \code{score2}).
+\item Rating delta is computed: \code{d = K * (S - P)}. The more the \code{K} the more the
+delta (with other being equal).
+\item New ratings are computed: \code{r1_new = r1 + d}, \code{r2_new = r2 - d}.
 }
 
-\code{elo} function implements this algorithm. It is vectorized over all its
-arguments with standard R recycling functionality. \bold{Note} that not this
-function is used in \code{rate_elo} and \code{add_elo_ratings} because of its
-not appropriate output format, but rather its non-vectorized reimplementation
-is.
+\code{elo()} function implements this algorithm. It is vectorized over all its
+arguments with standard R recycling functionality. \strong{Note} that not this
+function is used in \code{rate_elo()} and \code{add_elo_ratings()} because of its not
+appropriate output format, but rather its non-vectorized reimplementation is.
 
 Ratings are computed based only on games between players of interest (see
 Players) and \code{NA} values.
@@ -95,11 +89,11 @@ Players) and \code{NA} values.
 \section{Players}{
 
 
-\code{comperes} offers a possibility to handle certain set of players. It is
-done by having \code{player} column (in \link[=as_longcr]{longcr} format) as
-factor with levels specifying all players of interest. In case of factor the
-result is returned only for players from its levels. Otherwise - for all
-present players.
+\code{comperank} offers a possibility to handle certain set of players. It is done
+by having \code{player} column (in \link[comperes:as_longcr]{longcr} format) as factor
+with levels specifying all players of interest. In case of factor the result
+is returned only for players from its levels. Otherwise - for all present
+players.
 }
 
 \examples{
@@ -116,5 +110,5 @@ elo((0:12)*10, 1, 0, 0, ksi = 40)
 }
 \references{
 \href{https://en.wikipedia.org/wiki/Elo_rating_system}{Wikipedia
-  page} for Elo rating system.
+page} for Elo rating system.
 }

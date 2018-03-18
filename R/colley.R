@@ -7,39 +7,40 @@
 #'
 #' @details This rating method was initially designed for games between two
 #' players. That is why competition results are transformed into pairwise games
-#' \code{cr_pair} via \link{to_pairgames}. Data from \code{cr_pair} is used in
-#' rating computation.
+#' `cr_pair` via [to_pairgames()][comperes::to_pairgames()]. Data from `cr_pair`
+#' is used in rating computation.
 #'
 #' It is assumed that score is numeric and higher values are better for the
 #' player.
 #'
 #' Computation is done based only on the games between players of interest (see
-#' Players). \bold{Note} that it isn't necessary for all players of interest
-#' to be present in \code{cr_pair} but it might be a good idea in order to
-#' obtain plausible outcome rating.
+#' Players). __Note__ that it isn't necessary for all players of interest to be
+#' present in `cr_pair` but it might be a good idea in order to obtain plausible
+#' outcome rating.
 #'
 #' The outline of the Colley method is as follows:
-#' \enumerate{
-#'   \item Compute Colley matrix: diagonal elements are equal to number of
-#'     games played by certain player \emph{plus 2}, off-diagonal are equal to
-#'     minus number of common games played. This matrix will be the matrix of
-#'     system of linear equations (SLE);
-#'   \item Compute right-hand side of SLE as 1 + 0.5*("number of player's
-#'     wins" - "number of player's losses");
-#'   \item Solve the SLE. The solution is the Colley rating.
-#' }
+#'
+#' 1. Compute Colley matrix: diagonal elements are equal to number of games
+#' played by certain player _plus 2_, off-diagonal are equal to minus number of
+#' common games played. This matrix will be the matrix of system of linear
+#' equations (SLE).
+#'
+#' 1. Compute right-hand side of SLE as 1 + 0.5*("number of player's wins" -
+#' "number of player's losses").
+#'
+#' 1. Solve the SLE. The solution is the Colley rating.
 #'
 #' @inheritSection massey Players
 #'
-#' @return \code{rate_colley} returns a named vector of the Colley rating. The
-#' mean rating should be 0.5.
+#' @return `rate_colley()` returns a named vector of the Colley rating. The mean
+#' rating should be 0.5.
 #'
-#' \code{rank_colley} returns a named vector of \link[=rating-ranking]{ranking}
-#' using \code{\link{round_rank}}.
+#' `rank_colley()` returns a named vector of [ranking][rating-ranking] using
+#' [round_rank()].
 #'
-#' @references Wesley N. Colley (2002) \emph{Colley’s Bias Free College Football
-#'   Ranking Method: The Colley Matrix Explained}. Available online at
-#'   \url{http://www.colleyrankings.com}
+#' @references Wesley N. Colley (2002) *Colley’s Bias Free College Football
+#'   Ranking Method: The Colley Matrix Explained*. Available online at
+#'   <http://www.colleyrankings.com>
 #'
 #' @examples rate_colley(ncaa2005)
 #' rank_colley(ncaa2005)

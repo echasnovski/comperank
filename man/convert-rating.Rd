@@ -13,13 +13,13 @@ to_rating_vec(rating_tbl)
 \arguments{
 \item{rating_vec}{Named vector of ratings.}
 
-\item{rating_tbl}{Tibble with columns 'player' and 'rating'.}
+\item{rating_tbl}{Tibble with columns \code{player} and \code{rating}.}
 }
 \value{
-\code{to_rating_tbl} returns a \code{\link[dplyr]{tibble}} with
-two columns: 'player' and 'rating'.
+\code{to_rating_tbl()} returns a \link[tibble:tibble]{tibble} with two
+columns: \code{player} and \code{rating}.
 
-\code{to_rating_vec} returns named vector of ratings.
+\code{to_rating_vec()} returns named vector of ratings.
 }
 \description{
 Functions to convert between different forms of ratings.

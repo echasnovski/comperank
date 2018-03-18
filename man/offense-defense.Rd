@@ -15,9 +15,9 @@ rank_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001, tol = 1e-04,
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=as_longcr]{as_longcr()}}.}
+\link[comperes:as_longcr]{as_longcr()}.}
 
-\item{...}{Head-to-Head expression (see \link{h2h_mat}).}
+\item{...}{Head-to-Head expression (see \link[comperes:h2h_mat]{h2h_mat()}).}
 
 \item{force_nonneg_h2h}{Whether to force nonnegative values in Head-to-Head
 matrix.}
@@ -28,22 +28,21 @@ matrix.}
 
 \item{max_iterations}{Maximum number of iterations for iterative algorithm.}
 
-\item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
+\item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
-\item{round_digits}{Value for \code{round_digits} in
-\code{\link{round_rank}}.}
+\item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
 }
 \value{
-\code{rate_od} returns a matrix with rows named by players and the
+\code{rate_od()} returns a matrix with rows named by players and the
 following three columns:
 \itemize{
-  \item \code{off} - offensive rating of player;
-  \item \code{def} - defensive rating of player;
-  \item \code{od} - Offense-Defense rating of player;
+\item \strong{off} - offensive rating of player.
+\item \strong{def} - defensive rating of player.
+\item \strong{od} - Offense-Defense rating of player.
 }
 
-\code{rank_od} returns a matrix of the same structure as \code{rate_od} but
-with \link[=rating-ranking]{rankings} using \code{\link{round_rank}}.
+\code{rank_od()} returns a matrix of the same structure as \code{rate_od()} but
+with \link[=rating-ranking]{ranking} using \code{\link[=round_rank]{round_rank()}}.
 }
 \description{
 Functions to compute rating and ranking using Offense-Defense method.
@@ -52,19 +51,18 @@ Functions to compute rating and ranking using Offense-Defense method.
 Offense-Defense (OD) rating is designed for games in which player's
 goal is to make higher score than opponent(s). To describe competition
 results Head-to-Head matrix is used (which is computed with \code{...} via
-\code{\link{h2h_mat}}). Element in row \bold{i} and column \bold{j} should
-represent the score player from column \bold{j} makes in games with player
-from row \bold{i}. For pairs of players without common games Head-to-Head
-value is computed to 0 (not \code{NA}). \bold{Note} that values should be
-non-negative and non-NA. This can be ensured with setting
-\code{force_nonneg_h2h} to \code{TRUE}.
+\link[comperes:h2h_mat]{h2h_mat()}). Element in row \strong{i} and column \strong{j}
+should represent the score player from column \strong{j} makes in games with
+player from row \strong{i}. For pairs of players without common games Head-to-Head
+value is computed to 0 (not \code{NA}). \strong{Note} that values should be
+non-negative and non-NA. This can be ensured with setting \code{force_nonneg_h2h}
+to \code{TRUE}.
 
-For player which can make \emph{high} score (even against the player with
-strong defense) it is said that he/she has \bold{strong offense} which
-results into \emph{high} offensive rating. For player which can force their
-opponents into making \emph{low} score (even if they have strong offense) it
-is said that he/she has \bold{strong defense} which results into \emph{low}
-defensive rating.
+For player which can make \emph{high} score (even against the player with strong
+defense) it is said that he/she has \strong{strong offense} which results into
+\emph{high} offensive rating. For player which can force their opponents into
+making \emph{low} score (even if they have strong offense) it is said that he/she
+has \strong{strong defense} which results into \emph{low} defensive rating.
 
 Offensive and defensive ratings describe different skills of players. In
 order to fully rate players, OD ratings are computed: offensive ratings
@@ -72,23 +70,23 @@ divided be defensive. The more OD rating the better the player.
 
 Algorithm for OD ratings is as follows:
 \enumerate{
-  \item Compute Head-to-Head matrix using \code{...}.
-  \item Add small value to Head-to-Head matrix to ensure convergence of the
-    iterative algorithm in the next step. If all values are strictly positive
-    then this step is omitted. In other case small value is computed as the
-    smallest non-zero Head-to-Head value multiplied by \code{eps}.
-  \item Perform iterative fixed point search with the following recurrent
-    formula: \code{def_{k+1} = A \%*\% inv(t(A) \%*\% inv(def_{k}))} where
-    \code{def_{k}} is a vector of defensive ratings at iteration \code{k},
-    \code{A} is a perturbed Head-to-Head matrix, \code{inv(x) = 1 / x}.
-    Iterative search stops if at least one of two conditions is met:
-    \itemize{
-      \item \code{sum(abs(def_{k+1} / def_{k} - 1)) < tol}.
-      \item Number of iterations exceeds maximum number of iterations
-        \code{max_iterations}.
-    }
-  \item Compute offensive ratings: \code{off = t(A) \%*\% inv(def)}.
-  \item Compute OD ratings: \code{OD = off / def}.
+\item Compute Head-to-Head matrix using \code{...}.
+\item Add small value to Head-to-Head matrix to ensure convergence of the
+iterative algorithm in the next step. If all values are strictly positive
+then this step is omitted. In other case small value is computed as the
+smallest non-zero Head-to-Head value multiplied by \code{eps}.
+\item Perform iterative fixed point search with the following recurrent formula:
+\code{def_{k+1} = A \%*\% inv(t(A) \%*\% inv(def_{k}))} where \code{def_{k}}
+is a vector of defensive ratings at iteration \code{k}, \code{A} is a perturbed
+Head-to-Head matrix, \code{inv(x) = 1 / x}. Iterative search stops if at least one
+of two conditions is met:
+\itemize{
+\item \code{sum(abs(def_{k+1} / def_{k} - 1)) < tol}.
+\item Number of iterations exceeds maximum number of iterations
+\code{max_iterations}.
+}
+\item Compute offensive ratings: \code{off = t(A) \%*\% inv(def)}.
+\item Compute OD ratings: \code{OD = off / def}.
 }
 
 Ratings are computed based only on games between players of interest (see
@@ -101,11 +99,11 @@ idea.
 \section{Players}{
 
 
-\code{comperes} offers a possibility to handle certain set of players. It is
-done by having \code{player} column (in \link[=as_longcr]{longcr} format) as
-factor with levels specifying all players of interest. In case of factor the
-result is returned only for players from its levels. Otherwise - for all
-present players.
+\code{comperank} offers a possibility to handle certain set of players. It is done
+by having \code{player} column (in \link[comperes:as_longcr]{longcr} format) as factor
+with levels specifying all players of interest. In case of factor the result
+is returned only for players from its levels. Otherwise - for all present
+players.
 }
 
 \examples{
@@ -118,7 +116,7 @@ rate_od(ncaa2005, ifelse(player1[1] == player2[1], 0, mean(score2)))
 }
 \references{
 Amy N. Langville, Carl D. Meyer (2012) \emph{Who’s #1?: The
-  science of rating and ranking}.
+science of rating and ranking}.
 
 Philip A. Knight (2008) \emph{The Sinkhorn-Knopp algorithm:
 Convergence and applications.}. SIAM Journal of Matrix Analysis,

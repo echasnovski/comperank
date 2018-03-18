@@ -3,58 +3,59 @@
 #' Functions to compute rating and ranking using Markov method.
 #'
 #' @inheritParams rate_massey
-#' @param ... Name-value pairs of Head-to-Head functions (see \link{h2h_long}).
+#' @param ... Name-value pairs of Head-to-Head functions (see
+#'   [h2h_long()][comperes::h2h_long()]).
 #' @param fill A named list that for each Head-to-Head function supplies a
-#'   single value to use instead of NA for missing pairs (see \link{h2h_long}).
+#'   single value to use instead of NA for missing pairs (see
+#'   [h2h_long()][comperes::h2h_long()]).
 #' @param stoch_modify A single function to modify stochastic matrix or a list
-#'  of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).
+#'   of them (see [Stochastic matrix modifiers][stoch-modifiers]).
 #' @param weights Weights for different stochastic matrices.
 #' @param force_nonneg_h2h Whether to force nonnegative values in Head-to-Head
 #'   matrix.
-#' @param ties Value for \code{ties} in \code{\link{round_rank}}.
-#' @param round_digits Value for \code{round_digits} in
-#'   \code{\link{round_rank}}.
+#' @inheritParams rank_massey
 #'
 #' @details Markov ratings are based on players 'voting' for other players being
 #' better. Algorithm is as follows:
-#' \enumerate{
-#'   \item 'Voting' is done with \link[=h2h_long]{Head-to-Head} values supplied
-#'     in \code{...}: the more Head-to-Head value the more votes gets player2
-#'     from player1. Take special care of Head-to-Head values for self plays
-#'     (when player1 equals player2). \bold{Note} that Head-to-Head values
-#'     should be non-negative. Use \code{force_nonneg_h2h = TRUE} to force that
-#'     by subtracting minimum Head-to-Head value (in case some Head-to-Head
-#'     value is strictly negative).
-#'   \item Head-to-Head matrix is normalized to be stochastic (sum of
-#'     rows should be equal to 1) Markov matrix \emph{S}. \bold{Note} that all
-#'     missing values are converted into 0. To specify other value use `fill`
-#'     argument.
-#'   \item \emph{S} is modified with \code{stoch_modify} to deal with possible
-#'     problems behind \emph{S}, such as reducibility and rows with all 0.
-#'   \item Stationary vector is computed based on \emph{S} as probability
-#'     transition matrix of Markov chain process. The result is declared as
-#'     Markov ratings.
-#' }
+#'
+#' 1. 'Voting' is done with [Head-to-Head][h2h_long] values supplied in `...`:
+#' the more Head-to-Head value the more votes gets player2 from player1. Take
+#' special care of Head-to-Head values for self plays (when player1 equals
+#' player2). __Note__ that Head-to-Head values should be non-negative. Use
+#' `force_nonneg_h2h = TRUE` to force that by subtracting minimum Head-to-Head
+#' value (in case some Head-to-Head value is strictly negative).
+#'
+#' 1. Head-to-Head values are transformed into matrix which is normalized to be
+#' stochastic (sum of rows should be equal to 1) Markov matrix _S_. __Note__
+#' that all missing values are converted into 0. To specify other value use
+#' `fill` argument.
+#'
+#' 1. _S_ is modified with `stoch_modify` to deal with possible problems behind
+#' _S_, such as reducibility and rows with all 0.
+#'
+#' 1. Stationary vector is computed based on _S_ as probability transition
+#' matrix of Markov chain process. The result is declared as Markov ratings.
 #'
 #' Considering common values and structure of stochastic matrices one can
 #' naturally combine different 'votings' in one stochastic matrix:
-#' \enumerate{
-#'   \item Long format of Head-to-Head values is computed using \code{...}
-#'     (which in this case should be several expressiong for Head-to-Head
-#'     functions).
-#'   \item Each matrix is normalized to stochastic.
-#'   \item Each stochastic matrix is modified with respective modifier which is
-#'     stored in \code{stoch_modify} (which can be a list of functions);
-#'   \item The resulting stochastic matrix is computed as weighted average of
-#'     modified stochastic matrices.
-#' }
 #'
-#' For Head-to-Head functions in \code{...} (considered as list) and argument
-#' \code{stoch_modify} general R recycling rule is applied. If
-#' \code{stoch_modify} is a function it is transformed to list with one
-#' function.
+#' 1. Long format of Head-to-Head values is computed using `...` (which in this
+#' case should be several expressiong for Head-to-Head functions).
 #'
-#' \code{weights} is recycled to the maximum length of two mentioned recycled
+#' 1. Each set of Head-to-Head values are transformed into matrix which is
+#' normalized to stochastic.
+#'
+#' 1. Each stochastic matrix is modified with respective modifier which is
+#' stored in `stoch_modify` (which can be a list of functions).
+#'
+#' 1. The resulting stochastic matrix is computed as weighted average of
+#' modified stochastic matrices.
+#'
+#' For Head-to-Head functions in `...` (considered as list) and argument
+#' `stoch_modify` general R recycling rule is applied. If `stoch_modify` is a
+#' function it is transformed to list with one function.
+#'
+#' `weights` is recycled to the maximum length of two mentioned recycled
 #' elements and then is normalized to sum to 1.
 #'
 #' Ratings are computed based only on games between players of interest (see
@@ -62,11 +63,11 @@
 #'
 #' @inheritSection massey Players
 #'
-#' @return \code{rate_markov} returns a named vector of the Markov rating. The
-#' sum of all ratings should be equal to 1.
+#' @return `rate_markov()` returns a named vector of the Markov rating. The sum
+#' of all ratings should be equal to 1.
 #'
-#' \code{rank_markov} returns a named vector of \link[=rating-ranking]{ranking}
-#' using \code{\link{round_rank}}.
+#' `rank_markov` returns a named vector of [ranking][rating-ranking] using
+#' [round_rank()].
 #'
 #' @references \href{https://en.wikipedia.org/wiki/Markov_chain}{Wikipedia
 #'   page} for Markov chain.
@@ -172,25 +173,23 @@ rank_markov <- function(cr_data, ..., fill = list(),
 #' @param teleport_prob Probability of 'teleporation'.
 #' @param stoch Input stochastic matrix.
 #'
-#' @details Modification logic behind \code{teleport} assumes that at each step
-#'   of Markov chain (described by stochastic matrix) the decision is made
-#'   whether to change state according to stochastic matrix or to 'teleport' to
-#'   any state with equal probability. Probability of 'teleport' is
-#'   \code{teleport_prob}. This modification is useful because it ensures
-#'   irreducibility of stochastic matrix (with \code{teleport_prob} in (0; 1)).
-#'   \bold{Note} that in order to obtain modifier one should call function
-#'   \code{teleport} with some parameter.
+#' @details Modification logic behind `teleport` assumes that at each step
+#' of Markov chain (described by stochastic matrix) the decision is made whether
+#' to change state according to stochastic matrix or to 'teleport' to any state
+#' with equal probability. Probability of 'teleport' is `teleport_prob`. This
+#' modification is useful because it ensures irreducibility of stochastic matrix
+#' (with `teleport_prob` in (0; 1)). __Note__ that in order to obtain modifier
+#' one should call function `teleport` with some parameter.
 #'
-#'   \code{vote_equal} and \code{vote_self} modify rows with elements only equal
-#'   to 0. The former fills those rows with \code{1/ncol(stoch)} and the latter
-#'   changes only the respective diagonal element to 1. This is equivalent to
-#'   jump to any state with equal probability and to stay in the current state
-#'   respectively.
+#' `vote_equal()` and `vote_self()` modify rows with elements only equal to 0.
+#' The former fills those rows with `1/ncol(stoch)` and the latter changes only
+#' the respective diagonal element to 1. This is equivalent to jump to any state
+#' with equal probability and to stay in the current state respectively.
 #'
-#' @return \code{teleport} returns a modifier function.
+#' @return `teleport()` returns a modifier function.
 #'
-#' \code{vote_equal} and \code{vote_self} are modifier functions and return
-#' modified version of input stochastic matrix.
+#' `vote_equal()` and `vote_self()` are modifier functions and return modified
+#' version of input stochastic matrix.
 #'
 #' @examples
 #' input_stoch <- matrix(c(  0,   0,

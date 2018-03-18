@@ -15,12 +15,14 @@ rank_markov(cr_data, ..., fill = list(), stoch_modify = teleport(0.15),
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\code{\link[=as_longcr]{as_longcr()}}.}
+\link[comperes:as_longcr]{as_longcr()}.}
 
-\item{...}{Name-value pairs of Head-to-Head functions (see \link{h2h_long}).}
+\item{...}{Name-value pairs of Head-to-Head functions (see
+\link[comperes:h2h_long]{h2h_long()}).}
 
 \item{fill}{A named list that for each Head-to-Head function supplies a
-single value to use instead of NA for missing pairs (see \link{h2h_long}).}
+single value to use instead of NA for missing pairs (see
+\link[comperes:h2h_long]{h2h_long()}).}
 
 \item{stoch_modify}{A single function to modify stochastic matrix or a list
 of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).}
@@ -30,17 +32,16 @@ of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).}
 \item{force_nonneg_h2h}{Whether to force nonnegative values in Head-to-Head
 matrix.}
 
-\item{ties}{Value for \code{ties} in \code{\link{round_rank}}.}
+\item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
-\item{round_digits}{Value for \code{round_digits} in
-\code{\link{round_rank}}.}
+\item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
 }
 \value{
-\code{rate_markov} returns a named vector of the Markov rating. The
-sum of all ratings should be equal to 1.
+\code{rate_markov()} returns a named vector of the Markov rating. The sum
+of all ratings should be equal to 1.
 
-\code{rank_markov} returns a named vector of \link[=rating-ranking]{ranking}
-using \code{\link{round_rank}}.
+\code{rank_markov} returns a named vector of \link[=rating-ranking]{ranking} using
+\code{\link[=round_rank]{round_rank()}}.
 }
 \description{
 Functions to compute rating and ranking using Markov method.
@@ -49,41 +50,38 @@ Functions to compute rating and ranking using Markov method.
 Markov ratings are based on players 'voting' for other players being
 better. Algorithm is as follows:
 \enumerate{
-  \item 'Voting' is done with \link[=h2h_long]{Head-to-Head} values supplied
-    in \code{...}: the more Head-to-Head value the more votes gets player2
-    from player1. Take special care of Head-to-Head values for self plays
-    (when player1 equals player2). \bold{Note} that Head-to-Head values
-    should be non-negative. Use \code{force_nonneg_h2h = TRUE} to force that
-    by subtracting minimum Head-to-Head value (in case some Head-to-Head
-    value is strictly negative).
-  \item Head-to-Head matrix is normalized to be stochastic (sum of
-    rows should be equal to 1) Markov matrix \emph{S}. \bold{Note} that all
-    missing values are converted into 0. To specify other value use `fill`
-    argument.
-  \item \emph{S} is modified with \code{stoch_modify} to deal with possible
-    problems behind \emph{S}, such as reducibility and rows with all 0.
-  \item Stationary vector is computed based on \emph{S} as probability
-    transition matrix of Markov chain process. The result is declared as
-    Markov ratings.
+\item 'Voting' is done with \link[=h2h_long]{Head-to-Head} values supplied in \code{...}:
+the more Head-to-Head value the more votes gets player2 from player1. Take
+special care of Head-to-Head values for self plays (when player1 equals
+player2). \strong{Note} that Head-to-Head values should be non-negative. Use
+\code{force_nonneg_h2h = TRUE} to force that by subtracting minimum Head-to-Head
+value (in case some Head-to-Head value is strictly negative).
+\item Head-to-Head values are transformed into matrix which is normalized to be
+stochastic (sum of rows should be equal to 1) Markov matrix \emph{S}. \strong{Note}
+that all missing values are converted into 0. To specify other value use
+\code{fill} argument.
+\item \emph{S} is modified with \code{stoch_modify} to deal with possible problems behind
+\emph{S}, such as reducibility and rows with all 0.
+\item Stationary vector is computed based on \emph{S} as probability transition
+matrix of Markov chain process. The result is declared as Markov ratings.
 }
 
 Considering common values and structure of stochastic matrices one can
 naturally combine different 'votings' in one stochastic matrix:
 \enumerate{
-  \item Long format of Head-to-Head values is computed using \code{...}
-    (which in this case should be several expressiong for Head-to-Head
-    functions).
-  \item Each matrix is normalized to stochastic.
-  \item Each stochastic matrix is modified with respective modifier which is
-    stored in \code{stoch_modify} (which can be a list of functions);
-  \item The resulting stochastic matrix is computed as weighted average of
-    modified stochastic matrices.
+\item Long format of Head-to-Head values is computed using \code{...} (which in this
+case should be several expressiong for Head-to-Head functions).
+\item Each set of Head-to-Head values are transformed into matrix which is
+normalized to stochastic.
+\item Each stochastic matrix is modified with respective modifier which is
+stored in \code{stoch_modify} (which can be a list of functions).
+\item The resulting stochastic matrix is computed as weighted average of
+modified stochastic matrices.
 }
 
 For Head-to-Head functions in \code{...} (considered as list) and argument
-\code{stoch_modify} general R recycling rule is applied. If
-\code{stoch_modify} is a function it is transformed to list with one
-function.
+\code{stoch_modify} general R recycling rule is applied. If \code{stoch_modify} is a
+function it is transformed to list with one function.
 
 \code{weights} is recycled to the maximum length of two mentioned recycled
 elements and then is normalized to sum to 1.
@@ -94,11 +92,11 @@ Players).
 \section{Players}{
 
 
-\code{comperes} offers a possibility to handle certain set of players. It is
-done by having \code{player} column (in \link[=as_longcr]{longcr} format) as
-factor with levels specifying all players of interest. In case of factor the
-result is returned only for players from its levels. Otherwise - for all
-present players.
+\code{comperank} offers a possibility to handle certain set of players. It is done
+by having \code{player} column (in \link[comperes:as_longcr]{longcr} format) as factor
+with levels specifying all players of interest. In case of factor the result
+is returned only for players from its levels. Otherwise - for all present
+players.
 }
 
 \examples{
@@ -129,5 +127,5 @@ rate_markov(
 }
 \references{
 \href{https://en.wikipedia.org/wiki/Markov_chain}{Wikipedia
-  page} for Markov chain.
+page} for Markov chain.
 }

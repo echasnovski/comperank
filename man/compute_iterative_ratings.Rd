@@ -23,10 +23,10 @@ compute_iterative_ratings(rate_fun, player1_id, score1, player2_id, score2,
 \value{
 A list:
 \itemize{
-  \item rating1Before - rating of player 1 before the game;
-  \item rating2Before - rating of player 2 before the game;
-  \item rating1After - rating of player 1 after the game;
-  \item rating2After - rating of player 2 after the game.
+\item rating1Before - rating of player 1 before the game;
+\item rating2Before - rating of player 2 before the game;
+\item rating1After - rating of player 1 after the game;
+\item rating2After - rating of player 2 after the game.
 }
 }
 \description{
@@ -34,12 +34,12 @@ C++ implementation of iterative computations.
 }
 \details{
 \code{rate_fun} - function that takes arguments:
-  \itemize{
-    \item rating1 - rating of player1 before game;
-    \item score1 - numeric score of player1 in the game;
-    \item rating2 - rating of player2 before game;
-    \item score2 - numeric score of player2 in the game.
-  }
+\itemize{
+\item rating1 - rating of player1 before game;
+\item score1 - numeric score of player1 in the game;
+\item rating2 - rating of player2 before game;
+\item score2 - numeric score of player2 in the game.
+}
 This function should return numeric vector of length 2: rating of player1
 and player2 after the game.
 

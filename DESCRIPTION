@@ -22,3 +22,4 @@ Suggests: testthat,
 VignetteBuilder: knitr
 LinkingTo: Rcpp
 Remotes: echasnovski/comperes
+Roxygen: list(markdown = TRUE)
