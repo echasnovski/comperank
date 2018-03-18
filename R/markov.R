@@ -1,6 +1,7 @@
 #' Markov method
 #'
-#' Functions to compute rating and ranking using Markov method.
+#' Functions to compute [rating][rating-ranking] and [ranking][rating-ranking]
+#' using Markov method.
 #'
 #' @inheritParams rate_massey
 #' @param ... Name-value pairs of Head-to-Head functions (see
@@ -40,7 +41,7 @@
 #' naturally combine different 'votings' in one stochastic matrix:
 #'
 #' 1. Long format of Head-to-Head values is computed using `...` (which in this
-#' case should be several expressiong for Head-to-Head functions).
+#' case should be several expressions for Head-to-Head functions).
 #'
 #' 1. Each set of Head-to-Head values are transformed into matrix which is
 #' normalized to stochastic.
@@ -63,11 +64,13 @@
 #'
 #' @inheritSection massey Players
 #'
-#' @return `rate_markov()` returns a named vector of the Markov rating. The sum
-#' of all ratings should be equal to 1.
+#' @return `rate_markov()` returns a [tibble][tibble::tibble] with columns
+#' `player` (player identifier) and `rating_markov` (Markov
+#' [rating][rating-ranking]). The sum of all ratings should be equal to 1.
 #'
-#' `rank_markov` returns a named vector of [ranking][rating-ranking] using
-#' [round_rank()].
+#' `rank_markov` returns a `tibble` with columns `player`, `rating_markov` (if
+#' `keep_rating = TRUE`) and `ranking_markov` (Markov [ranking][rating-ranking]
+#' computed with [round_rank()]).
 #'
 #' @references \href{https://en.wikipedia.org/wiki/Markov_chain}{Wikipedia
 #'   page} for Markov chain.
@@ -86,6 +89,15 @@
 #'   stoch_modify = vote_equal
 #' )
 #'
+#' rank_markov(
+#'   cr_data = ncaa2005,
+#'   comperes::num_wins(score2, score1, half_for_draw = FALSE),
+#'   stoch_modify = vote_equal,
+#'   keep_rating = TRUE
+#' )
+#'
+#' # Combine multiple stochastic matrices and
+#' # use inappropriate `fill` which misrepresents reality
 #' rate_markov(
 #'   cr_data = ncaa2005[-(1:2), ],
 #'   win = num_wins(score2, score1, half_for_draw = FALSE),
@@ -140,10 +152,10 @@ rate_markov <- function(cr_data, ..., fill = list(),
     Reduce(f = `+`)
 
   # Calculate resulting rating vector
-  res <-  get_pf_vec(t(stoch))
-  names(res) <- rownames(stoch)
+  res_vec <- get_pf_vec(t(stoch))
+  names(res_vec) <- rownames(stoch)
 
-  res
+  enframe_vec(res_vec, unique_levels(cr$player), "player", "rating_markov")
 }
 
 #' @rdname markov
@@ -152,15 +164,18 @@ rank_markov <- function(cr_data, ..., fill = list(),
                         stoch_modify = teleport(0.15),
                         weights = 1,
                         force_nonneg_h2h = TRUE,
+                        keep_rating = FALSE,
                         ties = c("average", "first", "last",
                                  "random", "max", "min"),
                         round_digits = 7) {
-  round_rank(
+  add_ranking(
     rate_markov(
       cr_data = cr_data, ..., fill = fill, stoch_modify = stoch_modify,
       weights = weights, force_nonneg_h2h = force_nonneg_h2h
     ),
-    type = "desc", ties = ties, round_digits = round_digits
+    "rating_markov", "ranking_markov",
+    keep_rating = keep_rating, type = "desc",
+    ties = ties, round_digits = round_digits
   )
 }
 

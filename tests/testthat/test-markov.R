@@ -4,78 +4,115 @@ library(comperes)
 library(rlang)
 
 # Input data --------------------------------------------------------------
+cr_data <- ncaa2005
 input_stoch <- matrix(c(0.3, 0.7,
                         0.2, 0.8),
                       ncol = 2, byrow = TRUE)
 
 
+# Custom expectations -----------------------------------------------------
+# This workaround is currently needed because of these issues:
+# https://github.com/r-lib/testthat/issues/593
+# https://github.com/tidyverse/tibble/issues/287
+# https://github.com/tidyverse/dplyr/issues/2751
+expect_equal_tbls <- function(tbl_1, tbl_2) {
+  expect_equal(as.data.frame(tbl_1), as.data.frame(tbl_2))
+}
+
+
 # rate_markov -------------------------------------------------------------
 test_that("rate_markov simply works", {
   output_1 <- rate_markov(
-    cr_data = ncaa2005,
+    cr_data = cr_data,
     # player1 "votes" for player2 if player2 won
     win = num_wins(score2, score1, half_for_draw = FALSE),
-    fill = list(win = 0),
-    stoch_modify = vote_equal,
-    weights = 1,
-    force_nonneg_h2h = FALSE
+    fill = list(win = 0), stoch_modify = vote_equal,
+    weights = 1, force_nonneg_h2h = FALSE
   )
-  output_ref_1 <- c(0.088, 0.438, 0.146, 0.109, 0.219)
-  names(output_ref_1) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output_1$rating_markov <- round(output_1$rating_markov, 3)
 
-  expect_equal(round(output_1, 3), output_ref_1)
+  output_ref_1 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_markov = c(0.088, 0.438, 0.146, 0.109, 0.219)
+  )
+
+  expect_equal_tbls(output_1, output_ref_1)
 
   output_2 <- rate_markov(
-    cr_data = ncaa2005,
+    cr_data = cr_data,
     # player1 "votes" for player2 by the amount player2 scored more in direct
     # confrontations
     score_diff = max(mean(score2 - score1), 0),
-    fill = list(score_diff = 0),
-    stoch_modify = vote_equal,
-    weights = 1,
-    force_nonneg_h2h = FALSE
+    fill = list(score_diff = 0), stoch_modify = vote_equal,
+    weights = 1, force_nonneg_h2h = FALSE
   )
-  output_ref_2 <- c(0.088, 0.442, 0.095, 0.11, 0.265)
-  names(output_ref_2) <- names(output_ref_1)
+  output_2$rating_markov <- round(output_2$rating_markov, 3)
 
-  expect_equal(round(output_2, 3), output_ref_2)
+  output_ref_2 <- output_ref_1
+  output_ref_2$rating_markov <- c(0.088, 0.442, 0.095, 0.11, 0.265)
+
+  expect_equal_tbls(output_2, output_ref_2)
 })
 
 test_that("rate_markov handles factor `player`", {
-  input <- ncaa2005
-  input$player <- factor(
-    input$player, levels = c("Duke", "Miami", "UNC", "UVA", "Extra", "VT")
-  )
+  fac_levs <- c("Duke", "Miami", "UNC", "UVA", "Extra", "VT")
+  input <- cr_data
+  input$player <- factor(input$player, levels = fac_levs)
 
   output <- rate_markov(
     cr_data = input,
     # player1 "votes" for player2 if player2 won
     win = num_wins(score2, score1, half_for_draw = FALSE),
-    fill = list(win = 0),
-    stoch_modify = vote_equal,
-    weights = 1,
-    force_nonneg_h2h = FALSE
+    fill = list(win = 0), stoch_modify = vote_equal,
+    weights = 1, force_nonneg_h2h = FALSE
   )
-  output_ref <- c(0.081, 0.403, 0.134, 0.101, 0.081, 0.201)
-  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "Extra", "VT")
+  output$rating_markov <- round(output$rating_markov, 3)
 
-  expect_equal(round(output, 3), output_ref)
+  output_ref <- dplyr::tibble(
+    player = factor(fac_levs, levels = fac_levs),
+    rating_markov = c(0.081, 0.403, 0.134, 0.101, 0.081, 0.201)
+  )
+
+  expect_equal_tbls(output, output_ref)
+})
+
+test_that("rate_markov handles numeric `player`", {
+  input <- cr_data
+  input$player <- as.integer(factor(input$player))
+
+  output <- rate_markov(
+    cr_data = input,
+    # player1 "votes" for player2 if player2 won
+    win = num_wins(score2, score1, half_for_draw = FALSE),
+    fill = list(win = 0), stoch_modify = vote_equal,
+    weights = 1, force_nonneg_h2h = FALSE
+  )
+  output$rating_markov <- round(output$rating_markov, 3)
+
+  output_ref <- dplyr::tibble(
+    player = 1:5,
+    rating_markov = c(0.088, 0.438, 0.146, 0.109, 0.219)
+  )
+
+  expect_equal_tbls(output, output_ref)
 })
 
 test_that("rate_markov handles multiple Head-to-Head values", {
   output_1 <- rate_markov(
-    cr_data = ncaa2005,
+    cr_data = cr_data,
     win = num_wins(score2, score1, half_for_draw = FALSE),
     score_diff = max(mean(score2 - score1), 0),
-    fill = list(win = 0, score_diff = 0),
-    stoch_modify = vote_equal,
-    weights = c(0.3, 0.7),
-    force_nonneg_h2h = FALSE
+    fill = list(win = 0, score_diff = 0), stoch_modify = vote_equal,
+    weights = c(0.3, 0.7), force_nonneg_h2h = FALSE
   )
-  output_ref_1 <- c(0.088, 0.44, 0.11, 0.11, 0.252)
-  names(output_ref_1) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output_1$rating_markov <- round(output_1$rating_markov, 3)
 
-  expect_equal(round(output_1, 3), output_ref_1)
+  output_ref_1 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_markov = c(0.088, 0.44, 0.11, 0.11, 0.252)
+  )
+
+  expect_equal_tbls(output_1, output_ref_1)
 
   output_2 <- rate_markov(
     cr_data = ncaa2005,
@@ -83,30 +120,34 @@ test_that("rate_markov handles multiple Head-to-Head values", {
     score_diff = max(mean(score2 - score1), 0),
     fill = list(win = 0, score_diff = 0),
     stoch_modify = list(vote_equal, teleport(0.15)),
-    weights = c(0.8, 0.2),
-    force_nonneg_h2h = FALSE
+    weights = c(0.8, 0.2), force_nonneg_h2h = FALSE
   )
-  output_ref_2 <- c(0.09, 0.432, 0.139, 0.112, 0.228)
-  names(output_ref_2) <- names(output_ref_1)
+  output_2$rating_markov <- round(output_2$rating_markov, 3)
 
-  expect_equal(round(output_2, 3), output_ref_2)
+  output_ref_2 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_markov = c(0.09, 0.432, 0.139, 0.112, 0.228)
+  )
 })
 
 test_that("rate_markov uses argument `fill`", {
-  input <- ncaa2005[-c(1, 2), ]
+  input <- cr_data[-c(1, 2), ]
   output <- rate_markov(
     cr_data = input,
     win = num_wins(score2, score1, half_for_draw = FALSE),
     score_diff = max(mean(score2 - score1), 0),
     fill = list(win = 0.5, score_diff = 10),
     stoch_modify = list(vote_equal, teleport(0.15)),
-    weights = c(0.8, 0.2),
-    force_nonneg_h2h = FALSE
+    weights = c(0.8, 0.2), force_nonneg_h2h = FALSE
   )
-  output_ref <- c(0.305, 0.308, 0.103, 0.094, 0.191)
-  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output$rating_markov <- round(output$rating_markov, 3)
 
-  expect_equal(round(output, 3), output_ref)
+  output_ref <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_markov = c(0.305, 0.308, 0.103, 0.094, 0.191)
+  )
+
+  expect_equal_tbls(output, output_ref)
 })
 
 test_that("rate_markov handles function and list `stoch_modify`", {
@@ -136,52 +177,76 @@ test_that("rate_markov does recycling", {
 })
 
 test_that("rate_markov throws errors", {
-  expect_error(rate_markov(ncaa2005, h2h_num_wins, weights = "a"),
-               "numeric")
-  expect_error(rate_markov(ncaa2005, h2h_num_wins,
-                           stoch_modify = list(vote_equal, "a")),
-               "function")
+  expect_error(
+    rate_markov(ncaa2005, h2h_num_wins, weights = "a"),
+    "numeric"
+  )
+  expect_error(
+    rate_markov(ncaa2005, h2h_num_wins, stoch_modify = list(vote_equal, "a")),
+    "function"
+  )
 })
 
 
 # rank_markov -------------------------------------------------------------
 test_that("rank_markov works", {
   output <- rank_markov(
-    cr_data = ncaa2005,
+    cr_data = cr_data,
     num_wins(score2, score1, half_for_draw = FALSE),
     stoch_modify = vote_equal,
     weights = 1,
     force_nonneg_h2h = FALSE
   )
-  output_ref <- c(5, 1, 3, 4, 2)
-  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output_ref <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    ranking_markov = c(5, 1, 3, 4, 2)
+  )
 
   expect_equal(output, output_ref)
 })
 
 test_that("rank_markov handles factor `player`", {
-  input <- ncaa2005
-  input$player <- factor(
-    input$player, levels = c("Duke", "Miami", "UNC", "UVA", "Extra", "VT")
-  )
+  fac_levs <- c("Duke", "Miami", "UNC", "UVA", "Extra", "VT")
+  input <- cr_data
+  input$player <- factor(input$player, levels = fac_levs)
 
   output <- rank_markov(
     cr_data = input,
     # player1 "votes" for player2 if player2 won
     win = num_wins(score2, score1, half_for_draw = FALSE),
-    fill = list(win = 0),
-    stoch_modify = vote_equal,
-    weights = 1,
-    force_nonneg_h2h = FALSE
+    fill = list(win = 0), stoch_modify = vote_equal,
+    weights = 1, force_nonneg_h2h = FALSE
   )
-  output_ref <- c(5.5, 1, 3, 4, 5.5, 2)
-  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "Extra", "VT")
+  output_ref <- dplyr::tibble(
+    player = factor(fac_levs, levels = fac_levs),
+    ranking_markov = c(5.5, 1, 3, 4, 5.5, 2)
+  )
 
-  expect_equal(output, output_ref)
+  expect_equal_tbls(output, output_ref)
+})
+
+test_that("rank_markov handles numeric `player`", {
+  input <- cr_data
+  input$player <- as.integer(factor(input$player))
+
+  output <- rank_markov(
+    cr_data = input,
+    # player1 "votes" for player2 if player2 won
+    win = num_wins(score2, score1, half_for_draw = FALSE),
+    fill = list(win = 0), stoch_modify = vote_equal,
+    weights = 1, force_nonneg_h2h = FALSE
+  )
+
+  output_ref <- dplyr::tibble(
+    player = 1:5,
+    ranking_markov = c(5, 1, 3, 4, 2)
+  )
+
+  expect_equal_tbls(output, output_ref)
 })
 
 test_that("rank_markov uses argument `fill`", {
-  input <- ncaa2005[-c(1, 2), ]
+  input <- cr_data[-c(1, 2), ]
   output <- rank_markov(
     cr_data = input,
     win = num_wins(score2, score1, half_for_draw = FALSE),
@@ -191,10 +256,12 @@ test_that("rank_markov uses argument `fill`", {
     weights = c(0.8, 0.2),
     force_nonneg_h2h = FALSE
   )
-  output_ref <- c(2, 1, 4, 5, 3)
-  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output_ref <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    ranking_markov = c(2, 1, 4, 5, 3)
+  )
 
-  expect_equal(round(output, 3), output_ref)
+  expect_equal(output, output_ref)
 })
 
 
@@ -287,6 +354,17 @@ test_that("to_stoch_mat works", {
   input_1[1, ] <- 0
 
   expect_equal(to_stoch_mat(input_1), input_1)
+})
+
+test_that("to_stoch_mat replaces NA with 0", {
+  input_1 <- input_stoch
+  input_1[1, 1] <- NA
+  output <- to_stoch_mat(input_1)
+  output_ref <- matrix(c(  0,   1,
+                         0.2, 0.8),
+                       ncol = 2, byrow = TRUE)
+
+  expect_equal(output, output_ref)
 })
 
 

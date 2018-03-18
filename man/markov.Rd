@@ -10,8 +10,9 @@ rate_markov(cr_data, ..., fill = list(), stoch_modify = teleport(0.15),
   weights = 1, force_nonneg_h2h = TRUE)
 
 rank_markov(cr_data, ..., fill = list(), stoch_modify = teleport(0.15),
-  weights = 1, force_nonneg_h2h = TRUE, ties = c("average", "first",
-  "last", "random", "max", "min"), round_digits = 7)
+  weights = 1, force_nonneg_h2h = TRUE, keep_rating = FALSE,
+  ties = c("average", "first", "last", "random", "max", "min"),
+  round_digits = 7)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
@@ -32,19 +33,24 @@ of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).}
 \item{force_nonneg_h2h}{Whether to force nonnegative values in Head-to-Head
 matrix.}
 
+\item{keep_rating}{Whether to keep rating column in ranking output.}
+
 \item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
 \item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
 }
 \value{
-\code{rate_markov()} returns a named vector of the Markov rating. The sum
-of all ratings should be equal to 1.
+\code{rate_markov()} returns a \link[tibble:tibble]{tibble} with columns
+\code{player} (player identifier) and \code{rating_markov} (Markov
+\link[=rating-ranking]{rating}). The sum of all ratings should be equal to 1.
 
-\code{rank_markov} returns a named vector of \link[=rating-ranking]{ranking} using
-\code{\link[=round_rank]{round_rank()}}.
+\code{rank_markov} returns a \code{tibble} with columns \code{player}, \code{rating_markov} (if
+\code{keep_rating = TRUE}) and \code{ranking_markov} (Markov \link[=rating-ranking]{ranking}
+computed with \code{\link[=round_rank]{round_rank()}}).
 }
 \description{
-Functions to compute rating and ranking using Markov method.
+Functions to compute \link[=rating-ranking]{rating} and \link[=rating-ranking]{ranking}
+using Markov method.
 }
 \details{
 Markov ratings are based on players 'voting' for other players being
@@ -70,7 +76,7 @@ Considering common values and structure of stochastic matrices one can
 naturally combine different 'votings' in one stochastic matrix:
 \enumerate{
 \item Long format of Head-to-Head values is computed using \code{...} (which in this
-case should be several expressiong for Head-to-Head functions).
+case should be several expressions for Head-to-Head functions).
 \item Each set of Head-to-Head values are transformed into matrix which is
 normalized to stochastic.
 \item Each stochastic matrix is modified with respective modifier which is
@@ -113,6 +119,15 @@ rank_markov(
   stoch_modify = vote_equal
 )
 
+rank_markov(
+  cr_data = ncaa2005,
+  comperes::num_wins(score2, score1, half_for_draw = FALSE),
+  stoch_modify = vote_equal,
+  keep_rating = TRUE
+)
+
+# Combine multiple stochastic matrices and
+# use inappropriate `fill` which misrepresents reality
 rate_markov(
   cr_data = ncaa2005[-(1:2), ],
   win = num_wins(score2, score1, half_for_draw = FALSE),
