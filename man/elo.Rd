@@ -11,8 +11,8 @@
 rate_elo(cr_data, K = 30, ksi = 400, initial_ratings = 0)
 
 rank_elo(cr_data, K = 30, ksi = 400, initial_ratings = 0,
-  ties = c("average", "first", "last", "random", "max", "min"),
-  round_digits = 7)
+  keep_rating = FALSE, ties = c("average", "first", "last", "random", "max",
+  "min"), round_digits = 7)
 
 add_elo_ratings(cr_data, K = 30, ksi = 400, initial_ratings = 0)
 
@@ -28,6 +28,8 @@ elo(rating1, score1, rating2, score2, K = 30, ksi = 400)
 
 \item{initial_ratings}{Initial ratings (see \link[=iterative]{Iterative ratings}).}
 
+\item{keep_rating}{Whether to keep rating column in ranking output.}
+
 \item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
 \item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
@@ -41,11 +43,14 @@ elo(rating1, score1, rating2, score2, K = 30, ksi = 400)
 \item{score2}{Score of player2 in the game.}
 }
 \value{
-\code{rate_elo()} returns a named vector of Elo rating by the end of
-competition results.
+\code{rate_elo()} returns a \link[tibble:tibble]{tibble} with columns
+\code{player} (player identifier) and \code{rating_elo} (Elo
+\link[=rating-ranking]{ratings}, based on row order, by the end of competition
+results).
 
-\code{rank_elo()} returns a named vector of \link[=rating-ranking]{ranking} using
-\code{\link[=round_rank]{round_rank()}}.
+\code{rank_elo()} returns a \code{tibble} with columns \code{player}, \code{rating_elo} (if
+\code{keep_rating = TRUE}) and \code{ranking_elo} (Elo \link[=rating-ranking]{ranking}
+computed with \code{\link[=round_rank]{round_rank()}}).
 
 \code{add_elo_ratings()} returns a \link[comperes:widecr]{widecr} form of \code{cr_data}
 with four rating columns added:
@@ -60,7 +65,8 @@ with four rating columns added:
 game. Rows represent games, columns - players.
 }
 \description{
-Functions to compute rating and ranking using Elo method.
+Functions to compute \link[=rating-ranking]{rating} and \link[=rating-ranking]{ranking}
+using Elo method.
 }
 \details{
 \code{rate_elo()} and \code{add_elo_ratings()} are wrappers for
@@ -99,7 +105,11 @@ players.
 \examples{
 # Elo ratings
 rate_elo(ncaa2005)
+
 rank_elo(ncaa2005)
+
+rank_elo(ncaa2005, keep_rating = TRUE)
+
 add_elo_ratings(ncaa2005, initial_ratings = 100)
 
 # Elo function

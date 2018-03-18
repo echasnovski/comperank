@@ -1,50 +1,106 @@
 context("elo")
 
 
+# Input data --------------------------------------------------------------
+cr_data <- ncaa2005
+
+
+# Custom expectations -----------------------------------------------------
+# This workaround is currently needed because of these issues:
+# https://github.com/r-lib/testthat/issues/593
+# https://github.com/tidyverse/tibble/issues/287
+# https://github.com/tidyverse/dplyr/issues/2751
+expect_equal_tbls <- function(tbl_1, tbl_2) {
+  expect_equal(as.data.frame(tbl_1), as.data.frame(tbl_2))
+}
+
+
 # rate_elo ----------------------------------------------------------------
 test_that("rate_elo works", {
-  output_ref <- c(-56.2377413877926, 57.9315106719875, -1.25948933788439,
-                  -29.2442777446668, 28.8099977983563)
-  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output <- rate_elo(cr_data, K = 30, ksi = 400, initial_ratings = 0)
+  output_ref <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_elo = c(-56.2377413877926, 57.9315106719875, -1.25948933788439,
+                   -29.2442777446668, 28.8099977983563)
+  )
 
-  expect_equal(rate_elo(ncaa2005, K = 30, ksi = 400, initial_ratings = 0),
-               output_ref)
+  expect_equal_tbls(output, output_ref)
 })
 
 test_that("rate_elo handles factor `player`", {
-  input <- ncaa2005
-  input$player <- factor(
-    input$player, levels = c("Duke", "Miami", "UNC", "UVA", "VT", "Extra")
-  )
+  fac_levs <- c("Duke", "Miami", "UNC", "UVA", "VT", "Extra")
+  input <- cr_data
+  input$player <- factor(input$player, levels = fac_levs)
 
   output <- rate_elo(input, K = 30, ksi = 400, initial_ratings = 0)
-  output_ref <- c(-56.2377413877926, 57.9315106719875, -1.25948933788439,
-                  -29.2442777446668, 28.8099977983563, 0)
-  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT", "Extra")
+  output_ref <- dplyr::tibble(
+    player = factor(fac_levs, levels = fac_levs),
+    rating_elo = c(-56.2377413877926, 57.9315106719875, -1.25948933788439,
+                   -29.2442777446668, 28.8099977983563, 0)
+  )
 
-  expect_equal(output, output_ref)
+  expect_equal_tbls(output, output_ref)
+})
+
+test_that("rate_elo handles numeric `player`", {
+  input <- cr_data
+  input$player <- as.integer(factor(input$player))
+  output <- rate_elo(input, K = 30, ksi = 400, initial_ratings = 0)
+  output_ref <- dplyr::tibble(
+    player = 1:5,
+    rating_elo = c(-56.2377413877926, 57.9315106719875, -1.25948933788439,
+                   -29.2442777446668, 28.8099977983563)
+  )
+
+  expect_equal_tbls(output, output_ref)
 })
 
 
 # rank_elo ----------------------------------------------------------------
 test_that("rank_elo works", {
-  output_ref <- c(5, 1, 3, 4, 2)
-  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output_1 <- rank_elo(cr_data)
+  output_ref_1 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    ranking_elo = c(5, 1, 3, 4, 2)
+  )
 
-  expect_equal(rank_elo(ncaa2005), output_ref)
+  expect_equal_tbls(output_1, output_ref_1)
+
+  output_2 <- rank_elo(cr_data, keep_rating = TRUE)
+  output_ref_2 <- output_ref_1
+  output_ref_2$rating_elo <- c(
+    -56.2377413877926, 57.9315106719875, -1.25948933788439,
+    -29.2442777446668, 28.8099977983563
+  )
+  output_ref_2 <- output_ref_2[, c("player", "rating_elo", "ranking_elo")]
+
+  expect_equal_tbls(output_2, output_ref_2)
 })
 
 test_that("rank_elo handles factor `player`", {
-  input <- ncaa2005
-  input$player <- factor(
-    input$player, levels = c("Duke", "Miami", "UNC", "UVA", "VT", "Extra")
-  )
+  fac_levs <- c("Duke", "Miami", "UNC", "UVA", "VT", "Extra")
+  input <- cr_data
+  input$player <- factor(input$player, levels = fac_levs)
 
   output <- rank_elo(input, K = 30, ksi = 400, initial_ratings = 0)
-  output_ref <- c(6, 1, 4, 5, 2, 3)
-  names(output_ref) <- c("Duke", "Miami", "UNC", "UVA", "VT", "Extra")
+  output_ref <- dplyr::tibble(
+    player = factor(fac_levs, levels = fac_levs),
+    ranking_elo = c(6, 1, 4, 5, 2, 3)
+  )
 
-  expect_equal(output, output_ref)
+  expect_equal_tbls(output, output_ref)
+})
+
+test_that("rank_elo handles numeric `player`", {
+  input <- cr_data
+  input$player <- as.integer(factor(input$player))
+  output <- rank_elo(input, K = 30, ksi = 400, initial_ratings = 0)
+  output_ref <- dplyr::tibble(
+    player = 1:5,
+    ranking_elo = c(5, 1, 3, 4, 2)
+  )
+
+  expect_equal_tbls(output, output_ref)
 })
 
 

@@ -9,9 +9,9 @@
 \usage{
 rate_iterative(cr_data, rate_fun, initial_ratings = 0)
 
-rank_iterative(cr_data, rate_fun, initial_ratings = 0, type = "desc",
-  ties = c("average", "first", "last", "random", "max", "min"),
-  round_digits = 7)
+rank_iterative(cr_data, rate_fun, initial_ratings = 0, keep_rating = FALSE,
+  type = "desc", ties = c("average", "first", "last", "random", "max",
+  "min"), round_digits = 7)
 
 add_iterative_ratings(cr_data, rate_fun, initial_ratings = 0)
 }
@@ -23,6 +23,8 @@ add_iterative_ratings(cr_data, rate_fun, initial_ratings = 0)
 
 \item{initial_ratings}{Initial ratings (see Details).}
 
+\item{keep_rating}{Whether to keep rating column in ranking output.}
+
 \item{type}{Value for \code{type} in \code{\link[=round_rank]{round_rank()}}.}
 
 \item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
@@ -30,11 +32,15 @@ add_iterative_ratings(cr_data, rate_fun, initial_ratings = 0)
 \item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
 }
 \value{
-\code{rate_iterative()} returns a named vector of iterative ratings by
-the end of competition results (based on row order).
+\code{rate_iterative()} returns a \link[tibble:tibble]{tibble} with columns
+\code{player} (player identifier) and \code{rating_iterative} (Iterative
+\link[=rating-ranking]{ratings}, based on row order, by the end of competition
+results).
 
-\code{rank_iterative()} returns a named vector of \link[=rating-ranking]{ranking} using
-\code{\link[=round_rank]{round_rank()}} based on specified \code{type}.
+\code{rank_iterative()} returns a \code{tibble} with columns \code{player},
+\code{rating_iterative} (if \code{keep_rating = TRUE}) and \code{ranking_iterative}
+(Iterative \link[=rating-ranking]{ranking} computed with \code{\link[=round_rank]{round_rank()}} based on
+specified \code{type}).
 
 \code{add_iterative_ratings()} returns a \link[comperes:widecr]{widecr} form of
 \code{cr_data} with four rating columns added:
@@ -46,8 +52,9 @@ the end of competition results (based on row order).
 }
 }
 \description{
-Functions to compute iterative numeric ratings, i.e. which are recomputed
-after every game, and corresponding rankings.
+Functions to compute Iterative numeric \link[=rating-ranking]{ratings}, i.e. which
+are recomputed after every game, and corresponding
+\link[=rating-ranking]{rankings}.
 }
 \details{
 Iterative ratings of group of players are recomputed after every
@@ -89,7 +96,8 @@ can be:
 \item A single numeric value. In this case initial ratings for all players are
 set to this value.
 \item A named vector of ratings. All non-\code{NA} players, for which rating is
-computed, should be present in its names.
+computed, should be present in its names (as character representation of
+players' actual identifiers).
 }
 }
 \section{Players}{
@@ -128,5 +136,7 @@ add_iterative_ratings(
 rate_iterative(cr_data, test_rate_fun)
 
 rank_iterative(cr_data, test_rate_fun, type = "desc")
+
+rank_iterative(cr_data, test_rate_fun, type = "desc", keep_rating = TRUE)
 
 }

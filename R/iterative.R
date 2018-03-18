@@ -1,7 +1,8 @@
 #' Iterative rating method
 #'
-#' Functions to compute iterative numeric ratings, i.e. which are recomputed
-#' after every game, and corresponding rankings.
+#' Functions to compute Iterative numeric [ratings][rating-ranking], i.e. which
+#' are recomputed after every game, and corresponding
+#' [rankings][rating-ranking].
 #'
 #' @inheritParams rate_massey
 #' @param rate_fun Rating function (see Details).
@@ -42,18 +43,25 @@
 #'
 #' Initial ratings should be defined with argument `initial_ratings`. It
 #' can be:
+#'
 #' - A single numeric value. In this case initial ratings for all players are
 #' set to this value.
+#'
 #' - A named vector of ratings. All non-`NA` players, for which rating is
-#' computed, should be present in its names.
+#' computed, should be present in its names (as character representation of
+#' players' actual identifiers).
 #'
 #' @inheritSection massey Players
 #'
-#' @return `rate_iterative()` returns a named vector of iterative ratings by
-#' the end of competition results (based on row order).
+#' @return `rate_iterative()` returns a [tibble][tibble::tibble] with columns
+#' `player` (player identifier) and `rating_iterative` (Iterative
+#' [ratings][rating-ranking], based on row order, by the end of competition
+#' results).
 #'
-#' `rank_iterative()` returns a named vector of [ranking][rating-ranking] using
-#' [round_rank()] based on specified `type`.
+#' `rank_iterative()` returns a `tibble` with columns `player`,
+#' `rating_iterative` (if `keep_rating = TRUE`) and `ranking_iterative`
+#' (Iterative [ranking][rating-ranking] computed with [round_rank()] based on
+#' specified `type`).
 #'
 #' `add_iterative_ratings()` returns a [widecr][comperes::widecr()] form of
 #' `cr_data` with four rating columns added:
@@ -89,19 +97,22 @@
 #'
 #' rank_iterative(cr_data, test_rate_fun, type = "desc")
 #'
+#' rank_iterative(cr_data, test_rate_fun, type = "desc", keep_rating = TRUE)
+#'
 #' @name iterative
 NULL
 
 #' @rdname iterative
 #' @export
 rate_iterative <- function(cr_data, rate_fun, initial_ratings = 0) {
+  cr <- as_longcr(cr_data, repair = TRUE)
   cr_with_ratings <- add_iterative_ratings(
-    cr_data = cr_data, rate_fun = rate_fun,
+    cr_data = cr, rate_fun = rate_fun,
     initial_ratings = initial_ratings
   )
 
   # Add initial ratings to result in case player didn't play any game
-  used_players <- levels2(as_longcr(cr_data)$player)
+  used_players <- unique_levels(cr$player)
   ref_players <- used_players[!is.na(used_players)]
   init_ratings <- tibble(
     player = ref_players,
@@ -112,42 +123,45 @@ rate_iterative <- function(cr_data, rate_fun, initial_ratings = 0) {
     filter(.data$player %in% ref_players) %>%
     group_by(.data$player) %>%
     slice(n()) %>%
-    ungroup() %>%
-    to_rating_vec()
+    ungroup()
 
-  res[ref_players]
+  tibble(player = ref_players) %>%
+    left_join(y = res %>% rename(rating_iterative = !!rlang::sym("rating")),
+              by = "player")
 }
 
 #' @rdname iterative
 #' @export
 rank_iterative <- function(cr_data, rate_fun,
                            initial_ratings = 0,
+                           keep_rating = FALSE,
                            type = "desc",
                            ties = c("average", "first", "last",
                                     "random", "max", "min"),
                            round_digits = 7) {
-  round_rank(
+  add_ranking(
     rate_iterative(
       cr_data = cr_data, rate_fun = rate_fun,
       initial_ratings = initial_ratings
     ),
-    type = type, ties = ties, round_digits = round_digits
+    "rating_iterative", "ranking_iterative",
+    keep_rating = keep_rating, type = type,
+    ties = ties, round_digits = round_digits
   )
 }
 
 #' @rdname iterative
 #' @export
-add_iterative_ratings <-
-  function(cr_data, rate_fun, initial_ratings = 0) {
-  if (!is_pairgames(cr_data)) {
+add_iterative_ratings <- function(cr_data, rate_fun, initial_ratings = 0) {
+  cr <- as_longcr(cr_data, repair = TRUE)
+  if (!is_pairgames(cr)) {
     stop("cr_data is not pairgames.")
   }
 
-  used_players <- levels2(as_longcr(cr_data)$player)
+  used_players <- unique_levels(cr$player)
   ref_players <- used_players[!is.na(used_players)]
 
-  cr <- cr_data %>%
-    as_longcr(repair = TRUE) %>%
+  cr <- cr %>%
     as_widecr(repair = FALSE) %>%
     filter(
       (.data$player1 %in% used_players) | is.na(.data$player1),
@@ -179,6 +193,7 @@ add_iterative_ratings <-
 
 to_players_id <- function(players, ref_players) {
   res <- players %>%
+    as.character() %>%
     factor(levels = ref_players) %>%
     as.integer()
 
@@ -216,13 +231,13 @@ get_ratings_after <- function(cr_with_ratings) {
     ratings_wide %>%
       transmute(
         game = .data[["..game"]],
-        player = as.character(.data$player1),
+        player = .data$player1,
         rating = .data$rating1After
       ),
     ratings_wide %>%
       transmute(
         game = .data[["..game"]],
-        player = as.character(.data$player2),
+        player = .data$player2,
         rating = .data$rating2After
       )
   ) %>%

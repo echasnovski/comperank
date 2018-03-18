@@ -1,6 +1,7 @@
 #' Elo method
 #'
-#' Functions to compute rating and ranking using Elo method.
+#' Functions to compute [rating][rating-ranking] and [ranking][rating-ranking]
+#' using Elo method.
 #'
 #' @inheritParams rate_massey
 #' @param K K-factor for Elo formula.
@@ -39,11 +40,14 @@
 #'
 #' @inheritSection massey Players
 #'
-#' @return `rate_elo()` returns a named vector of Elo rating by the end of
-#'   competition results.
+#' @return `rate_elo()` returns a [tibble][tibble::tibble] with columns
+#' `player` (player identifier) and `rating_elo` (Elo
+#' [ratings][rating-ranking], based on row order, by the end of competition
+#' results).
 #'
-#' `rank_elo()` returns a named vector of [ranking][rating-ranking] using
-#' [round_rank()].
+#' `rank_elo()` returns a `tibble` with columns `player`, `rating_elo` (if
+#' `keep_rating = TRUE`) and `ranking_elo` (Elo [ranking][rating-ranking]
+#' computed with [round_rank()]).
 #'
 #' `add_elo_ratings()` returns a [widecr][comperes::widecr()] form of `cr_data`
 #' with four rating columns added:
@@ -61,7 +65,11 @@
 #' @examples
 #' # Elo ratings
 #' rate_elo(ncaa2005)
+#'
 #' rank_elo(ncaa2005)
+#'
+#' rank_elo(ncaa2005, keep_rating = TRUE)
+#'
 #' add_elo_ratings(ncaa2005, initial_ratings = 100)
 #'
 #' # Elo function
@@ -79,19 +87,25 @@ rate_elo <- function(cr_data, K = 30, ksi = 400, initial_ratings = 0) {
     cr_data = cr_data,
     rate_fun = elo_fgen(K = K, ksi = ksi),
     initial_ratings = initial_ratings
-  )
+  ) %>%
+    rename(rating_elo = !!rlang::sym("rating_iterative"))
 }
 
 #' @rdname elo
 #' @export
 rank_elo <- function(cr_data, K = 30, ksi = 400, initial_ratings = 0,
+                     keep_rating = FALSE,
                      ties = c("average", "first", "last",
                               "random", "max", "min"),
                      round_digits = 7) {
-  round_rank(
-    rate_elo(cr_data = cr_data, K = K, ksi = ksi,
-             initial_ratings = initial_ratings),
-    type = "desc", ties = ties, round_digits = round_digits
+  add_ranking(
+    rate_elo(
+      cr_data = cr_data, K = K, ksi = ksi,
+      initial_ratings = initial_ratings
+    ),
+    "rating_elo", "ranking_elo",
+    keep_rating = keep_rating, type = "desc",
+    ties = ties, round_digits = round_digits
   )
 }
 
