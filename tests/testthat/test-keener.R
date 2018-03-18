@@ -3,54 +3,113 @@ context("keener")
 library(comperes)
 library(rlang)
 
+# Input data --------------------------------------------------------------
+cr_data <- ncaa2005
+
+
+# Custom expectations -----------------------------------------------------
+# This workaround is currently needed because of these issues:
+# https://github.com/r-lib/testthat/issues/593
+# https://github.com/tidyverse/tibble/issues/287
+# https://github.com/tidyverse/dplyr/issues/2751
+expect_equal_tbls <- function(tbl_1, tbl_2) {
+  expect_equal(as.data.frame(tbl_1), as.data.frame(tbl_2))
+}
+
+
 # rate_keener -------------------------------------------------------------
 test_that("rate_keener works", {
-  output_1 <- rate_keener(ncaa2005, !!h2h_funs[["num"]])
-  output_ref_1 <- rep(0.2, 5)
-  names(output_ref_1) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output_1 <- rate_keener(cr_data, !!h2h_funs[["num"]])
+  output_ref_1 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_keener = rep(0.2, 5)
+  )
 
-  expect_equal(output_1, output_ref_1)
+  expect_equal_tbls(output_1, output_ref_1)
 
-  output_2 <- rate_keener(ncaa2005, !!h2h_funs[["sum_score"]])
-  output_ref_2 <- c(0.0670593277911044, 0.350554576300443, 0.158498338171409,
-                    0.160517490640876, 0.263370267096167)
-  names(output_ref_2) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output_2 <- rate_keener(cr_data, !!h2h_funs[["sum_score"]])
+  output_ref_2 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_keener = c(0.0670593277911044, 0.350554576300443, 0.158498338171409,
+                      0.160517490640876, 0.263370267096167)
+  )
 
-  expect_equal(output_2, output_ref_2)
+  expect_equal_tbls(output_2, output_ref_2)
+})
+
+test_that("rate_keener works with factor `player`", {
+  input <- cr_data
+  input$player <- factor(input$player, levels = c("Duke", "UNC", "Extra"))
+  output <- rate_keener(input, !!h2h_funs[["sum_score"]], fill = 0,
+                        normalize_fun = NULL)
+  output_ref <- dplyr::tibble(
+    player = factor(c("Duke", "UNC", "Extra"),
+                    levels = c("Duke", "UNC", "Extra")),
+    rating_keener = c(0.304401432703426, 0.360677932461637, 0.334920634834937)
+  )
+
+  expect_equal_tbls(output, output_ref)
+})
+
+test_that("rate_keener works with numeric `player`", {
+  input <- cr_data
+  input$player <- as.integer(as.factor(input$player))
+  output <- rate_keener(input, !!h2h_funs[["sum_score"]])
+  output_ref <- dplyr::tibble(
+    player = 1:5,
+    rating_keener = c(0.0670593277911044, 0.350554576300443, 0.158498338171409,
+                      0.160517490640876, 0.263370267096167)
+  )
+
+  expect_equal_tbls(output, output_ref)
 })
 
 test_that("rate_keener handles `NULL` arguments", {
-  output_1 <- rate_keener(ncaa2005, !!h2h_funs[["sum_score"]], skew_fun = NULL)
-  output_ref_1 <- c(0.0898263460024877, 0.294757692678364, 0.164946133479184,
-                    0.189136529764359, 0.261333298075606)
-  names(output_ref_1) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output_1 <- rate_keener(cr_data, !!h2h_funs[["sum_score"]], skew_fun = NULL)
+  output_ref_1 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_keener = c(0.0898263460024877, 0.294757692678364, 0.164946133479184,
+                      0.189136529764359, 0.261333298075606)
+  )
 
-  expect_equal(output_1, output_ref_1)
+  expect_equal_tbls(output_1, output_ref_1)
 
-  output_2 <- rate_keener(ncaa2005, !!h2h_funs[["sum_score"]],
+  output_2 <- rate_keener(cr_data, !!h2h_funs[["sum_score"]],
                           normalize_fun = NULL)
-  output_ref_2 <- c(0.0670593277911044, 0.350554576300443, 0.158498338171409,
-                    0.160517490640876, 0.263370267096167)
-  names(output_ref_2) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output_ref_2 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_keener = c(0.0670593277911044, 0.350554576300443, 0.158498338171409,
+                      0.160517490640876, 0.263370267096167)
+  )
 
-  expect_equal(output_2, output_ref_2)
+  expect_equal_tbls(output_2, output_ref_2)
 })
 
 
 # rank_keener -------------------------------------------------------------
 test_that("rank_keener works", {
-  output_1 <- rank_keener(ncaa2005, !!h2h_funs[["sum_score"]])
-  output_ref_1 <- c(5, 1, 4, 3, 2)
-  names(output_ref_1) <- c("Duke", "Miami", "UNC", "UVA", "VT")
+  output_1 <- rank_keener(cr_data, !!h2h_funs[["sum_score"]])
+  output_ref_1 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    ranking_keener = c(5, 1, 4, 3, 2)
+  )
 
-  expect_equal(output_1, output_ref_1)
+  expect_equal_tbls(output_1, output_ref_1)
 
-  output_2 <- rank_keener(ncaa2005, !!h2h_funs[["num"]])
+  output_2 <- rank_keener(cr_data, !!h2h_funs[["num"]])
   output_ref_2 <- output_ref_1
-  output_ref_2[] <- rep(3, 5)
+  output_ref_2$ranking_keener <- rep(3, 5)
 
-  expect_equal(output_2, output_ref_2)
+  expect_equal_tbls(output_2, output_ref_2)
+
+  output_3 <- rank_keener(cr_data, !!h2h_funs[["num"]], keep_rating = TRUE)
+  output_ref_3 <- output_ref_2
+  output_ref_3$rating_keener <- rep(0.2, 5)
+  output_ref_3 <- output_ref_3[, c("player", "rating_keener", "ranking_keener")]
+
+  expect_equal_tbls(output_3, output_ref_3)
 })
+
 
 # force_nonneg ----------------------------------------------------------
 test_that("force_nonneg works", {
@@ -79,7 +138,7 @@ test_that("skew_keener works", {
 
 # normalize_keener --------------------------------------------------------
 test_that("normalize_keener works", {
-  mat <- h2h_mat(ncaa2005, !!h2h_funs[["sum_score"]])
+  mat <- h2h_mat(cr_data, !!h2h_funs[["sum_score"]])
 
   output_ref <- matrix(
     c( 8.75, 1.75, 5.25, 1.75,    0,
@@ -95,7 +154,16 @@ test_that("normalize_keener works", {
   )
   output_ref <- add_class(output_ref, "h2h_mat")
 
-  expect_identical(normalize_keener(mat, ncaa2005), output_ref)
-  expect_identical(normalize_keener(mat[, c(1, 3, 2)], ncaa2005),
+  expect_identical(normalize_keener(mat, cr_data), output_ref)
+  expect_identical(normalize_keener(mat[, c(1, 3, 2)], cr_data),
                    output_ref[, c(1, 3, 2)])
+})
+
+test_that("normalize_keener throws error", {
+  input <- cr_data
+  input$player <- factor(input$player, levels = c("Duke", "UNC", "Extra"))
+  expect_error(
+    rate_keener(input, !!h2h_funs[["sum_score"]], fill = 0),
+    "[Gg]ame.*Extra"
+  )
 })

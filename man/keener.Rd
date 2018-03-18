@@ -13,8 +13,8 @@ rate_keener(cr_data, ..., fill = 0, force_nonneg_h2h = TRUE,
 
 rank_keener(cr_data, ..., fill = 0, force_nonneg_h2h = TRUE,
   skew_fun = skew_keener, normalize_fun = normalize_keener, eps = 0.001,
-  ties = c("average", "first", "last", "random", "max", "min"),
-  round_digits = 7)
+  keep_rating = FALSE, ties = c("average", "first", "last", "random", "max",
+  "min"), round_digits = 7)
 
 skew_keener(x)
 
@@ -37,6 +37,8 @@ matrix.}
 
 \item{eps}{Coefficient for forcing irreducibility.}
 
+\item{keep_rating}{Whether to keep rating column in ranking output.}
+
 \item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
 \item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
@@ -46,14 +48,22 @@ matrix.}
 \item{mat}{Argument for \code{normalize_keener()}.}
 }
 \value{
-\code{rate_keener()} returns a named vector of the Keener rating. The
-sum of all ratings should be equal to 1.
+\code{rate_keener()} returns a \link[tibble:tibble]{tibble} with columns
+\code{player} (player identifier) and \code{rating_keener} (Keener
+\link[=rating-ranking]{rating}). Sum of all ratings should be equal to 1.
 
-\code{rank_keener()} returns a named vector of \link[=rating-ranking]{ranking} using
-\code{\link[=round_rank]{round_rank()}}.
+\code{rank_keener()} returns a \code{tibble} with columns \code{player}, \code{rating_keener} (if
+\code{keep_rating = TRUE}) and \code{ranking_keener} (Keener \link[=rating-ranking]{ranking}
+computed with \code{\link[=round_rank]{round_rank()}}).
+
+\code{skew_keener()} returns skewed vector of the same length as \code{x}.
+
+\code{normalize_keener()} returns normalized matrix with the same dimensions as
+\code{mat}.
 }
 \description{
-Functions to compute rating and ranking using Keener method.
+Functions to compute \link[=rating-ranking]{rating} and \link[=rating-ranking]{ranking}
+using Keener method.
 }
 \details{
 Keener rating method is based on Head-to-Head matrix of the
@@ -82,8 +92,9 @@ results not very abnormal. To omit this step supply \code{skew_fun = NULL}.
 \code{cr_data} as second. It should return normalized matrix. The default
 normalization is \code{normalize_keener()} which divides Head-to-Head value of
 'player1'-'player2' matchup divided by the number of games played by
-'player1'. This step should take into account possibly not equal number of
-games played by players. To omit this step supply \code{normalize_keener = NULL}.
+'player1' (error is thrown if there are no games). This step should take into
+account possibly not equal number of games played by players. To omit this
+step supply \code{normalize_keener = NULL}.
 \item Add small value to Head-to-Head matrix to ensure its irreducibility. If
 all values are strictly positive then this step is omitted. In other case
 small value is computed as the smallest non-zero Head-to-Head value
@@ -93,6 +104,10 @@ Perron-Frobenius theorem.
 positive real eigenvector (which values sum to 1) for eigenvalue (which is
 real) of the maximum absolute value. This vector is Keener rating vector.
 }
+
+If using \code{normalize_keener()} in normalization step, ensure to analyze
+players which actually played games (as division by a number of played games
+is made). If some player didn't play any game, en error is thrown.
 }
 \section{Players}{
 
@@ -105,15 +120,18 @@ players.
 }
 
 \examples{
-# Use transpose = TRUE is correct in this case
 rate_keener(ncaa2005, sum(score1))
+
 rank_keener(ncaa2005, sum(score1))
+
+rank_keener(ncaa2005, sum(score1), keep_rating = TRUE)
 
 # Impact of skewing
 rate_keener(ncaa2005, sum(score1), skew_fun = NULL)
 
 # Impact of normalization.
 rate_keener(ncaa2005[-(1:2), ], sum(score1))
+
 rate_keener(ncaa2005[-(1:2), ], sum(score1), normalize_fun = NULL)
 
 }
