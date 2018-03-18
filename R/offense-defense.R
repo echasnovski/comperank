@@ -1,6 +1,7 @@
 #' Offense-Defense method
 #'
-#' Functions to compute rating and ranking using Offense-Defense method.
+#' Functions to compute [rating][rating-ranking] and [ranking][rating-ranking]
+#' using Offense-Defense method.
 #'
 #' @inheritParams rate_massey
 #' @param ... Head-to-Head expression (see [h2h_mat()][comperes::h2h_mat()]).
@@ -9,6 +10,7 @@
 #' @param eps Coefficient for total support.
 #' @param tol Tolerance value for iterative algorithm.
 #' @param max_iterations Maximum number of iterations for iterative algorithm.
+#' @param keep_rating Whether to keep rating columns in ranking output.
 #' @inheritParams rank_massey
 #'
 #' @details Offense-Defense (OD) rating is designed for games in which player's
@@ -62,15 +64,19 @@
 #'
 #' @inheritSection massey Players
 #'
-#' @return `rate_od()` returns a matrix with rows named by players and the
-#' following three columns:
+#' @return `rate_od()` returns a [tibble][tibble::tibble] with the following
+#' columns:
+#' - __player__ - player identifier.
+#' - __rating_off__ - offensive [rating][rating-ranking] of player.
+#' - __rating_def__ - defensive rating of player.
+#' - __rating_od__ - Offense-Defense rating of player.
 #'
-#' - __off__ - offensive rating of player.
-#' - __def__ - defensive rating of player.
-#' - __od__ - Offense-Defense rating of player.
-#'
-#' `rank_od()` returns a matrix of the same structure as `rate_od()` but
-#' with [ranking][rating-ranking] using [round_rank()].
+#' `rank_od()` returns a `tibble` of the similar structure as `rate_od()`:
+#' - __player__ - player identifier.
+#' - __rating_off__, __rating_def__, __rating_od__ - ratings (if
+#' `keep_rating = TRUE`).
+#' - __ranking_off__, __ranking_def__, __ranking_od__ -
+#' [rankings][rating-ranking] computed with [round_rank()].
 #'
 #' @references Amy N. Langville, Carl D. Meyer (2012) *Who’s #1?: The
 #'   science of rating and ranking*.
@@ -81,7 +87,10 @@
 #'
 #' @examples
 #' rate_od(ncaa2005, mean(score2))
+#'
 #' rank_od(ncaa2005, mean(score2))
+#'
+#' rank_od(ncaa2005, mean(score2), keep_rating = TRUE)
 #'
 #' # Account for self play
 #' rate_od(ncaa2005, ifelse(player1[1] == player2[1], 0, mean(score2)))
@@ -93,8 +102,8 @@ NULL
 #' @export
 rate_od <- function(cr_data, ..., force_nonneg_h2h = TRUE,
                     eps = 1e-3, tol = 1e-4, max_iterations = 100) {
-  mat <- cr_data %>%
-    as_longcr(repair = TRUE) %>%
+  cr <- as_longcr(cr_data, repair = TRUE)
+  mat <- cr %>%
     h2h_mat(..., fill = 0) %>%
     force_nonneg(force = force_nonneg_h2h)
 
@@ -118,32 +127,40 @@ rate_od <- function(cr_data, ..., force_nonneg_h2h = TRUE,
   off_ratings <- t(mat) %*% (1 / def_ratings)
   od_ratings <- off_ratings / def_ratings
 
-  res <- cbind(off_ratings, def_ratings, od_ratings)
-  colnames(res) <- c("off", "def", "od")
-
-  res
+  enframe_vec(
+    off_ratings[, 1], unique_levels(cr$player),
+    "player", "rating_off"
+  ) %>%
+    mutate(rating_def = def_ratings[, 1], rating_od = od_ratings[, 1])
 }
 
 #' @rdname offense-defense
 #' @export
 rank_od <- function(cr_data, ..., force_nonneg_h2h = TRUE,
                     eps = 1e-3, tol = 1e-4, max_iterations = 100,
+                    keep_rating = FALSE,
                     ties = c("average", "first", "last",
                              "random", "max", "min"),
                     round_digits = 7) {
-  res <- rate_od(
+  rate_od(
     cr_data = cr_data, ..., force_nonneg_h2h = force_nonneg_h2h,
     eps = eps, tol = tol, max_iterations = max_iterations
-  )
-
-  res[, "off"] <- round_rank(res[, "off", drop = TRUE], type = "desc",
-                             ties = ties, round_digits = round_digits)
-  res[, "def"] <- round_rank(res[, "def", drop = TRUE], type = "asc",
-                             ties = ties, round_digits = round_digits)
-  res[, "od"] <- round_rank(res[, "od", drop = TRUE], type = "desc",
-                            ties = ties, round_digits = round_digits)
-
-  res
+  ) %>%
+    add_ranking(
+      "rating_off", "ranking_off",
+      keep_rating = keep_rating, type = "desc",
+      ties = ties, round_digits = round_digits
+    ) %>%
+    add_ranking(
+      "rating_def", "ranking_def",
+      keep_rating = keep_rating, type = "asc",
+      ties = ties, round_digits = round_digits
+    ) %>%
+    add_ranking(
+      "rating_od", "ranking_od",
+      keep_rating = keep_rating, type = "desc",
+      ties = ties, round_digits = round_digits
+    )
 }
 
 od_def_iteration <- function(mat, vec) {

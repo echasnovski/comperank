@@ -10,8 +10,8 @@ rate_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001, tol = 1e-04,
   max_iterations = 100)
 
 rank_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001, tol = 1e-04,
-  max_iterations = 100, ties = c("average", "first", "last", "random",
-  "max", "min"), round_digits = 7)
+  max_iterations = 100, keep_rating = FALSE, ties = c("average", "first",
+  "last", "random", "max", "min"), round_digits = 7)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
@@ -28,24 +28,34 @@ matrix.}
 
 \item{max_iterations}{Maximum number of iterations for iterative algorithm.}
 
+\item{keep_rating}{Whether to keep rating columns in ranking output.}
+
 \item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
 \item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
 }
 \value{
-\code{rate_od()} returns a matrix with rows named by players and the
-following three columns:
+\code{rate_od()} returns a \link[tibble:tibble]{tibble} with the following
+columns:
 \itemize{
-\item \strong{off} - offensive rating of player.
-\item \strong{def} - defensive rating of player.
-\item \strong{od} - Offense-Defense rating of player.
+\item \strong{player} - player identifier.
+\item \strong{rating_off} - offensive \link[=rating-ranking]{rating} of player.
+\item \strong{rating_def} - defensive rating of player.
+\item \strong{rating_od} - Offense-Defense rating of player.
 }
 
-\code{rank_od()} returns a matrix of the same structure as \code{rate_od()} but
-with \link[=rating-ranking]{ranking} using \code{\link[=round_rank]{round_rank()}}.
+\code{rank_od()} returns a \code{tibble} of the similar structure as \code{rate_od()}:
+\itemize{
+\item \strong{player} - player identifier.
+\item \strong{rating_off}, \strong{rating_def}, \strong{rating_od} - ratings (if
+\code{keep_rating = TRUE}).
+\item \strong{ranking_off}, \strong{ranking_def}, \strong{ranking_od} -
+\link[=rating-ranking]{rankings} computed with \code{\link[=round_rank]{round_rank()}}.
+}
 }
 \description{
-Functions to compute rating and ranking using Offense-Defense method.
+Functions to compute \link[=rating-ranking]{rating} and \link[=rating-ranking]{ranking}
+using Offense-Defense method.
 }
 \details{
 Offense-Defense (OD) rating is designed for games in which player's
@@ -108,7 +118,10 @@ players.
 
 \examples{
 rate_od(ncaa2005, mean(score2))
+
 rank_od(ncaa2005, mean(score2))
+
+rank_od(ncaa2005, mean(score2), keep_rating = TRUE)
 
 # Account for self play
 rate_od(ncaa2005, ifelse(player1[1] == player2[1], 0, mean(score2)))

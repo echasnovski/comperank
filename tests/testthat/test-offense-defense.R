@@ -1,137 +1,177 @@
 context("offense-defense")
 
 
+# Input data --------------------------------------------------------------
+cr_data <- ncaa2005
+
+
+# Custom expectations -----------------------------------------------------
+# This workaround is currently needed because of these issues:
+# https://github.com/r-lib/testthat/issues/593
+# https://github.com/tidyverse/tibble/issues/287
+# https://github.com/tidyverse/dplyr/issues/2751
+expect_equal_tbls <- function(tbl_1, tbl_2) {
+  expect_equal(as.data.frame(tbl_1), as.data.frame(tbl_2))
+}
+
+
 # rate_od -----------------------------------------------------------------
 test_that("rate_od works", {
-  output_ref_1 <- matrix(
-    c(34.012, 151.563, 48.679,  82.05, 114.863,
-       1.691,   0.803,  1.164,  0.967,   0.411,
-      20.111, 188.779, 41.817, 84.806, 279.719),
-    ncol = 3,
-    dimnames = list(
-      c("Duke", "Miami", "UNC", "UVA", "VT"),
-      c("off", "def", "od")
-    )
-  )
-
   output_1 <- rate_od(
-    cr_data = ncaa2005,
+    cr_data = cr_data,
     ifelse(player1[1] == player2[1], 0, mean(score2)),
-    eps = 1e-3,
-    tol = 1e-4,
-    max_iterations = 100
+    eps = 1e-3, tol = 1e-4, max_iterations = 100
+  )
+  output_1$rating_off <- round(output_1$rating_off, 3)
+  output_1$rating_def <- round(output_1$rating_def, 3)
+  output_1$rating_od <- round(output_1$rating_od, 3)
+
+  output_ref_1 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_off = c(34.012, 151.563, 48.679,  82.05, 114.863),
+    rating_def = c( 1.691,   0.803,  1.164,  0.967,   0.411),
+    rating_od  = c(20.111, 188.779, 41.817, 84.806, 279.719)
   )
 
-  expect_equal(round(output_1, 3), output_ref_1)
-
-  output_ref_2 <- output_ref_1
-  output_ref_2[, ] <-
-    c( 39.67, 181.033, 58.113,  94.951, 182.859,
-       1.567,    0.86,  1.149,   0.914,   0.532,
-      25.311, 210.536, 50.569, 103.838, 343.972)
+  expect_equal_tbls(output_1, output_ref_1)
 
   output_2 <- rate_od(
-    cr_data = ncaa2005,
+    cr_data = cr_data,
     mean(score2),
-    self_play = NULL,
-    eps = 1e-3,
-    tol = 1e-4,
-    max_iterations = 100
+    eps = 1e-3, tol = 1e-4, max_iterations = 100
+  )
+  output_2$rating_off <- round(output_2$rating_off, 3)
+  output_2$rating_def <- round(output_2$rating_def, 3)
+  output_2$rating_od <- round(output_2$rating_od, 3)
+
+  output_ref_2 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    rating_off = c( 39.67, 181.033, 58.113,  94.951, 182.859),
+    rating_def = c( 1.567,    0.86,  1.149,   0.914,   0.532),
+    rating_od  = c(25.311, 210.536, 50.569, 103.838, 343.972)
   )
 
-  expect_equal(round(output_2, 3), output_ref_2)
+  expect_equal_tbls(output_2, output_ref_2)
 })
 
 test_that("rate_od handles factor `player`", {
-  input <- ncaa2005
-  input$player <- factor(
-    input$player, levels = c("Duke", "Extra", "Miami")
-  )
+  fac_levs <- c("Duke", "Extra", "Miami")
+  input <- cr_data
+  input$player <- factor(input$player, levels = fac_levs)
 
   output <- rate_od(
     cr_data = input,
     ifelse(player1[1] == player2[1], 0, mean(score2)),
-    eps = 1e-3,
-    tol = 1e-4,
-    max_iterations = 100
+    eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
-  output_ref <- matrix(
-    c( 3.96, 0.127, 11.288,
-      4.659, 0.057,  1.826,
-       0.85, 2.216,  6.181),
-    ncol = 3,
-    dimnames = list(
-      c("Duke", "Extra", "Miami"),
-      c("off", "def", "od")
-    )
+  output$rating_off <- round(output$rating_off, 3)
+  output$rating_def <- round(output$rating_def, 3)
+  output$rating_od <- round(output$rating_od, 3)
+
+  output_ref <- dplyr::tibble(
+    player = factor(fac_levs, levels = fac_levs),
+    rating_off = c( 3.96, 0.127, 11.288),
+    rating_def = c(4.659, 0.057,  1.826),
+    rating_od  = c( 0.85, 2.216,  6.181)
   )
 
-  expect_equal(round(output, 3), output_ref)
+  expect_equal_tbls(output, output_ref)
+})
+
+test_that("rate_od handles numeric `player`", {
+  input <- cr_data
+  input$player <- as.integer(factor(input$player))
+
+  output <- rate_od(
+    cr_data = input,
+    ifelse(player1[1] == player2[1], 0, mean(score2)),
+    eps = 1e-3, tol = 1e-4, max_iterations = 100
+  )
+  output$rating_off <- round(output$rating_off, 3)
+  output$rating_def <- round(output$rating_def, 3)
+  output$rating_od <- round(output$rating_od, 3)
+
+  output_ref <- dplyr::tibble(
+    player = 1:5,
+    rating_off = c(34.012, 151.563, 48.679,  82.05, 114.863),
+    rating_def = c( 1.691,   0.803,  1.164,  0.967,   0.411),
+    rating_od  = c(20.111, 188.779, 41.817, 84.806, 279.719)
+  )
+
+  expect_equal_tbls(output, output_ref)
 })
 
 
 # rank_od -----------------------------------------------------------------
 test_that("rank_od works", {
-  output_ref_1 <- matrix(
-    c(5, 1, 4, 3, 2,
-      5, 2, 4, 3, 1,
-      5, 2, 4, 3, 1),
-    ncol = 3,
-    dimnames = list(
-      c("Duke", "Miami", "UNC", "UVA", "VT"),
-      c("off", "def", "od")
-    )
-  )
-
   output_1 <- rank_od(
-    cr_data = ncaa2005,
+    cr_data = cr_data,
     ifelse(player1[1] == player2[1], 0, mean(score2)),
-    eps = 1e-3,
-    tol = 1e-4,
-    max_iterations = 100
+    eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
 
-  expect_equal(output_1, output_ref_1)
+  output_ref_1 <- dplyr::tibble(
+    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    ranking_off = c(5, 1, 4, 3, 2),
+    ranking_def = c(5, 2, 4, 3, 1),
+    ranking_od  = c(5, 2, 4, 3, 1)
+  )
 
-  output_ref_2 <- output_ref_1
-  output_ref_2[, ] <- 3
+  expect_equal_tbls(output_1, output_ref_1)
 
   output_2 <- rank_od(
-    cr_data = ncaa2005,
+    cr_data = cr_data,
     ifelse(player1[1] == player2[1], 0, length(score1)),
-    eps = 1e-3,
-    tol = 1e-4,
-    max_iterations = 100
+    eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
 
-  expect_equal(output_2, output_ref_2)
+  output_ref_2 <- output_ref_1
+  output_ref_2$ranking_off <- 3
+  output_ref_2$ranking_def <- 3
+  output_ref_2$ranking_od <- 3
+
+  expect_equal_tbls(output_2, output_ref_2)
 })
 
 test_that("rank_od handles factor `player`", {
-  input <- ncaa2005
-  input$player <- factor(
-    input$player, levels = c("Duke", "Extra", "Miami")
-  )
+  fac_levs <- c("Duke", "Extra", "Miami")
+  input <- cr_data
+  input$player <- factor(input$player, levels = fac_levs)
 
   output <- rank_od(
     cr_data = input,
     ifelse(player1[1] == player2[1], 0, mean(score2)),
-    eps = 1e-3,
-    tol = 1e-4,
-    max_iterations = 100
-  )
-  output_ref <- matrix(
-    c(2, 3, 1,
-      3, 1, 2,
-      3, 2, 1),
-    ncol = 3,
-    dimnames = list(
-      c("Duke", "Extra", "Miami"),
-      c("off", "def", "od")
-    )
+    eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
 
-  expect_equal(output, output_ref)
+  output_ref <- dplyr::tibble(
+    player = factor(fac_levs, levels = fac_levs),
+    ranking_off = c(2, 3, 1),
+    ranking_def = c(3, 1, 2),
+    ranking_od  = c(3, 2, 1)
+  )
+
+  expect_equal_tbls(output, output_ref)
+})
+
+test_that("rank_od handles numeric `player`", {
+  input <- cr_data
+  input$player <- as.integer(factor(input$player))
+
+  output <- rank_od(
+    cr_data = input,
+    ifelse(player1[1] == player2[1], 0, mean(score2)),
+    eps = 1e-3, tol = 1e-4, max_iterations = 100
+  )
+
+  output_ref <- dplyr::tibble(
+    player = 1:5,
+    ranking_off = c(5, 1, 4, 3, 2),
+    ranking_def = c(5, 2, 4, 3, 1),
+    ranking_od  = c(5, 2, 4, 3, 1)
+  )
+
+  expect_equal_tbls(output, output_ref)
 })
 
 
