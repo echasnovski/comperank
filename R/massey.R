@@ -1,9 +1,11 @@
 #' Massey method
 #'
-#' Functions to compute rating and ranking using Massey method.
+#' Functions to compute [rating][rating-ranking] and [ranking][rating-ranking]
+#' using Massey method.
 #'
 #' @param cr_data Competition results in format ready for
 #'   [as_longcr()][comperes::as_longcr()].
+#' @param keep_rating Whether to keep rating column in ranking output.
 #' @param ties Value for `ties` in [round_rank()].
 #' @param round_digits Value for `round_digits` in [round_rank()].
 #'
@@ -46,18 +48,23 @@
 #' is returned only for players from its levels. Otherwise - for all present
 #' players.
 #'
-#' @return `rate_massey()` returns a named vector of the Massey rating. The
-#' sum of all ratings should be equal to 0.
+#' @return `rate_massey()` returns a [tibble][tibble::tibble] with columns
+#' `player` (player identifier) and `rating_massey` (Massey
+#' [rating][rating-ranking]). The sum of all ratings should be equal to 0.
 #'
-#' `rank_massey()` returns a named vector of [ranking][rating-ranking] using
-#' [round_rank()].
+#' `rank_massey()` returns a `tibble` with columns `player`, `rating_massey` (if
+#' `keep_rating = TRUE`) and `ranking_massey` (Massey [ranking][rating-ranking]
+#' computed with [round_rank()]).
 #'
 #' @references Kenneth Massey (1997) *Statistical models applied to the
 #'   rating of sports teams*. Bachelor’s thesis, Bluefield College.
 #'
 #' @examples
 #' rate_massey(ncaa2005)
+#'
 #' rank_massey(ncaa2005)
+#'
+#' rank_massey(ncaa2005, keep_rating = TRUE)
 #'
 #' @name massey
 NULL
@@ -94,17 +101,21 @@ rate_massey <- function(cr_data) {
   score_diff_mod <- score_diff
   score_diff_mod[length(score_diff_mod)] <- 0
 
-  solve(massey_mat_mod, score_diff_mod)
+  res_vec <- solve(massey_mat_mod, score_diff_mod)
+
+  enframe_vec(res_vec, unique_levels(cr$player), "player", "rating_massey")
 }
 
 #' @rdname massey
 #' @export
-rank_massey <- function(cr_data,
+rank_massey <- function(cr_data, keep_rating = FALSE,
                         ties = c("average", "first", "last",
                                  "random", "max", "min"),
                         round_digits = 7) {
-  round_rank(
-    rate_massey(cr_data = cr_data),
-    type = "desc", ties = ties, round_digits = round_digits
+  add_ranking(
+    rate_massey(cr_data),
+    "rating_massey", "ranking_massey",
+    keep_rating = keep_rating, type = "desc",
+    ties = ties, round_digits = round_digits
   )
 }

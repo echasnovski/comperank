@@ -8,26 +8,31 @@
 \usage{
 rate_massey(cr_data)
 
-rank_massey(cr_data, ties = c("average", "first", "last", "random", "max",
-  "min"), round_digits = 7)
+rank_massey(cr_data, keep_rating = FALSE, ties = c("average", "first",
+  "last", "random", "max", "min"), round_digits = 7)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
 \link[comperes:as_longcr]{as_longcr()}.}
+
+\item{keep_rating}{Whether to keep rating column in ranking output.}
 
 \item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
 \item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
 }
 \value{
-\code{rate_massey()} returns a named vector of the Massey rating. The
-sum of all ratings should be equal to 0.
+\code{rate_massey()} returns a \link[tibble:tibble]{tibble} with columns
+\code{player} (player identifier) and \code{rating_massey} (Massey
+\link[=rating-ranking]{rating}). The sum of all ratings should be equal to 0.
 
-\code{rank_massey()} returns a named vector of \link[=rating-ranking]{ranking} using
-\code{\link[=round_rank]{round_rank()}}.
+\code{rank_massey()} returns a \code{tibble} with columns \code{player}, \code{rating_massey} (if
+\code{keep_rating = TRUE}) and \code{ranking_massey} (Massey \link[=rating-ranking]{ranking}
+computed with \code{\link[=round_rank]{round_rank()}}).
 }
 \description{
-Functions to compute rating and ranking using Massey method.
+Functions to compute \link[=rating-ranking]{rating} and \link[=rating-ranking]{ranking}
+using Massey method.
 }
 \details{
 This rating method was initially designed for games between two
@@ -71,7 +76,10 @@ players.
 
 \examples{
 rate_massey(ncaa2005)
+
 rank_massey(ncaa2005)
+
+rank_massey(ncaa2005, keep_rating = TRUE)
 
 }
 \references{
