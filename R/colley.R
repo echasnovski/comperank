@@ -1,6 +1,7 @@
 #' Colley method
 #'
-#' Functions to compute rating and ranking using Colley method.
+#' Functions to compute [rating][rating-ranking] and [ranking][rating-ranking]
+#' using Colley method.
 #'
 #' @inheritParams rate_massey
 #' @inheritParams rank_massey
@@ -32,18 +33,24 @@
 #'
 #' @inheritSection massey Players
 #'
-#' @return `rate_colley()` returns a named vector of the Colley rating. The mean
-#' rating should be 0.5.
+#' @return `rate_colley()` returns a [tibble][tibble::tibble] with columns
+#' `player` (player identifier) and `rating_colley` (Colley
+#' [rating][rating-ranking]). The mean rating should be 0.5.
 #'
-#' `rank_colley()` returns a named vector of [ranking][rating-ranking] using
-#' [round_rank()].
+#' `rank_colley()` returns a `tibble` with columns `player`, `rating_colley` (if
+#' `keep_rating = TRUE`) and `ranking_colley` (Colley [ranking][rating-ranking]
+#' computed with [round_rank()]).
 #'
 #' @references Wesley N. Colley (2002) *Colley’s Bias Free College Football
 #'   Ranking Method: The Colley Matrix Explained*. Available online at
 #'   <http://www.colleyrankings.com>
 #'
-#' @examples rate_colley(ncaa2005)
+#' @examples
+#' rate_colley(ncaa2005)
+#'
 #' rank_colley(ncaa2005)
+#'
+#' rank_colley(ncaa2005, keep_rating = TRUE)
 #'
 #' @name colley
 NULL
@@ -53,7 +60,7 @@ NULL
 rate_colley <- function(cr_data) {
   cr <- as_longcr(cr_data, repair = TRUE)
   if (!is_pairgames(cr)) {
-    cr <- to_pairgames(cr)
+    cr <- as_longcr(to_pairgames(cr))
   }
 
   # Compute Colley ratings
@@ -64,17 +71,21 @@ rate_colley <- function(cr_data) {
   win_mat <- h2h_mat(cr, !!h2h_funs[["num_wins"]], fill = 0)
   right_hand <- 1 + 0.5*(rowSums(win_mat) - colSums(win_mat))
 
-  solve(colley_mat, right_hand)
+  res_vec <- solve(colley_mat, right_hand)
+
+  enframe_vec(res_vec, unique_levels(cr$player), "player", "rating_colley")
 }
 
 #' @rdname colley
 #' @export
-rank_colley <- function(cr_data,
+rank_colley <- function(cr_data, keep_rating = FALSE,
                         ties = c("average", "first", "last",
                                  "random", "max", "min"),
                         round_digits = 7) {
-  round_rank(
-    rate_colley(cr_data = cr_data),
-    type = "desc", ties = ties, round_digits = round_digits
+  add_ranking(
+    rate_colley(cr_data),
+    "rating_colley", "ranking_colley",
+    keep_rating = keep_rating, type = "desc",
+    ties = ties, round_digits = round_digits
   )
 }

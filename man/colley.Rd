@@ -8,26 +8,31 @@
 \usage{
 rate_colley(cr_data)
 
-rank_colley(cr_data, ties = c("average", "first", "last", "random", "max",
-  "min"), round_digits = 7)
+rank_colley(cr_data, keep_rating = FALSE, ties = c("average", "first",
+  "last", "random", "max", "min"), round_digits = 7)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
 \link[comperes:as_longcr]{as_longcr()}.}
+
+\item{keep_rating}{Whether to keep rating column in ranking output.}
 
 \item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 
 \item{round_digits}{Value for \code{round_digits} in \code{\link[=round_rank]{round_rank()}}.}
 }
 \value{
-\code{rate_colley()} returns a named vector of the Colley rating. The mean
-rating should be 0.5.
+\code{rate_colley()} returns a \link[tibble:tibble]{tibble} with columns
+\code{player} (player identifier) and \code{rating_colley} (Colley
+\link[=rating-ranking]{rating}). The mean rating should be 0.5.
 
-\code{rank_colley()} returns a named vector of \link[=rating-ranking]{ranking} using
-\code{\link[=round_rank]{round_rank()}}.
+\code{rank_colley()} returns a \code{tibble} with columns \code{player}, \code{rating_colley} (if
+\code{keep_rating = TRUE}) and \code{ranking_colley} (Colley \link[=rating-ranking]{ranking}
+computed with \code{\link[=round_rank]{round_rank()}}).
 }
 \description{
-Functions to compute rating and ranking using Colley method.
+Functions to compute \link[=rating-ranking]{rating} and \link[=rating-ranking]{ranking}
+using Colley method.
 }
 \details{
 This rating method was initially designed for games between two
@@ -66,7 +71,10 @@ players.
 
 \examples{
 rate_colley(ncaa2005)
+
 rank_colley(ncaa2005)
+
+rank_colley(ncaa2005, keep_rating = TRUE)
 
 }
 \references{
