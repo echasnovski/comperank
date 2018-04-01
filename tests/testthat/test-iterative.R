@@ -19,6 +19,11 @@ output_base$rating2Before <- c( 0,  0, -1, 1, -1,  2, -2, -2, 2, -2)
 output_base$rating1After <-  c(-1,  1, -1, 2, -2, -2,  2, -2, 2, -2)
 output_base$rating2After <-  c( 1, -1,  0, 0,  0,  4, -4,  0, 4, -4)
 
+init_rat_df <- data.frame(
+  player = 1:5,
+  rating = 0:4
+)
+
 
 # rate_iterative ----------------------------------------------------------
 test_that("rate_iterative works", {
@@ -50,6 +55,18 @@ test_that("rate_iterative handles factor `player`", {
   output_ref <- dplyr::tibble(
     player = factor(c(1:3, 6, 4:5, 0), levels = c(1:3, 6, 4:5, 0)),
     rating_iterative = c(0, 2, 4, 0, -2, -4, 0)
+  )
+
+  expect_equal_tbls(output, output_ref)
+})
+
+test_that("rate_iterative handles data frame `initial_ratings`", {
+  output <- rate_iterative(
+    cr_data, test_rate_fun, initial_ratings = init_rat_df
+  )
+  output_ref <- dplyr::tibble(
+    player = 1:5,
+    rating_iterative = c(4, 3, 6, 1, -4)
   )
 
   expect_equal_tbls(output, output_ref)
@@ -88,6 +105,19 @@ test_that("rank_iterative handles factor `player`", {
   output_ref <- dplyr::tibble(
     player = factor(c(1:3, 6, 4:5, 0), levels = c(1:3, 6, 4:5, 0)),
     ranking_iterative = c(4, 2, 1, 4, 6, 7, 4)
+  )
+
+  expect_equal_tbls(output, output_ref)
+})
+
+test_that("rank_iterative handles data frame `initial_ratings`", {
+  output <- rank_iterative(
+    cr_data, test_rate_fun, initial_ratings = init_rat_df,
+    keep_rating = FALSE, type = "desc"
+  )
+  output_ref <- dplyr::tibble(
+    player = 1:5,
+    ranking_iterative = c(2, 3, 1, 4, 5)
   )
 
   expect_equal_tbls(output, output_ref)
@@ -198,6 +228,20 @@ test_that("add_iterative_ratings handles factor `player`", {
   expect_equal_tbls(output_2, output_ref_2)
 })
 
+test_that("add_iterative_ratings handles data frame `initial_ratings`", {
+  output <- add_iterative_ratings(
+    cr_data, test_rate_fun, initial_ratings = init_rat_df
+  )
+  output_ref <- output_base
+  output_ref$rating1Before <- c( 0, 2,  4, 2,  2, 4,  2, 2, 4, -4)
+  output_ref$rating2Before <- c( 1, 3, -1, 3, -1, 3, -1, 3, 5,  1)
+  output_ref$rating1After <-  c(-1, 3, -1, 3, -1, 3,  5, 1, 3,  1)
+  output_ref$rating2After <-  c( 2, 2,  4, 2,  2, 4, -4, 4, 6, -4)
+
+
+  expect_equal_tbls(output, output_ref)
+})
+
 
 # to_players_id -----------------------------------------------------------
 test_that("to_players_id works", {
@@ -221,9 +265,17 @@ test_that("get_cr_initial_ratings works", {
   expect_equal(get_cr_initial_ratings(5:1, init_ratings), 6:10)
 })
 
+test_that("get_cr_initial_ratings handles data frame `initial_ratings`", {
+  expect_equal(get_cr_initial_ratings(1:5, init_rat_df), 0:4)
+  expect_equal(get_cr_initial_ratings(c(3, 2, 5), init_rat_df), c(2, 1, 4))
+})
+
 test_that("get_cr_initial_ratings throws errors", {
   expect_error(get_cr_initial_ratings(1:10, "a"),
-               "should.*numeric")
+               "should.*numeric.*or.*data.*frame")
+
+  expect_error(get_cr_initial_ratings(1:10, init_rat_df[, 1, drop = FALSE]),
+               "should.*2.*column")
 
   expect_error(get_cr_initial_ratings(1:10, 1:2),
                "missing.*players")
@@ -234,6 +286,10 @@ test_that("get_cr_initial_ratings throws errors", {
   expect_error(
     get_cr_initial_ratings(1:11, init_ratings),
     "missing.*11"
+  )
+  expect_error(
+    get_cr_initial_ratings(0:5, init_rat_df),
+    "missing.*0"
   )
 })
 

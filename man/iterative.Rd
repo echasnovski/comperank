@@ -98,6 +98,9 @@ set to this value.
 \item A named vector of ratings. All non-\code{NA} players, for which rating is
 computed, should be present in its names (as character representation of
 players' actual identifiers).
+\item A data frame with first column representing player and second - initial
+rating. It will be converted to named vector with
+\link[tibble:deframe]{deframe()} from \code{tibble} package.
 }
 }
 \section{Players}{
@@ -130,6 +133,11 @@ add_iterative_ratings(cr_data, test_rate_fun, initial_ratings = 10)
 add_iterative_ratings(
   cr_data, test_rate_fun,
   initial_ratings = c("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5)
+)
+
+add_iterative_ratings(
+  cr_data, test_rate_fun,
+  initial_ratings = data.frame(1:5, 0:4)
 )
 
 # Ratings and ranking at the end of competition results.

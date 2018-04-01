@@ -3,13 +3,18 @@ context("elo")
 
 # Input data --------------------------------------------------------------
 cr_data <- ncaa2005
+player_names <- c("Duke", "Miami", "UNC", "UVA", "VT")
+init_rat_df <- dplyr::tibble(
+  player = player_names,
+  rating = (4:0) * 100
+)
 
 
 # rate_elo ----------------------------------------------------------------
 test_that("rate_elo works", {
   output <- rate_elo(cr_data, K = 30, ksi = 400, initial_ratings = 0)
   output_ref <- dplyr::tibble(
-    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    player = player_names,
     rating_elo = c(-56.2377413877926, 57.9315106719875, -1.25948933788439,
                    -29.2442777446668, 28.8099977983563)
   )
@@ -45,12 +50,23 @@ test_that("rate_elo handles numeric `player`", {
   expect_equal_tbls(output, output_ref)
 })
 
+test_that("rate_elo handles data frame `initial_ratings`", {
+  output <- rate_elo(cr_data, K = 30, ksi = 400, initial_ratings = init_rat_df)
+  output_ref <- dplyr::tibble(
+    player = player_names,
+    rating_elo = c(307.975354314551, 341.44140763449, 199.493609575483,
+                   88.7634054575253, 62.3262230179506)
+  )
+
+  expect_equal_tbls(output, output_ref)
+})
+
 
 # rank_elo ----------------------------------------------------------------
 test_that("rank_elo works", {
   output_1 <- rank_elo(cr_data)
   output_ref_1 <- dplyr::tibble(
-    player = c("Duke", "Miami", "UNC", "UVA", "VT"),
+    player = player_names,
     ranking_elo = c(5, 1, 3, 4, 2)
   )
 
@@ -93,9 +109,20 @@ test_that("rank_elo handles numeric `player`", {
   expect_equal_tbls(output, output_ref)
 })
 
+test_that("rank_elo handles data frame `initial_ratings`", {
+  output <- rank_elo(cr_data, K = 30, ksi = 400, initial_ratings = init_rat_df)
+  output_ref <- dplyr::tibble(
+    player = player_names,
+    ranking_elo = c(2, 1, 3, 4, 5)
+  )
+
+  expect_equal_tbls(output, output_ref)
+})
+
 
 # add_elo_ratings ---------------------------------------------------------
 test_that("add_elo_ratings works", {
+  output <- add_elo_ratings(ncaa2005, K = 30, ksi = 400, initial_ratings = 0)
   output_ref <- as_widecr(ncaa2005)
   output_ref$rating1Before <-
     c(0, -15, -29.3528000084656, -43.0885442384277,
@@ -114,14 +141,33 @@ test_that("add_elo_ratings works", {
       -0.619258154115673, -0.563787585218492, -0.510723544860779,
       -15.5661824421677, 15.1319024958571, 28.8099977983563)
 
-  output <- add_elo_ratings(ncaa2005, K = 30, ksi = 400, initial_ratings = 0)
+  expect_is(output, "widecr")
+  expect_equal_tbls(output, output_ref)
+})
+
+test_that("add_elo_ratings handles data frame `initial_ratings`", {
+  output <- add_elo_ratings(ncaa2005, K = 30, ksi = 400,
+                            initial_ratings = init_rat_df)
+  output_ref <- as_widecr(ncaa2005)
+  output_ref$rating1Before <-
+    c(400, 380.798050005913, 358.628167334742, 334.151299383236,
+      319.201949994087, 330.118361121612, 337.149624608524,
+      211.253471543646, 222.299088607242, 106.399987400998)
+  output_ref$rating2Before <-
+    c(300, 200, 100, 0,
+      222.169882671171, 124.476867951506, 26.1759450686848,
+      117.445604464595, 21.8841620427182, 44.6896410744778)
+  output_ref$rating1After <-
+    c(380.798050005913, 358.628167334742, 334.151299383236, 307.975354314551,
+      330.118361121612, 337.149624608524, 341.44140763449,
+      222.299088607242, 199.493609575483, 88.7634054575253)
+  output_ref$rating2After <-
+    c(319.201949994087, 222.169882671171, 124.476867951506, 26.1759450686848,
+      211.253471543646, 117.445604464595, 21.8841620427182,
+      106.399987400998, 44.6896410744778, 62.3262230179506)
 
   expect_is(output, "widecr")
-  expect_identical(output[, 1:5], output_ref[, 1:5])
-  expect_equal(output$rating1Before, output_ref$rating1Before)
-  expect_equal(output$rating2Before, output_ref$rating2Before)
-  expect_equal(output$rating1After, output_ref$rating1After)
-  expect_equal(output$rating2After, output_ref$rating2After)
+  expect_equal_tbls(output, output_ref)
 })
 
 

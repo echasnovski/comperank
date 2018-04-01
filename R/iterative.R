@@ -51,6 +51,10 @@
 #' computed, should be present in its names (as character representation of
 #' players' actual identifiers).
 #'
+#' - A data frame with first column representing player and second - initial
+#' rating. It will be converted to named vector with
+#' [deframe()][tibble::deframe()] from `tibble` package.
+#'
 #' @inheritSection massey Players
 #'
 #' @return `rate_iterative()` returns a [tibble][tibble::tibble] with columns
@@ -90,6 +94,11 @@
 #' add_iterative_ratings(
 #'   cr_data, test_rate_fun,
 #'   initial_ratings = c("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5)
+#' )
+#'
+#' add_iterative_ratings(
+#'   cr_data, test_rate_fun,
+#'   initial_ratings = data.frame(1:5, 0:4)
 #' )
 #'
 #' # Ratings and ranking at the end of competition results.
@@ -201,23 +210,33 @@ to_players_id <- function(players, ref_players) {
 }
 
 get_cr_initial_ratings <- function(players, initial_ratings = 0) {
-  if (!is.numeric(initial_ratings)) {
-    stop("initial_ratings should be a numeric vector.")
+  if (!(is.numeric(initial_ratings) || is.data.frame(initial_ratings))) {
+    stop("initial_ratings should be a numeric vector or a data frame.")
   }
 
-  if (length(initial_ratings) == 1) {
-    return(rep(initial_ratings, length(players)))
+  if (is.data.frame(initial_ratings)) {
+    if (ncol(initial_ratings) < 2) {
+      stop("initial_ratings should have at least 2 columns.", call. = FALSE)
+    }
+
+    init_rat_vec <- tibble::deframe(initial_ratings)
+  } else {
+    init_rat_vec <- initial_ratings
+  }
+
+  if (length(init_rat_vec) == 1) {
+    return(rep(init_rat_vec, length(players)))
   }
 
   players_chr <- as.character(players)
   players_chr <- players_chr[!is.na(players_chr)]
-  absent_players <- setdiff(players_chr, names(initial_ratings))
+  absent_players <- setdiff(players_chr, names(init_rat_vec))
   if (length(absent_players) > 0) {
     stop("There are missing ratings for some players:\n  ",
          paste0(absent_players, collapse = ", "))
   }
 
-  res <- initial_ratings[players_chr]
+  res <- init_rat_vec[players_chr]
   names(res) <- NULL
 
   res
