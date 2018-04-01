@@ -25,7 +25,7 @@ add_iterative_ratings(cr_data, rate_fun, initial_ratings = 0)
 
 \item{keep_rating}{Whether to keep rating column in ranking output.}
 
-\item{type}{Value for \code{type} in \code{\link[=round_rank]{round_rank()}}.}
+\item{type}{Value for \code{type} in \code{\link[=round_rank]{round_rank()}}: \code{"desc"} or \code{"asc"}.}
 
 \item{ties}{Value for \code{ties} in \code{\link[=round_rank]{round_rank()}}.}
 

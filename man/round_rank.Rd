@@ -10,7 +10,7 @@ round_rank(x, type = "desc", na.last = TRUE, ties = c("average", "first",
 \arguments{
 \item{x}{A numeric, complex, character or logical vector.}
 
-\item{type}{Type of ranking.}
+\item{type}{Type of ranking: \code{"desc"} or \code{"asc"} (see Details).}
 
 \item{na.last}{For controlling the treatment of \code{NA}s. If \code{TRUE}, missing
 values in the data are put last; if \code{FALSE}, they are put first; if \code{NA},
@@ -35,7 +35,7 @@ This is basically a wrapper around \code{\link[=rank]{rank()}} in which \code{x}
 pre-modified by rounding to specific number of digits \code{round_digits}.
 
 \code{type} can have two values: \code{"desc"} for ranking in descending order (rank 1
-is given to the biggest value in \code{x}) and \code{asc} (rank 1 is given to the
+is given to the biggest value in \code{x}) and \code{"asc"} (rank 1 is given to the
 smallest value in \code{x}). Any other value will cause error.
 }
 \examples{

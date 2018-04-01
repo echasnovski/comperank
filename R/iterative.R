@@ -7,7 +7,7 @@
 #' @inheritParams rate_massey
 #' @param rate_fun Rating function (see Details).
 #' @param initial_ratings Initial ratings (see Details).
-#' @param type Value for `type` in [round_rank()].
+#' @param type Value for `type` in [round_rank()]: `"desc"` or `"asc"`.
 #' @inheritParams rank_massey
 #'
 #' @details Iterative ratings of group of players are recomputed after every

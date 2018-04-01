@@ -32,7 +32,7 @@ to_function_list <- function(x, var_name = "input") {
 #' Function for ranking vector after rounding.
 #'
 #' @param x A numeric, complex, character or logical vector.
-#' @param type Type of ranking.
+#' @param type Type of ranking: `"desc"` or `"asc"` (see Details).
 #' @param na.last For controlling the treatment of `NA`s. If `TRUE`, missing
 #'   values in the data are put last; if `FALSE`, they are put first; if `NA`,
 #'   they are removed; if `"keep"` they are kept with rank `NA`.
@@ -44,7 +44,7 @@ to_function_list <- function(x, var_name = "input") {
 #' pre-modified by rounding to specific number of digits `round_digits`.
 #'
 #' `type` can have two values: `"desc"` for ranking in descending order (rank 1
-#' is given to the biggest value in `x`) and `asc` (rank 1 is given to the
+#' is given to the biggest value in `x`) and `"asc"` (rank 1 is given to the
 #' smallest value in `x`). Any other value will cause error.
 #'
 #' @return A numeric vector of the same length as `x` with names copied from `x`
