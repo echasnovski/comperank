@@ -5,8 +5,8 @@ library(rlang)
 
 # Input data --------------------------------------------------------------
 cr_data <- ncaa2005
-input_stoch <- matrix(c(0.3, 0.7,
-                        0.2, 0.8),
+input_stoch <- matrix(c(0.3, 0.2,
+                        0.7, 0.8),
                       ncol = 2, byrow = TRUE)
 
 
@@ -14,9 +14,9 @@ input_stoch <- matrix(c(0.3, 0.7,
 test_that("rate_markov simply works", {
   output_1 <- rate_markov(
     cr_data = cr_data,
-    # player1 "votes" for player2 if player2 won
-    win = num_wins(score2, score1, half_for_draw = FALSE),
-    fill = list(win = 0), stoch_modify = vote_equal,
+    # player2 "votes" for player1 if player1 won
+    !!! h2h_funs["num_wins"],
+    fill = list(num_wins = 0), stoch_modify = vote_equal,
     weights = 1, force_nonneg_h2h = FALSE
   )
   output_1$rating_markov <- round(output_1$rating_markov, 3)
@@ -30,10 +30,10 @@ test_that("rate_markov simply works", {
 
   output_2 <- rate_markov(
     cr_data = cr_data,
-    # player1 "votes" for player2 by the amount player2 scored more in direct
-    # confrontations
-    score_diff = max(mean(score2 - score1), 0),
-    fill = list(score_diff = 0), stoch_modify = vote_equal,
+    # player2 "votes" for player1 proportionally to the amount player1 scored
+    # more in direct confrontations
+    !!! h2h_funs["mean_score_diff_pos"],
+    fill = list(mean_score_diff_pos = 0), stoch_modify = vote_equal,
     weights = 1, force_nonneg_h2h = FALSE
   )
   output_2$rating_markov <- round(output_2$rating_markov, 3)
@@ -51,9 +51,9 @@ test_that("rate_markov handles factor `player`", {
 
   output <- rate_markov(
     cr_data = input,
-    # player1 "votes" for player2 if player2 won
-    win = num_wins(score2, score1, half_for_draw = FALSE),
-    fill = list(win = 0), stoch_modify = vote_equal,
+    # player2 "votes" for player1 if player1 won
+    !!! h2h_funs["num_wins"],
+    fill = list(num_wins = 0), stoch_modify = vote_equal,
     weights = 1, force_nonneg_h2h = FALSE
   )
   output$rating_markov <- round(output$rating_markov, 3)
@@ -72,9 +72,9 @@ test_that("rate_markov handles numeric `player`", {
 
   output <- rate_markov(
     cr_data = input,
-    # player1 "votes" for player2 if player2 won
-    win = num_wins(score2, score1, half_for_draw = FALSE),
-    fill = list(win = 0), stoch_modify = vote_equal,
+    # player2 "votes" for player1 if player1 won
+    !!! h2h_funs["num_wins"],
+    fill = list(num_wins = 0), stoch_modify = vote_equal,
     weights = 1, force_nonneg_h2h = FALSE
   )
   output$rating_markov <- round(output$rating_markov, 3)
@@ -90,9 +90,9 @@ test_that("rate_markov handles numeric `player`", {
 test_that("rate_markov handles multiple Head-to-Head values", {
   output_1 <- rate_markov(
     cr_data = cr_data,
-    win = num_wins(score2, score1, half_for_draw = FALSE),
-    score_diff = max(mean(score2 - score1), 0),
-    fill = list(win = 0, score_diff = 0), stoch_modify = vote_equal,
+    !!! h2h_funs[c("num_wins", "mean_score_diff_pos")],
+    fill = list(num_wins = 0, mean_score_diff_pos = 0),
+    stoch_modify = vote_equal,
     weights = c(0.3, 0.7), force_nonneg_h2h = FALSE
   )
   output_1$rating_markov <- round(output_1$rating_markov, 3)
@@ -105,10 +105,9 @@ test_that("rate_markov handles multiple Head-to-Head values", {
   expect_equal_tbls(output_1, output_ref_1)
 
   output_2 <- rate_markov(
-    cr_data = ncaa2005,
-    win = num_wins(score2, score1, half_for_draw = FALSE),
-    score_diff = max(mean(score2 - score1), 0),
-    fill = list(win = 0, score_diff = 0),
+    cr_data = cr_data,
+    !!! h2h_funs[c("num_wins", "mean_score_diff_pos")],
+    fill = list(num_wins = 0, mean_score_diff_pos = 0),
     stoch_modify = list(vote_equal, teleport(0.15)),
     weights = c(0.8, 0.2), force_nonneg_h2h = FALSE
   )
@@ -124,9 +123,8 @@ test_that("rate_markov uses argument `fill`", {
   input <- cr_data[-c(1, 2), ]
   output <- rate_markov(
     cr_data = input,
-    win = num_wins(score2, score1, half_for_draw = FALSE),
-    score_diff = max(mean(score2 - score1), 0),
-    fill = list(win = 0.5, score_diff = 10),
+    !!! h2h_funs[c("num_wins", "mean_score_diff_pos")],
+    fill = list(num_wins = 0.5, mean_score_diff_pos = 10),
     stoch_modify = list(vote_equal, teleport(0.15)),
     weights = c(0.8, 0.2), force_nonneg_h2h = FALSE
   )
@@ -142,8 +140,8 @@ test_that("rate_markov uses argument `fill`", {
 
 test_that("rate_markov handles function and list `stoch_modify`", {
   expect_identical(
-    rate_markov(ncaa2005, !!h2h_funs[["num"]], stoch_modify = vote_equal),
-    rate_markov(ncaa2005, !!h2h_funs[["num"]], stoch_modify = list(vote_equal))
+    rate_markov(cr_data, !!h2h_funs[["num"]], stoch_modify = vote_equal),
+    rate_markov(cr_data, !!h2h_funs[["num"]], stoch_modify = list(vote_equal))
   )
 })
 
@@ -153,26 +151,27 @@ test_that("rate_markov does recycling", {
   stoch_modify <- list(vote_equal, vote_self)
 
   expect_identical(
-    rate_markov(cr_data = ncaa2005, !!!h2h_fun_list,
+    rate_markov(cr_data = cr_data, !!!h2h_fun_list,
                 stoch_modify = stoch_modify[1], weights = weights),
-    rate_markov(cr_data = ncaa2005, !!!h2h_fun_list,
+    rate_markov(cr_data = cr_data, !!!h2h_fun_list,
                 stoch_modify = rep(stoch_modify[1], 2), weights = weights)
   )
   expect_identical(
-    rate_markov(cr_data = ncaa2005, !!!h2h_fun_list,
+    rate_markov(cr_data = cr_data, !!!h2h_fun_list,
                 stoch_modify = stoch_modify, weights = weights[1]),
-    rate_markov(cr_data = ncaa2005, !!!h2h_fun_list,
+    rate_markov(cr_data = cr_data, !!!h2h_fun_list,
                 stoch_modify = stoch_modify, weights = rep(weights[1], 1))
   )
 })
 
 test_that("rate_markov throws errors", {
   expect_error(
-    rate_markov(ncaa2005, h2h_num_wins, weights = "a"),
+    rate_markov(cr_data, !! h2h_funs[["num_wins"]], weights = "a"),
     "numeric"
   )
   expect_error(
-    rate_markov(ncaa2005, h2h_num_wins, stoch_modify = list(vote_equal, "a")),
+    rate_markov(cr_data, !! h2h_funs[["num_wins"]],
+                stoch_modify = list(vote_equal, "a")),
     "function"
   )
 })
@@ -182,7 +181,7 @@ test_that("rate_markov throws errors", {
 test_that("rank_markov works", {
   output <- rank_markov(
     cr_data = cr_data,
-    num_wins(score2, score1, half_for_draw = FALSE),
+    !! h2h_funs[["num_wins"]],
     stoch_modify = vote_equal,
     weights = 1,
     force_nonneg_h2h = FALSE
@@ -202,9 +201,9 @@ test_that("rank_markov handles factor `player`", {
 
   output <- rank_markov(
     cr_data = input,
-    # player1 "votes" for player2 if player2 won
-    win = num_wins(score2, score1, half_for_draw = FALSE),
-    fill = list(win = 0), stoch_modify = vote_equal,
+    # player2 "votes" for player1 if player1 won
+    !!! h2h_funs["num_wins"],
+    fill = list(num_wins = 0), stoch_modify = vote_equal,
     weights = 1, force_nonneg_h2h = FALSE
   )
   output_ref <- dplyr::tibble(
@@ -221,9 +220,9 @@ test_that("rank_markov handles numeric `player`", {
 
   output <- rank_markov(
     cr_data = input,
-    # player1 "votes" for player2 if player2 won
-    win = num_wins(score2, score1, half_for_draw = FALSE),
-    fill = list(win = 0), stoch_modify = vote_equal,
+    # player2 "votes" for player1 if player1 won
+    !!! h2h_funs["num_wins"],
+    fill = list(num_wins = 0), stoch_modify = vote_equal,
     weights = 1, force_nonneg_h2h = FALSE
   )
 
@@ -239,9 +238,8 @@ test_that("rank_markov uses argument `fill`", {
   input <- cr_data[-c(1, 2), ]
   output <- rank_markov(
     cr_data = input,
-    win = num_wins(score2, score1, half_for_draw = FALSE),
-    score_diff = max(mean(score2 - score1), 0),
-    fill = list(win = 0.5, score_diff = 10),
+    !!! h2h_funs[c("num_wins", "mean_score_diff_pos")],
+    fill = list(num_wins = 0.5, mean_score_diff_pos = 10),
     stoch_modify = list(vote_equal, teleport(0.15)),
     weights = c(0.8, 0.2),
     force_nonneg_h2h = FALSE
@@ -260,8 +258,9 @@ test_that("teleport works", {
   teleport_fun <- teleport(0.5)
 
   # Works correctly
-  output_ref <- matrix(c(0.4, 0.6,
-                         0.35, 0.65),
+  output <- teleport_fun(input_stoch)
+  output_ref <- matrix(c(0.4, 0.35,
+                         0.6, 0.65),
                        ncol = 2, byrow = TRUE)
   expect_equal(teleport_fun(input_stoch), output_ref)
 
@@ -270,16 +269,17 @@ test_that("teleport works", {
   expect_error(teleport_fun(input_stoch[, 1, drop = TRUE]), "matrix")
 })
 
-test_that("teleport normilizes rows", {
+test_that("teleport normilizes columns", {
   teleport_fun_1 <- teleport(0.5)
   input <- input_stoch
-  input[1, ] <- 0
+  input[, 1] <- 0
 
-  output_ref_1 <- matrix(c(0.5, 0.5,
-                           0.35, 0.65),
+  output_1 <- teleport_fun_1(input)
+  output_ref_1 <- matrix(c(0.5, 0.35,
+                           0.5, 0.65),
                          ncol = 2, byrow = TRUE)
 
-  expect_equal(teleport_fun_1(input), output_ref_1)
+  expect_equal(output_1, output_ref_1)
 
   teleport_fun_2 <- teleport(0)
 
@@ -298,17 +298,17 @@ test_that("vote_equal works", {
   expect_equal(vote_equal(input_stoch), input_stoch)
 
   input_1 <- input_stoch
-  input_1[1, ] <- 0
+  input_1[, 1] <- 0
 
   output_ref_1 <- input_1
-  output_ref_1[1, ] <- 0.5
+  output_ref_1[, 1] <- 0.5
 
   expect_equal(vote_equal(input_1), output_ref_1)
 
   input_2 <- input_1
-  input_2[2, ] <- 0
+  input_2[, 2] <- 0
   output_ref_2 <- output_ref_1
-  output_ref_2[2, ] <- 0.5
+  output_ref_2[, 2] <- 0.5
 
   expect_equal(vote_equal(input_2), output_ref_2)
 })
@@ -319,7 +319,7 @@ test_that("vote_self works", {
   expect_equal(vote_self(input_stoch), input_stoch)
 
   input_1 <- input_stoch
-  input_1[1, ] <- 0
+  input_1[, 1] <- 0
 
   output_ref_1 <- input_1
   output_ref_1[1, 1] <- 1
@@ -327,9 +327,9 @@ test_that("vote_self works", {
   expect_equal(vote_self(input_1), output_ref_1)
 
   input_2 <- input_1
-  input_2[2, ] <- 0
+  input_2[, 2] <- 0
   output_ref_2 <- output_ref_1
-  output_ref_2[2, 1] <- 0
+  output_ref_2[1, 2] <- 0
   output_ref_2[2, 2] <- 1
 
   expect_equal(vote_self(input_2), output_ref_2)
@@ -341,7 +341,7 @@ test_that("to_stoch_mat works", {
   expect_equal(to_stoch_mat(2 * input_stoch), input_stoch)
 
   input_1 <- input_stoch
-  input_1[1, ] <- 0
+  input_1[, 1] <- 0
 
   expect_equal(to_stoch_mat(input_1), input_1)
 })
@@ -350,8 +350,8 @@ test_that("to_stoch_mat replaces NA with 0", {
   input_1 <- input_stoch
   input_1[1, 1] <- NA
   output <- to_stoch_mat(input_1)
-  output_ref <- matrix(c(  0,   1,
-                         0.2, 0.8),
+  output_ref <- matrix(c(0, 0.2,
+                         1, 0.8),
                        ncol = 2, byrow = TRUE)
 
   expect_equal(output, output_ref)

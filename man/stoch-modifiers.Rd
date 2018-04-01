@@ -14,7 +14,7 @@ vote_equal(stoch)
 vote_self(stoch)
 }
 \arguments{
-\item{teleport_prob}{Probability of 'teleporation'.}
+\item{teleport_prob}{Probability of 'teleportation'.}
 
 \item{stoch}{Input stochastic matrix.}
 }
@@ -28,25 +28,28 @@ version of input stochastic matrix.
 Functions for stochastic matrix modifications.
 }
 \details{
-Modification logic behind \code{teleport} assumes that at each step
-of Markov chain (described by stochastic matrix) the decision is made whether
-to change state according to stochastic matrix or to 'teleport' to any state
-with equal probability. Probability of 'teleport' is \code{teleport_prob}. This
-modification is useful because it ensures irreducibility of stochastic matrix
-(with \code{teleport_prob} in (0; 1)). \strong{Note} that in order to obtain modifier
-one should call function \code{teleport} with some parameter.
+Modification logic behind \code{teleport()} assumes that at each step
+of Markov chain (described by column-stochastic matrix) the decision is made
+whether to change state according to stochastic matrix or to 'teleport' to
+any state with equal probability. Probability of 'teleport' is
+\code{teleport_prob}. This modification is useful because it ensures
+irreducibility of stochastic matrix (with \code{teleport_prob} in (0; 1)).
+\strong{Note} that in order to obtain modifier one should call function
+\code{teleport()} with some parameter.
 
-\code{vote_equal()} and \code{vote_self()} modify rows with elements only equal to 0.
-The former fills those rows with \code{1/ncol(stoch)} and the latter changes only
-the respective diagonal element to 1. This is equivalent to jump to any state
+\code{vote_equal()} and \code{vote_self()} modify columns with elements only equal to
+0. The former fills them with \code{1/nrow(stoch)} and the latter changes only the
+respective diagonal element to 1. This is equivalent to jump to any state
 with equal probability and to stay in the current state respectively.
 }
 \examples{
-input_stoch <- matrix(c(  0,   0,
-                        0.3, 0.7),
+input_stoch <- matrix(c(0, 0.3,
+                        0, 0.7),
                       ncol = 2, byrow = TRUE)
 teleport(0.15)(input_stoch)
+
 vote_equal(input_stoch)
+
 vote_self(input_stoch)
 
 }

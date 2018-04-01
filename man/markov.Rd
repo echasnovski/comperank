@@ -25,8 +25,8 @@ rank_markov(cr_data, ..., fill = list(), stoch_modify = teleport(0.15),
 single value to use instead of NA for missing pairs (see
 \link[comperes:h2h_long]{h2h_long()}).}
 
-\item{stoch_modify}{A single function to modify stochastic matrix or a list
-of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).}
+\item{stoch_modify}{A single function to modify column-stochastic matrix or a
+list of them (see \link[=stoch-modifiers]{Stochastic matrix modifiers}).}
 
 \item{weights}{Weights for different stochastic matrices.}
 
@@ -56,29 +56,31 @@ using Markov method.
 Markov ratings are based on players 'voting' for other players being
 better. Algorithm is as follows:
 \enumerate{
-\item 'Voting' is done with \link[=h2h_long]{Head-to-Head} values supplied in \code{...}:
-the more Head-to-Head value the more votes gets player2 from player1. Take
-special care of Head-to-Head values for self plays (when player1 equals
-player2). \strong{Note} that Head-to-Head values should be non-negative. Use
-\code{force_nonneg_h2h = TRUE} to force that by subtracting minimum Head-to-Head
-value (in case some Head-to-Head value is strictly negative).
+\item 'Voting' is done with Head-to-Head values supplied in \code{...} (see
+\link[comperes:h2h_mat]{h2h_mat()} for technical details and section \strong{Design
+of Head-to-Head values} for design details). Take special care of
+Head-to-Head values for self plays (when player1 equals player2). \strong{Note}
+that Head-to-Head values should be non-negative. Use \code{force_nonneg_h2h = TRUE} to force that by subtracting minimum Head-to-Head value (in case some
+Head-to-Head value is strictly negative).
 \item Head-to-Head values are transformed into matrix which is normalized to be
-stochastic (sum of rows should be equal to 1) Markov matrix \emph{S}. \strong{Note}
-that all missing values are converted into 0. To specify other value use
-\code{fill} argument.
+column-stochastic (sum of every column should be equal to 1) Markov matrix
+\emph{S}. \strong{Note} that all missing values are converted into 0. To specify other
+value use \code{fill} argument.
 \item \emph{S} is modified with \code{stoch_modify} to deal with possible problems behind
 \emph{S}, such as reducibility and rows with all 0.
 \item Stationary vector is computed based on \emph{S} as probability transition
-matrix of Markov chain process. The result is declared as Markov ratings.
+matrix of Markov chain process (transition probabilities from state \strong{i} are
+elements from column \strong{i}). The result is declared as Markov ratings.
 }
 
 Considering common values and structure of stochastic matrices one can
 naturally combine different 'votings' in one stochastic matrix:
 \enumerate{
-\item Long format of Head-to-Head values is computed using \code{...} (which in this
-case should be several expressions for Head-to-Head functions).
-\item Each set of Head-to-Head values are transformed into matrix which is
-normalized to stochastic.
+\item \link[comperes:h2h_long]{Long format} of Head-to-Head values is computed
+using \code{...} (which in this case should be several expressions for
+Head-to-Head functions).
+\item Each set of Head-to-Head values is transformed into matrix which is
+normalized to column-stochastic.
 \item Each stochastic matrix is modified with respective modifier which is
 stored in \code{stoch_modify} (which can be a list of functions).
 \item The resulting stochastic matrix is computed as weighted average of
@@ -95,6 +97,24 @@ elements and then is normalized to sum to 1.
 Ratings are computed based only on games between players of interest (see
 Players).
 }
+\section{Design of Head-to-Head values}{
+
+
+Head-to-Head values in these functions are assumed to follow the property
+which can be \emph{equivalently} described in two ways:
+\itemize{
+\item In terms of \link[comperes:h2h_mat]{matrix format}: \strong{the more Head-to-Head
+value in row \emph{i} and column \emph{j} the better player from row \emph{i} performed than
+player from column \emph{j}}.
+\item In terms of \link[comperes:h2h_long]{long format}: \strong{the more Head-to-Head
+value the better player1 performed than player2}.
+}
+
+This design is chosen because in most competitions the goal is to score
+\strong{more points} and not less. Also it allows for more smooth use of
+\link[comperes:h2h_funs]{h2h_funs} from \code{comperes} package.
+}
+
 \section{Players}{
 
 
@@ -108,20 +128,20 @@ players.
 \examples{
 rate_markov(
   cr_data = ncaa2005,
-  # player1 "votes" for player2 if player2 won
-  comperes::num_wins(score2, score1, half_for_draw = FALSE),
+  # player2 "votes" for player1 if player1 won
+  comperes::num_wins(score1, score2, half_for_draw = FALSE),
   stoch_modify = vote_equal
 )
 
 rank_markov(
   cr_data = ncaa2005,
-  comperes::num_wins(score2, score1, half_for_draw = FALSE),
+  comperes::num_wins(score1, score2, half_for_draw = FALSE),
   stoch_modify = vote_equal
 )
 
 rank_markov(
   cr_data = ncaa2005,
-  comperes::num_wins(score2, score1, half_for_draw = FALSE),
+  comperes::num_wins(score1, score2, half_for_draw = FALSE),
   stoch_modify = vote_equal,
   keep_rating = TRUE
 )
@@ -130,10 +150,10 @@ rank_markov(
 # use inappropriate `fill` which misrepresents reality
 rate_markov(
   cr_data = ncaa2005[-(1:2), ],
-  win = num_wins(score2, score1, half_for_draw = FALSE),
-  # player1 "votes" for player2 by the amount player2 scored more
-  # in direct confrontations
-  score_diff = max(mean(score2 - score1), 0),
+  win = comperes::num_wins(score1, score2, half_for_draw = FALSE),
+  # player2 "votes" for player1 proportionally to the amount player1 scored
+  # more in direct confrontations
+  score_diff = max(mean(score1 - score2), 0),
   fill = list(win = 0.5, score_diff = 10),
   stoch_modify = list(vote_equal, teleport(0.15)),
   weights = c(0.8, 0.2)
