@@ -20,15 +20,12 @@
 #' variable number of players. Its algorithm is as follows:
 #'
 #' 1. Compute Head-to-Head matrix of competition results based on Head-to-Head
-#' expression supplied in `...` (see [h2h_mat()][comperes::h2h_mat()]).
-#' Head-to-Head values are computed based only on the games between players of
-#' interest (see Players). Ensure that there are no `NA`s by using `fill`
-#' argument. If `force_nonneg_h2h` is `TRUE` then the minimum value is
-#' subtracted (in case some Head-to-Head value is strictly negative). __Note__
-#' that Keener method is designed for Head-to-Head matrix with the following
-#' property: the more value in row __i__ and column __j__ the better player from
-#' row __i__ performed than player from column __j__. Supply Head-to-Head
-#' expression appropriately.
+#' expression supplied in `...` (see [h2h_mat()][comperes::h2h_mat()] for
+#' technical details and section __Design of Head-to-Head values__ for design
+#' details). Head-to-Head values are computed based only on the games between
+#' players of interest (see Players). Ensure that there are no `NA`s by using
+#' `fill` argument. If `force_nonneg_h2h` is `TRUE` then the minimum value is
+#' subtracted (in case some Head-to-Head value is strictly negative).
 #'
 #' 1. Update raw Head-to-Head values (denoted as S) with the pair-normalization:
 #' a_{ij} = (S_ij + 1) / (S_ij + S_ji + 2). This step should make comparing
@@ -61,6 +58,20 @@
 #' If using `normalize_keener()` in normalization step, ensure to analyze
 #' players which actually played games (as division by a number of played games
 #' is made). If some player didn't play any game, en error is thrown.
+#'
+#' @section Design of Head-to-Head values:
+#'
+#' Head-to-Head values in these functions are assumed to follow the property
+#' which can be _equivalently_ described in two ways:
+#' - In terms of [matrix format][comperes::h2h_mat()]: **the more Head-to-Head
+#' value in row _i_ and column _j_ the better player from row _i_ performed than
+#' player from column _j_**.
+#' - In terms of [long format][comperes::h2h_long()]: **the more Head-to-Head
+#' value the better player1 performed than player2**.
+#'
+#' This design is chosen because in most competitions the goal is to score
+#' __more points__ and not less. Also it allows for more smooth use of
+#' [h2h_funs][comperes::h2h_funs] from `comperes` package.
 #'
 #' @inheritSection massey Players
 #'

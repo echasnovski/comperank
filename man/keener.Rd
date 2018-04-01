@@ -71,15 +71,12 @@ competition results. Therefore it can be used for competitions with
 variable number of players. Its algorithm is as follows:
 \enumerate{
 \item Compute Head-to-Head matrix of competition results based on Head-to-Head
-expression supplied in \code{...} (see \link[comperes:h2h_mat]{h2h_mat()}).
-Head-to-Head values are computed based only on the games between players of
-interest (see Players). Ensure that there are no \code{NA}s by using \code{fill}
-argument. If \code{force_nonneg_h2h} is \code{TRUE} then the minimum value is
-subtracted (in case some Head-to-Head value is strictly negative). \strong{Note}
-that Keener method is designed for Head-to-Head matrix with the following
-property: the more value in row \strong{i} and column \strong{j} the better player from
-row \strong{i} performed than player from column \strong{j}. Supply Head-to-Head
-expression appropriately.
+expression supplied in \code{...} (see \link[comperes:h2h_mat]{h2h_mat()} for
+technical details and section \strong{Design of Head-to-Head values} for design
+details). Head-to-Head values are computed based only on the games between
+players of interest (see Players). Ensure that there are no \code{NA}s by using
+\code{fill} argument. If \code{force_nonneg_h2h} is \code{TRUE} then the minimum value is
+subtracted (in case some Head-to-Head value is strictly negative).
 \item Update raw Head-to-Head values (denoted as S) with the pair-normalization:
 a_{ij} = (S_ij + 1) / (S_ij + S_ji + 2). This step should make comparing
 different players more reasonable.
@@ -109,6 +106,24 @@ If using \code{normalize_keener()} in normalization step, ensure to analyze
 players which actually played games (as division by a number of played games
 is made). If some player didn't play any game, en error is thrown.
 }
+\section{Design of Head-to-Head values}{
+
+
+Head-to-Head values in these functions are assumed to follow the property
+which can be \emph{equivalently} described in two ways:
+\itemize{
+\item In terms of \link[comperes:h2h_mat]{matrix format}: \strong{the more Head-to-Head
+value in row \emph{i} and column \emph{j} the better player from row \emph{i} performed than
+player from column \emph{j}}.
+\item In terms of \link[comperes:h2h_long]{long format}: \strong{the more Head-to-Head
+value the better player1 performed than player2}.
+}
+
+This design is chosen because in most competitions the goal is to score
+\strong{more points} and not less. Also it allows for more smooth use of
+\link[comperes:h2h_funs]{h2h_funs} from \code{comperes} package.
+}
+
 \section{Players}{
 
 
