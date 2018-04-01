@@ -9,7 +9,7 @@ cr_data <- ncaa2005
 test_that("rate_od works", {
   output_1 <- rate_od(
     cr_data = cr_data,
-    ifelse(player1[1] == player2[1], 0, mean(score2)),
+    ifelse(player1[1] == player2[1], 0, mean(score1)),
     eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
   output_1$rating_off <- round(output_1$rating_off, 3)
@@ -27,7 +27,7 @@ test_that("rate_od works", {
 
   output_2 <- rate_od(
     cr_data = cr_data,
-    mean(score2),
+    mean(score1),
     eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
   output_2$rating_off <- round(output_2$rating_off, 3)
@@ -51,7 +51,7 @@ test_that("rate_od handles factor `player`", {
 
   output <- rate_od(
     cr_data = input,
-    ifelse(player1[1] == player2[1], 0, mean(score2)),
+    ifelse(player1[1] == player2[1], 0, mean(score1)),
     eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
   output$rating_off <- round(output$rating_off, 3)
@@ -74,7 +74,7 @@ test_that("rate_od handles numeric `player`", {
 
   output <- rate_od(
     cr_data = input,
-    ifelse(player1[1] == player2[1], 0, mean(score2)),
+    ifelse(player1[1] == player2[1], 0, mean(score1)),
     eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
   output$rating_off <- round(output$rating_off, 3)
@@ -96,7 +96,7 @@ test_that("rate_od handles numeric `player`", {
 test_that("rank_od works", {
   output_1 <- rank_od(
     cr_data = cr_data,
-    ifelse(player1[1] == player2[1], 0, mean(score2)),
+    ifelse(player1[1] == player2[1], 0, mean(score1)),
     eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
 
@@ -130,7 +130,7 @@ test_that("rank_od handles factor `player`", {
 
   output <- rank_od(
     cr_data = input,
-    ifelse(player1[1] == player2[1], 0, mean(score2)),
+    ifelse(player1[1] == player2[1], 0, mean(score1)),
     eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
 
@@ -150,7 +150,7 @@ test_that("rank_od handles numeric `player`", {
 
   output <- rank_od(
     cr_data = input,
-    ifelse(player1[1] == player2[1], 0, mean(score2)),
+    ifelse(player1[1] == player2[1], 0, mean(score1)),
     eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
 
@@ -168,7 +168,7 @@ test_that("rank_od handles numeric `player`", {
 # od_def_iteration --------------------------------------------------------
 test_that("od_def_iteration works", {
   input_vec <- 1:5
-  input_mat <- matrix(1:25, nrow = 5)
+  input_mat <- matrix(1:25, nrow = 5, byrow = TRUE)
 
   output_ref <- matrix(c(1.7828088106533, 2.12486520906126, 2.46692160746923,
                          2.80897800587719, 3.15103440428515),

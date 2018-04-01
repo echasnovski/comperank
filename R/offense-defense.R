@@ -15,13 +15,12 @@
 #'
 #' @details Offense-Defense (OD) rating is designed for games in which player's
 #' goal is to make higher score than opponent(s). To describe competition
-#' results Head-to-Head matrix is used (which is computed with `...` via
-#' [h2h_mat()][comperes::h2h_mat()]). Element in row __i__ and column __j__
-#' should represent the score player from column __j__ makes in games with
-#' player from row __i__. For pairs of players without common games Head-to-Head
-#' value is computed to 0 (not `NA`). __Note__ that values should be
-#' non-negative and non-NA. This can be ensured with setting `force_nonneg_h2h`
-#' to `TRUE`.
+#' results Head-to-Head matrix is computed using `...` (see
+#' [h2h_mat()][comperes::h2h_mat()] for technical details and section __Design
+#' of Head-to-Head values__ for design details). For pairs of players without
+#' common games Head-to-Head value is computed to 0 (not `NA`). __Note__ that
+#' values should be non-negative and non-NA. This can be ensured with setting
+#' `force_nonneg_h2h` to `TRUE`.
 #'
 #' For player which can make _high_ score (even against the player with strong
 #' defense) it is said that he/she has __strong offense__ which results into
@@ -43,7 +42,7 @@
 #' smallest non-zero Head-to-Head value multiplied by `eps`.
 #'
 #' 1. Perform iterative fixed point search with the following recurrent formula:
-#' \code{def_{k+1} = A \%*\% inv(t(A) \%*\% inv(def_{k}))} where `def_{k}`
+#' \code{def_{k+1} = t(A) \%*\% inv(A \%*\% inv(def_{k}))} where `def_{k}`
 #' is a vector of defensive ratings at iteration `k`, `A` is a perturbed
 #' Head-to-Head matrix, `inv(x) = 1 / x`. Iterative search stops if at least one
 #' of two conditions is met:
@@ -51,16 +50,18 @@
 #'     - Number of iterations exceeds maximum number of iterations
 #'     `max_iterations`.
 #'
-#' 1. Compute offensive ratings: \code{off = t(A) \%*\% inv(def)}.
+#' 1. Compute offensive ratings: \code{off = A \%*\% inv(def)}.
 #'
-#' 1. Compute OD ratings: `OD = off / def`.
+#' 1. Compute OD ratings: `od = off / def`.
 #'
 #' Ratings are computed based only on games between players of interest (see
 #' Players). However, be careful with OD ratings for players with no games:
-#' their will have weak offense (because they "scored" 0 in all games) but
+#' they will have weak offense (because they "scored" 0 in all games) but
 #' strong defense (because all their opponents also "scored" 0 in all common
-#' games). Therefor accounting for missing players might be not a very good
+#' games). Therefore accounting for missing players might be not a very good
 #' idea.
+#'
+#' @inheritSection keener Design of Head-to-Head values
 #'
 #' @inheritSection massey Players
 #'
@@ -86,14 +87,14 @@
 #' 30(1):261–275, 2008 (For stopping rule of iterative algorithm).
 #'
 #' @examples
-#' rate_od(ncaa2005, mean(score2))
+#' rate_od(ncaa2005, mean(score1))
 #'
-#' rank_od(ncaa2005, mean(score2))
+#' rank_od(ncaa2005, mean(score1))
 #'
-#' rank_od(ncaa2005, mean(score2), keep_rating = TRUE)
+#' rank_od(ncaa2005, mean(score1), keep_rating = TRUE)
 #'
 #' # Account for self play
-#' rate_od(ncaa2005, ifelse(player1[1] == player2[1], 0, mean(score2)))
+#' rate_od(ncaa2005, ifelse(player1[1] == player2[1], 0, mean(score1)))
 #'
 #' @name offense-defense
 NULL
@@ -124,7 +125,7 @@ rate_od <- function(cr_data, ..., force_nonneg_h2h = TRUE,
   }
 
   def_ratings <- cur
-  off_ratings <- t(mat) %*% (1 / def_ratings)
+  off_ratings <- mat %*% (1 / def_ratings)
   od_ratings <- off_ratings / def_ratings
 
   enframe_vec(
@@ -164,7 +165,7 @@ rank_od <- function(cr_data, ..., force_nonneg_h2h = TRUE,
 }
 
 od_def_iteration <- function(mat, vec) {
-  mat %*% (1 / (t(mat) %*% (1 / vec)))
+  t(mat) %*% (1 / (mat %*% (1 / vec)))
 }
 
 od_stop_stat <- function(prev, cur) {

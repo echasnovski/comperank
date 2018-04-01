@@ -60,13 +60,12 @@ using Offense-Defense method.
 \details{
 Offense-Defense (OD) rating is designed for games in which player's
 goal is to make higher score than opponent(s). To describe competition
-results Head-to-Head matrix is used (which is computed with \code{...} via
-\link[comperes:h2h_mat]{h2h_mat()}). Element in row \strong{i} and column \strong{j}
-should represent the score player from column \strong{j} makes in games with
-player from row \strong{i}. For pairs of players without common games Head-to-Head
-value is computed to 0 (not \code{NA}). \strong{Note} that values should be
-non-negative and non-NA. This can be ensured with setting \code{force_nonneg_h2h}
-to \code{TRUE}.
+results Head-to-Head matrix is computed using \code{...} (see
+\link[comperes:h2h_mat]{h2h_mat()} for technical details and section \strong{Design
+of Head-to-Head values} for design details). For pairs of players without
+common games Head-to-Head value is computed to 0 (not \code{NA}). \strong{Note} that
+values should be non-negative and non-NA. This can be ensured with setting
+\code{force_nonneg_h2h} to \code{TRUE}.
 
 For player which can make \emph{high} score (even against the player with strong
 defense) it is said that he/she has \strong{strong offense} which results into
@@ -86,7 +85,7 @@ iterative algorithm in the next step. If all values are strictly positive
 then this step is omitted. In other case small value is computed as the
 smallest non-zero Head-to-Head value multiplied by \code{eps}.
 \item Perform iterative fixed point search with the following recurrent formula:
-\code{def_{k+1} = A \%*\% inv(t(A) \%*\% inv(def_{k}))} where \code{def_{k}}
+\code{def_{k+1} = t(A) \%*\% inv(A \%*\% inv(def_{k}))} where \code{def_{k}}
 is a vector of defensive ratings at iteration \code{k}, \code{A} is a perturbed
 Head-to-Head matrix, \code{inv(x) = 1 / x}. Iterative search stops if at least one
 of two conditions is met:
@@ -95,17 +94,35 @@ of two conditions is met:
 \item Number of iterations exceeds maximum number of iterations
 \code{max_iterations}.
 }
-\item Compute offensive ratings: \code{off = t(A) \%*\% inv(def)}.
-\item Compute OD ratings: \code{OD = off / def}.
+\item Compute offensive ratings: \code{off = A \%*\% inv(def)}.
+\item Compute OD ratings: \code{od = off / def}.
 }
 
 Ratings are computed based only on games between players of interest (see
 Players). However, be careful with OD ratings for players with no games:
-their will have weak offense (because they "scored" 0 in all games) but
+they will have weak offense (because they "scored" 0 in all games) but
 strong defense (because all their opponents also "scored" 0 in all common
-games). Therefor accounting for missing players might be not a very good
+games). Therefore accounting for missing players might be not a very good
 idea.
 }
+\section{Design of Head-to-Head values}{
+
+
+Head-to-Head values in these functions are assumed to follow the property
+which can be \emph{equivalently} described in two ways:
+\itemize{
+\item In terms of \link[comperes:h2h_mat]{matrix format}: \strong{the more Head-to-Head
+value in row \emph{i} and column \emph{j} the better player from row \emph{i} performed than
+player from column \emph{j}}.
+\item In terms of \link[comperes:h2h_long]{long format}: \strong{the more Head-to-Head
+value the better player1 performed than player2}.
+}
+
+This design is chosen because in most competitions the goal is to score
+\strong{more points} and not less. Also it allows for more smooth use of
+\link[comperes:h2h_funs]{h2h_funs} from \code{comperes} package.
+}
+
 \section{Players}{
 
 
@@ -117,14 +134,14 @@ players.
 }
 
 \examples{
-rate_od(ncaa2005, mean(score2))
+rate_od(ncaa2005, mean(score1))
 
-rank_od(ncaa2005, mean(score2))
+rank_od(ncaa2005, mean(score1))
 
-rank_od(ncaa2005, mean(score2), keep_rating = TRUE)
+rank_od(ncaa2005, mean(score1), keep_rating = TRUE)
 
 # Account for self play
-rate_od(ncaa2005, ifelse(player1[1] == player2[1], 0, mean(score2)))
+rate_od(ncaa2005, ifelse(player1[1] == player2[1], 0, mean(score1)))
 
 }
 \references{
