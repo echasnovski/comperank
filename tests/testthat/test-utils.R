@@ -98,7 +98,7 @@ test_that("assert_used_objects works", {
 # to_rating_tbl -----------------------------------------------------------
 test_that("to_rating_tbl works", {
   input <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)
-  output <- dplyr::tibble(
+  output <- tibble::tibble(
     player = paste0("pl", 1:3),
     rating = 10^(0:2)
   )
@@ -109,7 +109,7 @@ test_that("to_rating_tbl works", {
 
 # to_rating_vec -----------------------------------------------------------
 test_that("to_rating_vec works", {
-  input <- dplyr::tibble(
+  input <- tibble::tibble(
     player = paste0("pl", 1:3),
     rating = 10^(0:2),
     stringsAsFactors = FALSE
@@ -142,27 +142,27 @@ test_that("enframe_vec works", {
 
   expect_identical(
     enframe_vec(input_1, name = "player", value = "rating"),
-    dplyr::tibble(player = c("a", "c", "b"), rating = c(1L, 2L, 3L))
+    tibble::tibble(player = c("a", "c", "b"), rating = c(1L, 2L, 3L))
   )
 
   input_2 <- c("1" = "a", "3" = "c", "2" = NA)
 
   expect_identical(
     enframe_vec(input_2, name = "player", value = "rating"),
-    dplyr::tibble(player = c("1", "3", "2"), rating = c("a", "c", NA))
+    tibble::tibble(player = c("1", "3", "2"), rating = c("a", "c", NA))
   )
   expect_identical(
     enframe_vec(input_2, ref = 1:3, name = "player", value = "rating"),
-    dplyr::tibble(player = 1:3, rating = c("a", NA, "c"))
+    tibble::tibble(player = 1:3, rating = c("a", NA, "c"))
   )
   expect_identical(
     enframe_vec(input_2, ref = c(1L, 3L), name = "player", value = "rating"),
-    dplyr::tibble(player = c(1L, 3L), rating = c("a", "c"))
+    tibble::tibble(player = c(1L, 3L), rating = c("a", "c"))
   )
   expect_identical(
     enframe_vec(input_2, ref = factor(1:2, levels = 1:4),
                 name = "player", value = "rating"),
-    dplyr::tibble(player = factor(1:2, levels = 1:4),
+    tibble::tibble(player = factor(1:2, levels = 1:4),
                   rating = c("a", NA))
   )
 })

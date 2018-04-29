@@ -21,7 +21,7 @@ test_that("rate_markov simply works", {
   )
   output_1$rating_markov <- round(output_1$rating_markov, 3)
 
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     rating_markov = c(0.088, 0.438, 0.146, 0.109, 0.219)
   )
@@ -58,7 +58,7 @@ test_that("rate_markov handles factor `player`", {
   )
   output$rating_markov <- round(output$rating_markov, 3)
 
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = factor(fac_levs, levels = fac_levs),
     rating_markov = c(0.081, 0.403, 0.134, 0.101, 0.081, 0.201)
   )
@@ -79,7 +79,7 @@ test_that("rate_markov handles numeric `player`", {
   )
   output$rating_markov <- round(output$rating_markov, 3)
 
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     rating_markov = c(0.088, 0.438, 0.146, 0.109, 0.219)
   )
@@ -97,7 +97,7 @@ test_that("rate_markov handles multiple Head-to-Head values", {
   )
   output_1$rating_markov <- round(output_1$rating_markov, 3)
 
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     rating_markov = c(0.088, 0.44, 0.11, 0.11, 0.252)
   )
@@ -113,7 +113,7 @@ test_that("rate_markov handles multiple Head-to-Head values", {
   )
   output_2$rating_markov <- round(output_2$rating_markov, 3)
 
-  output_ref_2 <- dplyr::tibble(
+  output_ref_2 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     rating_markov = c(0.09, 0.432, 0.139, 0.112, 0.228)
   )
@@ -130,7 +130,7 @@ test_that("rate_markov uses argument `fill`", {
   )
   output$rating_markov <- round(output$rating_markov, 3)
 
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     rating_markov = c(0.305, 0.308, 0.103, 0.094, 0.191)
   )
@@ -186,7 +186,7 @@ test_that("rank_markov works", {
     weights = 1,
     force_nonneg_h2h = FALSE
   )
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     ranking_markov = c(5, 1, 3, 4, 2)
   )
@@ -206,7 +206,7 @@ test_that("rank_markov handles factor `player`", {
     fill = list(num_wins = 0), stoch_modify = vote_equal,
     weights = 1, force_nonneg_h2h = FALSE
   )
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = factor(fac_levs, levels = fac_levs),
     ranking_markov = c(5.5, 1, 3, 4, 5.5, 2)
   )
@@ -226,7 +226,7 @@ test_that("rank_markov handles numeric `player`", {
     weights = 1, force_nonneg_h2h = FALSE
   )
 
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     ranking_markov = c(5, 1, 3, 4, 2)
   )
@@ -244,7 +244,7 @@ test_that("rank_markov uses argument `fill`", {
     weights = c(0.8, 0.2),
     force_nonneg_h2h = FALSE
   )
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     ranking_markov = c(2, 1, 4, 5, 3)
   )

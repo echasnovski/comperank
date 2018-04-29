@@ -3,7 +3,7 @@ context("massey")
 
 # Input and output data ---------------------------------------------------
 cr_data <- ncaa2005
-output_base <- dplyr::tibble(
+output_base <- tibble::tibble(
   player = c("Duke", "Miami", "UNC", "UVA", "VT"),
   rating_massey = c(-24.8, 18.2, -8, -3.4, 18)
 )
@@ -73,7 +73,7 @@ test_that("rate_massey correctly works with not pair games", {
     extraCol = -(1:16)
   )
   output <- rate_massey(input_nonpair)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     rating_massey = c(-1.87272727272727, 1.38181818181818, -1.45454545454545,
                       0.436363636363636, 1.50909090909091)
@@ -86,7 +86,7 @@ test_that("rate_massey correctly works with not pair games", {
 # rank_massey -------------------------------------------------------------
 test_that("rank_massey works", {
   output_1 <- rank_massey(cr_data)
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = output_base$player,
     ranking_massey = c(5, 1, 4, 3, 2)
   )

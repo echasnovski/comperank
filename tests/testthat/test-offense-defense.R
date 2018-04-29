@@ -16,7 +16,7 @@ test_that("rate_od works", {
   output_1$rating_def <- round(output_1$rating_def, 3)
   output_1$rating_od <- round(output_1$rating_od, 3)
 
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     rating_off = c(34.012, 151.563, 48.679,  82.05, 114.863),
     rating_def = c( 1.691,   0.803,  1.164,  0.967,   0.411),
@@ -34,7 +34,7 @@ test_that("rate_od works", {
   output_2$rating_def <- round(output_2$rating_def, 3)
   output_2$rating_od <- round(output_2$rating_od, 3)
 
-  output_ref_2 <- dplyr::tibble(
+  output_ref_2 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     rating_off = c( 39.67, 181.033, 58.113,  94.951, 182.859),
     rating_def = c( 1.567,    0.86,  1.149,   0.914,   0.532),
@@ -58,7 +58,7 @@ test_that("rate_od handles factor `player`", {
   output$rating_def <- round(output$rating_def, 3)
   output$rating_od <- round(output$rating_od, 3)
 
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = factor(fac_levs, levels = fac_levs),
     rating_off = c( 3.96, 0.127, 11.288),
     rating_def = c(4.659, 0.057,  1.826),
@@ -81,7 +81,7 @@ test_that("rate_od handles numeric `player`", {
   output$rating_def <- round(output$rating_def, 3)
   output$rating_od <- round(output$rating_od, 3)
 
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     rating_off = c(34.012, 151.563, 48.679,  82.05, 114.863),
     rating_def = c( 1.691,   0.803,  1.164,  0.967,   0.411),
@@ -100,7 +100,7 @@ test_that("rank_od works", {
     eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
 
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     ranking_off = c(5, 1, 4, 3, 2),
     ranking_def = c(5, 2, 4, 3, 1),
@@ -134,7 +134,7 @@ test_that("rank_od handles factor `player`", {
     eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
 
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = factor(fac_levs, levels = fac_levs),
     ranking_off = c(2, 3, 1),
     ranking_def = c(3, 1, 2),
@@ -154,7 +154,7 @@ test_that("rank_od handles numeric `player`", {
     eps = 1e-3, tol = 1e-4, max_iterations = 100
   )
 
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     ranking_off = c(5, 1, 4, 3, 2),
     ranking_def = c(5, 2, 4, 3, 1),

@@ -123,7 +123,7 @@ rate_iterative <- function(cr_data, rate_fun, initial_ratings = 0) {
   # Add initial ratings to result in case player didn't play any game
   used_players <- unique_levels(cr$player)
   ref_players <- used_players[!is.na(used_players)]
-  init_ratings <- tibble(
+  init_ratings <- tibble::tibble(
     player = ref_players,
     rating = get_cr_initial_ratings(ref_players, initial_ratings)
   )
@@ -134,7 +134,7 @@ rate_iterative <- function(cr_data, rate_fun, initial_ratings = 0) {
     slice(n()) %>%
     ungroup()
 
-  tibble(player = ref_players) %>%
+  tibble::tibble(player = ref_players) %>%
     left_join(y = res %>% rename(rating_iterative = !!rlang::sym("rating")),
               by = "player")
 }

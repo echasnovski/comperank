@@ -10,7 +10,7 @@ cr_data <- ncaa2005
 # rate_keener -------------------------------------------------------------
 test_that("rate_keener works", {
   output_1 <- rate_keener(cr_data, !!h2h_funs[["num"]])
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     rating_keener = rep(0.2, 5)
   )
@@ -18,7 +18,7 @@ test_that("rate_keener works", {
   expect_equal_tbls(output_1, output_ref_1)
 
   output_2 <- rate_keener(cr_data, !!h2h_funs[["sum_score"]])
-  output_ref_2 <- dplyr::tibble(
+  output_ref_2 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     rating_keener = c(0.0670593277911044, 0.350554576300443, 0.158498338171409,
                       0.160517490640876, 0.263370267096167)
@@ -32,7 +32,7 @@ test_that("rate_keener works with factor `player`", {
   input$player <- factor(input$player, levels = c("Duke", "UNC", "Extra"))
   output <- rate_keener(input, !!h2h_funs[["sum_score"]], fill = 0,
                         normalize_fun = NULL)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = factor(c("Duke", "UNC", "Extra"),
                     levels = c("Duke", "UNC", "Extra")),
     rating_keener = c(0.304401432703426, 0.360677932461637, 0.334920634834937)
@@ -45,7 +45,7 @@ test_that("rate_keener works with numeric `player`", {
   input <- cr_data
   input$player <- as.integer(as.factor(input$player))
   output <- rate_keener(input, !!h2h_funs[["sum_score"]])
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     rating_keener = c(0.0670593277911044, 0.350554576300443, 0.158498338171409,
                       0.160517490640876, 0.263370267096167)
@@ -56,7 +56,7 @@ test_that("rate_keener works with numeric `player`", {
 
 test_that("rate_keener handles `NULL` arguments", {
   output_1 <- rate_keener(cr_data, !!h2h_funs[["sum_score"]], skew_fun = NULL)
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     rating_keener = c(0.0898263460024877, 0.294757692678364, 0.164946133479184,
                       0.189136529764359, 0.261333298075606)
@@ -66,7 +66,7 @@ test_that("rate_keener handles `NULL` arguments", {
 
   output_2 <- rate_keener(cr_data, !!h2h_funs[["sum_score"]],
                           normalize_fun = NULL)
-  output_ref_2 <- dplyr::tibble(
+  output_ref_2 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     rating_keener = c(0.0670593277911044, 0.350554576300443, 0.158498338171409,
                       0.160517490640876, 0.263370267096167)
@@ -79,7 +79,7 @@ test_that("rate_keener handles `NULL` arguments", {
 # rank_keener -------------------------------------------------------------
 test_that("rank_keener works", {
   output_1 <- rank_keener(cr_data, !!h2h_funs[["sum_score"]])
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = c("Duke", "Miami", "UNC", "UVA", "VT"),
     ranking_keener = c(5, 1, 4, 3, 2)
   )

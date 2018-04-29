@@ -30,7 +30,7 @@ test_that("rate_iterative works", {
   output_1 <- rate_iterative(
     cr_data = cr_data, rate_fun = test_rate_fun, initial_ratings = 0
   )
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = 1:5, rating_iterative = c(0, 2, 4, -2, -4)
   )
 
@@ -41,7 +41,7 @@ test_that("rate_iterative works", {
   output_2 <- rate_iterative(
     cr_data = input_2, rate_fun = test_rate_fun, initial_ratings = 0
   )
-  output_ref_2 <- dplyr::tibble(
+  output_ref_2 <- tibble::tibble(
     player = 1:5, rating_iterative = c(0, 2, 4, -3, -2)
   )
 
@@ -52,7 +52,7 @@ test_that("rate_iterative handles factor `player`", {
   input <- cr_data
   input$player <- factor(input$player, levels = c(1:3, 6, 4:5, 0))
   output <- rate_iterative(input, test_rate_fun, initial_ratings = 0)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = factor(c(1:3, 6, 4:5, 0), levels = c(1:3, 6, 4:5, 0)),
     rating_iterative = c(0, 2, 4, 0, -2, -4, 0)
   )
@@ -64,7 +64,7 @@ test_that("rate_iterative handles data frame `initial_ratings`", {
   output <- rate_iterative(
     cr_data, test_rate_fun, initial_ratings = init_rat_df
   )
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     rating_iterative = c(4, 3, 6, 1, -4)
   )
@@ -80,7 +80,7 @@ test_that("rank_iterative works", {
     cr_data = cr_data, rate_fun = test_rate_fun,
     initial_ratings = init_ratings
   )
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = 1:5, ranking_iterative = c(2.5, 2.5, 1, 4, 5)
   )
 
@@ -102,7 +102,7 @@ test_that("rank_iterative handles factor `player`", {
   input <- cr_data
   input$player <- factor(input$player, levels = c(1:3, 6, 4:5, 0))
   output <- rank_iterative(input, test_rate_fun, initial_ratings = 0)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = factor(c(1:3, 6, 4:5, 0), levels = c(1:3, 6, 4:5, 0)),
     ranking_iterative = c(4, 2, 1, 4, 6, 7, 4)
   )
@@ -115,7 +115,7 @@ test_that("rank_iterative handles data frame `initial_ratings`", {
     cr_data, test_rate_fun, initial_ratings = init_rat_df,
     keep_rating = FALSE, type = "desc"
   )
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     ranking_iterative = c(2, 3, 1, 4, 5)
   )
@@ -304,7 +304,7 @@ test_that("get_cr_initial_ratings drops NA in 'players'", {
 # get_ratings_after -------------------------------------------------------
 test_that("get_ratings_after works", {
   output <- get_ratings_after(output_base)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = rep(1:5, 4),
     rating = c(-1, 1, 1, -1, -1, 0, 2, 0, -2,  0,
                -2, 4, 2, -4, -2, 0, 2, 4, -2, -4)

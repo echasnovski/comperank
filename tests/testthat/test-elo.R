@@ -4,7 +4,7 @@ context("elo")
 # Input data --------------------------------------------------------------
 cr_data <- ncaa2005
 player_names <- c("Duke", "Miami", "UNC", "UVA", "VT")
-init_rat_df <- dplyr::tibble(
+init_rat_df <- tibble::tibble(
   player = player_names,
   rating = (4:0) * 100
 )
@@ -13,7 +13,7 @@ init_rat_df <- dplyr::tibble(
 # rate_elo ----------------------------------------------------------------
 test_that("rate_elo works", {
   output <- rate_elo(cr_data, K = 30, ksi = 400, initial_ratings = 0)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = player_names,
     rating_elo = c(-56.2377413877926, 57.9315106719875, -1.25948933788439,
                    -29.2442777446668, 28.8099977983563)
@@ -28,7 +28,7 @@ test_that("rate_elo handles factor `player`", {
   input$player <- factor(input$player, levels = fac_levs)
 
   output <- rate_elo(input, K = 30, ksi = 400, initial_ratings = 0)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = factor(fac_levs, levels = fac_levs),
     rating_elo = c(-56.2377413877926, 57.9315106719875, -1.25948933788439,
                    -29.2442777446668, 28.8099977983563, 0)
@@ -41,7 +41,7 @@ test_that("rate_elo handles numeric `player`", {
   input <- cr_data
   input$player <- as.integer(factor(input$player))
   output <- rate_elo(input, K = 30, ksi = 400, initial_ratings = 0)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     rating_elo = c(-56.2377413877926, 57.9315106719875, -1.25948933788439,
                    -29.2442777446668, 28.8099977983563)
@@ -52,7 +52,7 @@ test_that("rate_elo handles numeric `player`", {
 
 test_that("rate_elo handles data frame `initial_ratings`", {
   output <- rate_elo(cr_data, K = 30, ksi = 400, initial_ratings = init_rat_df)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = player_names,
     rating_elo = c(307.975354314551, 341.44140763449, 199.493609575483,
                    88.7634054575253, 62.3262230179506)
@@ -65,7 +65,7 @@ test_that("rate_elo handles data frame `initial_ratings`", {
 # rank_elo ----------------------------------------------------------------
 test_that("rank_elo works", {
   output_1 <- rank_elo(cr_data)
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = player_names,
     ranking_elo = c(5, 1, 3, 4, 2)
   )
@@ -89,7 +89,7 @@ test_that("rank_elo handles factor `player`", {
   input$player <- factor(input$player, levels = fac_levs)
 
   output <- rank_elo(input, K = 30, ksi = 400, initial_ratings = 0)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = factor(fac_levs, levels = fac_levs),
     ranking_elo = c(6, 1, 4, 5, 2, 3)
   )
@@ -101,7 +101,7 @@ test_that("rank_elo handles numeric `player`", {
   input <- cr_data
   input$player <- as.integer(factor(input$player))
   output <- rank_elo(input, K = 30, ksi = 400, initial_ratings = 0)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     ranking_elo = c(5, 1, 3, 4, 2)
   )
@@ -111,7 +111,7 @@ test_that("rank_elo handles numeric `player`", {
 
 test_that("rank_elo handles data frame `initial_ratings`", {
   output <- rank_elo(cr_data, K = 30, ksi = 400, initial_ratings = init_rat_df)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = player_names,
     ranking_elo = c(2, 1, 3, 4, 5)
   )

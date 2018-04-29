@@ -3,7 +3,7 @@ context("colley")
 
 # Input and output data ---------------------------------------------------
 cr_data <- ncaa2005
-output_base <- dplyr::tibble(
+output_base <- tibble::tibble(
   player = c("Duke", "Miami", "UNC", "UVA", "VT"),
   rating_colley = c(0.214285714285714, 0.785714285714286, 0.5,
                     0.357142857142857, 0.642857142857143)
@@ -67,7 +67,7 @@ test_that("rate_colley correctly works with not pair games", {
     extraCol = -(1:16)
   )
   output <- rate_colley(input_nonpair)
-  output_ref <- dplyr::tibble(
+  output_ref <- tibble::tibble(
     player = 1:5,
     rating_colley = c(0.51123595505618, 0.48876404494382, 0.387640449438202,
                       0.5, 0.612359550561798)
@@ -80,7 +80,7 @@ test_that("rate_colley correctly works with not pair games", {
 # rank_colley -------------------------------------------------------------
 test_that("rank_colley works", {
   output_1 <- rank_colley(cr_data)
-  output_ref_1 <- dplyr::tibble(
+  output_ref_1 <- tibble::tibble(
     player = output_base$player,
     ranking_colley = c(5, 1, 3, 4, 2)
   )

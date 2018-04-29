@@ -115,7 +115,7 @@ NULL
 #' @rdname convert-rating
 #' @export
 to_rating_tbl <- function(rating_vec) {
-  tibble(
+  tibble::tibble(
     player = names(rating_vec),
     rating = rating_vec
   )
@@ -145,7 +145,7 @@ enframe_vec <- function(x, ref = NULL, name = "name", value = "value") {
   if (is.null(ref)) {
     res_tbl
   } else {
-    res <- tibble(ref = ref) %>%
+    res <- tibble::tibble(ref = ref) %>%
       mutate(ref_chr = as.character(ref)) %>%
       left_join(y = res_tbl, by = c(ref_chr = name)) %>%
       select(-.data$ref_chr)
