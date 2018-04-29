@@ -274,6 +274,8 @@ to_stoch_mat <- function(mat) {
 
 assert_square_mat <- function(mat) {
   if ((!is.matrix(mat)) || (nrow(mat) != ncol(mat))) {
-    stop("Input should be a square matrix.")
+    stop("Input should be a square matrix.", call. = FALSE)
   }
+
+  mat
 }
