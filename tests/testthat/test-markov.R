@@ -176,6 +176,10 @@ test_that("rate_markov throws errors", {
   )
 })
 
+test_that("rate_markov throws error on no Head-to-Head expression", {
+  expect_error(rate_markov(cr_data), "Head-to-Head")
+})
+
 
 # rank_markov -------------------------------------------------------------
 test_that("rank_markov works", {

@@ -91,6 +91,10 @@ test_that("rate_od handles numeric `player`", {
   expect_equal_tbls(output, output_ref)
 })
 
+test_that("rate_od throws error on no Head-to-Head expression", {
+  expect_error(rate_od(cr_data), "Head-to-Head")
+})
+
 
 # rank_od -----------------------------------------------------------------
 test_that("rank_od works", {

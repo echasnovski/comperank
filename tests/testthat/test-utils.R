@@ -103,6 +103,13 @@ test_that("assert_pairgames works", {
 })
 
 
+# assert_h2h_fun ----------------------------------------------------------
+test_that("assert_h2h_fun works", {
+  expect_silent(assert_h2h_fun(1))
+  expect_error(assert_h2h_fun(), "Head-to-Head")
+})
+
+
 # to_rating_tbl -----------------------------------------------------------
 test_that("to_rating_tbl works", {
   input <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)

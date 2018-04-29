@@ -103,6 +103,8 @@ NULL
 #' @export
 rate_od <- function(cr_data, ..., force_nonneg_h2h = TRUE,
                     eps = 1e-3, tol = 1e-4, max_iterations = 100) {
+  assert_h2h_fun(...)
+
   cr <- as_longcr(cr_data, repair = TRUE)
   mat <- cr %>%
     h2h_mat(..., fill = 0) %>%

@@ -116,6 +116,8 @@ rate_keener <- function(cr_data, ..., fill = 0,
                         skew_fun = skew_keener,
                         normalize_fun = normalize_keener,
                         eps = 0.001) {
+  assert_h2h_fun(...)
+
   cr <- as_longcr(cr_data, repair = TRUE)
   # Compute symmetrical Head-to-Head matrix
   mat <- cr %>%

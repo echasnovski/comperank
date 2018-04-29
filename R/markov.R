@@ -122,6 +122,8 @@ NULL
 rate_markov <- function(cr_data, ..., fill = list(),
                         stoch_modify = teleport(0.15), weights = 1,
                         force_nonneg_h2h = TRUE) {
+  assert_h2h_fun(...)
+
   cr <- as_longcr(cr_data, repair = TRUE)
   # Assert arguments
   if (!is.vector(weights, mode = "numeric")) {

@@ -75,6 +75,10 @@ test_that("rate_keener handles `NULL` arguments", {
   expect_equal_tbls(output_2, output_ref_2)
 })
 
+test_that("rate_keener throws error on no Head-to-Head expression", {
+  expect_error(rate_keener(cr_data), "Head-to-Head")
+})
+
 
 # rank_keener -------------------------------------------------------------
 test_that("rank_keener works", {

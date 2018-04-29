@@ -102,6 +102,14 @@ assert_pairgames <- function(cr_data, input_name = "cr_data") {
   cr_data
 }
 
+assert_h2h_fun <- function(...) {
+  if (rlang::dots_n(...) < 1) {
+    stop("You should supply Head-to-Head expression.", call. = FALSE)
+  }
+
+  invisible(TRUE)
+}
+
 #' Convert between ratings as named vector and tibble
 #'
 #' Functions to convert between different forms of ratings.
