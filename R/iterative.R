@@ -163,9 +163,8 @@ rank_iterative <- function(cr_data, rate_fun,
 #' @export
 add_iterative_ratings <- function(cr_data, rate_fun, initial_ratings = 0) {
   cr <- as_longcr(cr_data, repair = TRUE)
-  if (!is_pairgames(cr)) {
-    stop("cr_data is not pairgames.")
-  }
+
+  assert_pairgames(cr)
 
   used_players <- unique_levels(cr$player)
   ref_players <- used_players[!is.na(used_players)]

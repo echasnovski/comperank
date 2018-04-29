@@ -95,6 +95,14 @@ test_that("assert_used_objects works", {
 })
 
 
+# assert_pairgames --------------------------------------------------------
+test_that("assert_pairgames works", {
+  expect_silent(assert_pairgames(ncaa2005))
+  expect_error(assert_pairgames(ncaa2005[-1, ]), "not.*pairgames")
+  expect_error(assert_pairgames(ncaa2005[-1, ], "cr"), "cr.*not.*pairgames")
+})
+
+
 # to_rating_tbl -----------------------------------------------------------
 test_that("to_rating_tbl works", {
   input <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)

@@ -64,22 +64,15 @@ test_that("rate_massey works with not all matchups present", {
   expect_equal_tbls(output, output_ref)
 })
 
-test_that("rate_massey correctly works with not pair games", {
+test_that("rate_massey throws error on not pair games", {
   input_nonpair <- data.frame(
-    game = c(rep(1:5, each = 3), 6),
-    player = as.integer(c(rep(1:5, times = 3), 1)),
-    score = c(110L, 111L, 106L, 113L, 108L, 115L, 102L, 105L, 103L, 116L,
-              101L, 114L, 104L, 107L, 109L, 112L),
-    extraCol = -(1:16)
-  )
-  output <- rate_massey(input_nonpair)
-  output_ref <- tibble::tibble(
-    player = 1:5,
-    rating_massey = c(-1.87272727272727, 1.38181818181818, -1.45454545454545,
-                      0.436363636363636, 1.50909090909091)
+    game = rep(1, 3),
+    player = 1:3,
+    score = 10:12,
+    extraCol = -(1:3)
   )
 
-  expect_equal_tbls(output, output_ref)
+  expect_error(rate_massey(input_nonpair), "not.*pairgames")
 })
 
 

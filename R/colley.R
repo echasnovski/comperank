@@ -7,16 +7,16 @@
 #' @inheritParams rank_massey
 #'
 #' @details This rating method was initially designed for games between two
-#' players. That is why competition results are transformed into pairwise games
-#' `cr_pair` via [to_pairgames()][comperes::to_pairgames()]. Data from `cr_pair`
-#' is used in rating computation.
+#' players. There will be an error if in `cr_data` there is a game not between
+#' two players. Convert input competition results manually or with
+#' [to_pairgames()][comperes::to_pairgames()] from `comperes` package.
 #'
 #' It is assumed that score is numeric and higher values are better for the
 #' player.
 #'
 #' Computation is done based only on the games between players of interest (see
 #' Players). __Note__ that it isn't necessary for all players of interest to be
-#' present in `cr_pair` but it might be a good idea in order to obtain plausible
+#' present in `cr_data` but it might be a good idea in order to obtain plausible
 #' outcome rating.
 #'
 #' The outline of the Colley method is as follows:
@@ -59,9 +59,8 @@ NULL
 #' @export
 rate_colley <- function(cr_data) {
   cr <- as_longcr(cr_data, repair = TRUE)
-  if (!is_pairgames(cr)) {
-    cr <- as_longcr(to_pairgames(cr))
-  }
+
+  assert_pairgames(cr)
 
   # Compute Colley ratings
   colley_mat <- - h2h_mat(cr, !!h2h_funs[["num"]], fill = 0)

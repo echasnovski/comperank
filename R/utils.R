@@ -90,6 +90,17 @@ assert_used_objects <- function(used, original, prefix = "",
   invisible(TRUE)
 }
 
+assert_pairgames <- function(cr_data, input_name = "cr_data") {
+  if (!is_pairgames(cr_data)) {
+    stop(
+      input_name, " is not pairgames. ",
+      "Convert manually or with comperes::to_pairgames.",
+      call. = FALSE
+    )
+  }
+
+  cr_data
+}
 
 #' Convert between ratings as named vector and tibble
 #'
@@ -172,7 +183,6 @@ add_ranking <- function(df, rating_name, ranking_name,
 
   df
 }
-
 
 #' Compute Perron-Frobenius vector
 #'

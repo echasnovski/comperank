@@ -58,22 +58,15 @@ test_that("rate_colley works with not all matchups present", {
   expect_equal_tbls(output, output_ref)
 })
 
-test_that("rate_colley correctly works with not pair games", {
+test_that("rate_colley throws error on not pair games", {
   input_nonpair <- data.frame(
-    game = c(rep(1:5, each = 3), 6),
-    player = as.integer(c(rep(1:5, times = 3), 1)),
-    score = c(110L, 111L, 106L, 113L, 108L, 115L, 102L, 105L, 103L, 116L,
-              101L, 114L, 104L, 107L, 109L, 112L),
-    extraCol = -(1:16)
-  )
-  output <- rate_colley(input_nonpair)
-  output_ref <- tibble::tibble(
-    player = 1:5,
-    rating_colley = c(0.51123595505618, 0.48876404494382, 0.387640449438202,
-                      0.5, 0.612359550561798)
+    game = rep(1, 3),
+    player = 1:3,
+    score = 10:12,
+    extraCol = -(1:3)
   )
 
-  expect_equal_tbls(output, output_ref)
+  expect_error(rate_colley(input_nonpair), "not.*pairgames")
 })
 
 

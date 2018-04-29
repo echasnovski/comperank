@@ -10,17 +10,17 @@
 #' @param round_digits Value for `round_digits` in [round_rank()].
 #'
 #' @details This rating method was initially designed for games between two
-#' players. That is why competition results are transformed into pairwise games
-#' `cr_pair` via [to_pairgames()][comperes::to_pairgames()]. Data from `cr_pair`
-#' is used in rating computation.
+#' players. There will be an error if in `cr_data` there is a game not between
+#' two players. Convert input competition results manually or with
+#' [to_pairgames()][comperes::to_pairgames()] from `comperes` package.
 #'
 #' It is assumed that score is numeric and higher values are better for the
 #' player.
 #'
 #' Computation is done based only on the games between players of interest (see
-#' Players). __Note__ that all those players should be present in `cr_pair`
+#' Players). __Note__ that all those players should be present in `cr_data`
 #' because otherwise there will be an error during solving linear system
-#' described below. Message is given if there are players absent in `cr_pair`.
+#' described below. Message is given if there are players absent in `cr_data`.
 #'
 #' The outline of Massey rating method is as follows:
 #'
@@ -73,9 +73,8 @@ NULL
 #' @export
 rate_massey <- function(cr_data) {
   cr <- as_longcr(cr_data, repair = TRUE)
-  if (!is_pairgames(cr)) {
-    cr <- as_longcr(to_pairgames(cr))
-  }
+
+  assert_pairgames(cr)
 
   # Assert used players
   players <- levels2(cr$player)

@@ -36,16 +36,16 @@ using Colley method.
 }
 \details{
 This rating method was initially designed for games between two
-players. That is why competition results are transformed into pairwise games
-\code{cr_pair} via \link[comperes:to_pairgames]{to_pairgames()}. Data from \code{cr_pair}
-is used in rating computation.
+players. There will be an error if in \code{cr_data} there is a game not between
+two players. Convert input competition results manually or with
+\link[comperes:to_pairgames]{to_pairgames()} from \code{comperes} package.
 
 It is assumed that score is numeric and higher values are better for the
 player.
 
 Computation is done based only on the games between players of interest (see
 Players). \strong{Note} that it isn't necessary for all players of interest to be
-present in \code{cr_pair} but it might be a good idea in order to obtain plausible
+present in \code{cr_data} but it might be a good idea in order to obtain plausible
 outcome rating.
 
 The outline of the Colley method is as follows:

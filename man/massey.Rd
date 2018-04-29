@@ -36,17 +36,17 @@ using Massey method.
 }
 \details{
 This rating method was initially designed for games between two
-players. That is why competition results are transformed into pairwise games
-\code{cr_pair} via \link[comperes:to_pairgames]{to_pairgames()}. Data from \code{cr_pair}
-is used in rating computation.
+players. There will be an error if in \code{cr_data} there is a game not between
+two players. Convert input competition results manually or with
+\link[comperes:to_pairgames]{to_pairgames()} from \code{comperes} package.
 
 It is assumed that score is numeric and higher values are better for the
 player.
 
 Computation is done based only on the games between players of interest (see
-Players). \strong{Note} that all those players should be present in \code{cr_pair}
+Players). \strong{Note} that all those players should be present in \code{cr_data}
 because otherwise there will be an error during solving linear system
-described below. Message is given if there are players absent in \code{cr_pair}.
+described below. Message is given if there are players absent in \code{cr_data}.
 
 The outline of Massey rating method is as follows:
 \enumerate{
