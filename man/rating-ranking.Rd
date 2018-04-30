@@ -7,8 +7,8 @@
 \itemize{
 \item \strong{Rating} - List (in the ordinary sense) of numerical values, one for each
 player, or the numerical value itself. Its interpretation depends on rating
-method: either bigger value indicates stronger player or otherwise.
+method: either bigger value indicates better player performance or otherwise.
 \item \strong{Ranking} - Rank-ordered list (in the ordinary sense) of players: rank 1
-indicates the strongest player.
+indicates player with best performance.
 }
 }

@@ -50,7 +50,8 @@ matrix.}
 \value{
 \code{rate_keener()} returns a \link[tibble:tibble]{tibble} with columns
 \code{player} (player identifier) and \code{rating_keener} (Keener
-\link[=rating-ranking]{rating}). Sum of all ratings should be equal to 1.
+\link[=rating-ranking]{rating}). Sum of all ratings should be equal to 1. \strong{Bigger
+value indicates better player performance}.
 
 \code{rank_keener()} returns a \code{tibble} with columns \code{player}, \code{rating_keener} (if
 \code{keep_rating = TRUE}) and \code{ranking_keener} (Keener \link[=rating-ranking]{ranking}

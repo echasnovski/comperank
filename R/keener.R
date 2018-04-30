@@ -77,7 +77,8 @@
 #'
 #' @return `rate_keener()` returns a [tibble][tibble::tibble] with columns
 #' `player` (player identifier) and `rating_keener` (Keener
-#' [rating][rating-ranking]). Sum of all ratings should be equal to 1.
+#' [rating][rating-ranking]). Sum of all ratings should be equal to 1. __Bigger
+#' value indicates better player performance__.
 #'
 #' `rank_keener()` returns a `tibble` with columns `player`, `rating_keener` (if
 #' `keep_rating = TRUE`) and `ranking_keener` (Keener [ranking][rating-ranking]

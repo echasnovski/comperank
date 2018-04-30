@@ -43,6 +43,7 @@ matrix.}
 \code{rate_markov()} returns a \link[tibble:tibble]{tibble} with columns
 \code{player} (player identifier) and \code{rating_markov} (Markov
 \link[=rating-ranking]{rating}). The sum of all ratings should be equal to 1.
+\strong{Bigger value indicates better player performance}.
 
 \code{rank_markov} returns a \code{tibble} with columns \code{player}, \code{rating_markov} (if
 \code{keep_rating = TRUE}) and \code{ranking_markov} (Markov \link[=rating-ranking]{ranking}

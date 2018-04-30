@@ -60,7 +60,8 @@
 #' @return `rate_iterative()` returns a [tibble][tibble::tibble] with columns
 #' `player` (player identifier) and `rating_iterative` (Iterative
 #' [ratings][rating-ranking], based on row order, by the end of competition
-#' results).
+#' results). __Interpretation of numbers depends on rating function
+#' `rate_fun`__.
 #'
 #' `rank_iterative()` returns a `tibble` with columns `player`,
 #' `rating_iterative` (if `keep_rating = TRUE`) and `ranking_iterative`

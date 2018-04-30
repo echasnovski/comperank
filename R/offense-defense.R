@@ -68,9 +68,12 @@
 #' @return `rate_od()` returns a [tibble][tibble::tibble] with the following
 #' columns:
 #' - __player__ - player identifier.
-#' - __rating_off__ - offensive [rating][rating-ranking] of player.
-#' - __rating_def__ - defensive rating of player.
-#' - __rating_od__ - Offense-Defense rating of player.
+#' - __rating_off__ - offensive [rating][rating-ranking] of player. __Bigger
+#' value indicates better player performance__.
+#' - __rating_def__ - defensive rating of player. __Smaller value indicates
+#' better player performance__.
+#' - __rating_od__ - Offense-Defense rating of player. __Bigger value indicates
+#' better player performance__.
 #'
 #' `rank_od()` returns a `tibble` of the similar structure as `rate_od()`:
 #' - __player__ - player identifier.

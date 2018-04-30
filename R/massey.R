@@ -51,6 +51,7 @@
 #' @return `rate_massey()` returns a [tibble][tibble::tibble] with columns
 #' `player` (player identifier) and `rating_massey` (Massey
 #' [rating][rating-ranking]). The sum of all ratings should be equal to 0.
+#' __Bigger value indicates better player performance__.
 #'
 #' `rank_massey()` returns a `tibble` with columns `player`, `rating_massey` (if
 #' `keep_rating = TRUE`) and `ranking_massey` (Massey [ranking][rating-ranking]

@@ -25,6 +25,7 @@ rank_massey(cr_data, keep_rating = FALSE, ties = c("average", "first",
 \code{rate_massey()} returns a \link[tibble:tibble]{tibble} with columns
 \code{player} (player identifier) and \code{rating_massey} (Massey
 \link[=rating-ranking]{rating}). The sum of all ratings should be equal to 0.
+\strong{Bigger value indicates better player performance}.
 
 \code{rank_massey()} returns a \code{tibble} with columns \code{player}, \code{rating_massey} (if
 \code{keep_rating = TRUE}) and \code{ranking_massey} (Massey \link[=rating-ranking]{ranking}

@@ -35,7 +35,8 @@
 #'
 #' @return `rate_colley()` returns a [tibble][tibble::tibble] with columns
 #' `player` (player identifier) and `rating_colley` (Colley
-#' [rating][rating-ranking]). The mean rating should be 0.5.
+#' [rating][rating-ranking]). The mean rating should be 0.5. __Bigger value
+#' indicates better player performance__.
 #'
 #' `rank_colley()` returns a `tibble` with columns `player`, `rating_colley` (if
 #' `keep_rating = TRUE`) and `ranking_colley` (Colley [ranking][rating-ranking]

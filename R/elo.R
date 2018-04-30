@@ -43,7 +43,7 @@
 #' @return `rate_elo()` returns a [tibble][tibble::tibble] with columns
 #' `player` (player identifier) and `rating_elo` (Elo
 #' [ratings][rating-ranking], based on row order, by the end of competition
-#' results).
+#' results). __Bigger value indicates better player performance__.
 #'
 #' `rank_elo()` returns a `tibble` with columns `player`, `rating_elo` (if
 #' `keep_rating = TRUE`) and `ranking_elo` (Elo [ranking][rating-ranking]

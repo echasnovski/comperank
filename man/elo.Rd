@@ -46,7 +46,7 @@ elo(rating1, score1, rating2, score2, K = 30, ksi = 400)
 \code{rate_elo()} returns a \link[tibble:tibble]{tibble} with columns
 \code{player} (player identifier) and \code{rating_elo} (Elo
 \link[=rating-ranking]{ratings}, based on row order, by the end of competition
-results).
+results). \strong{Bigger value indicates better player performance}.
 
 \code{rank_elo()} returns a \code{tibble} with columns \code{player}, \code{rating_elo} (if
 \code{keep_rating = TRUE}) and \code{ranking_elo} (Elo \link[=rating-ranking]{ranking}

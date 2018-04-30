@@ -39,9 +39,12 @@ matrix.}
 columns:
 \itemize{
 \item \strong{player} - player identifier.
-\item \strong{rating_off} - offensive \link[=rating-ranking]{rating} of player.
-\item \strong{rating_def} - defensive rating of player.
-\item \strong{rating_od} - Offense-Defense rating of player.
+\item \strong{rating_off} - offensive \link[=rating-ranking]{rating} of player. \strong{Bigger
+value indicates better player performance}.
+\item \strong{rating_def} - defensive rating of player. \strong{Smaller value indicates
+better player performance}.
+\item \strong{rating_od} - Offense-Defense rating of player. \strong{Bigger value indicates
+better player performance}.
 }
 
 \code{rank_od()} returns a \code{tibble} of the similar structure as \code{rate_od()}:

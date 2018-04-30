@@ -24,7 +24,8 @@ rank_colley(cr_data, keep_rating = FALSE, ties = c("average", "first",
 \value{
 \code{rate_colley()} returns a \link[tibble:tibble]{tibble} with columns
 \code{player} (player identifier) and \code{rating_colley} (Colley
-\link[=rating-ranking]{rating}). The mean rating should be 0.5.
+\link[=rating-ranking]{rating}). The mean rating should be 0.5. \strong{Bigger value
+indicates better player performance}.
 
 \code{rank_colley()} returns a \code{tibble} with columns \code{player}, \code{rating_colley} (if
 \code{keep_rating = TRUE}) and \code{ranking_colley} (Colley \link[=rating-ranking]{ranking}

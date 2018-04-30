@@ -72,6 +72,7 @@
 #' @return `rate_markov()` returns a [tibble][tibble::tibble] with columns
 #' `player` (player identifier) and `rating_markov` (Markov
 #' [rating][rating-ranking]). The sum of all ratings should be equal to 1.
+#' __Bigger value indicates better player performance__.
 #'
 #' `rank_markov` returns a `tibble` with columns `player`, `rating_markov` (if
 #' `keep_rating = TRUE`) and `ranking_markov` (Markov [ranking][rating-ranking]

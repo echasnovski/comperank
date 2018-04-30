@@ -35,7 +35,8 @@ add_iterative_ratings(cr_data, rate_fun, initial_ratings = 0)
 \code{rate_iterative()} returns a \link[tibble:tibble]{tibble} with columns
 \code{player} (player identifier) and \code{rating_iterative} (Iterative
 \link[=rating-ranking]{ratings}, based on row order, by the end of competition
-results).
+results). \strong{Interpretation of numbers depends on rating function
+\code{rate_fun}}.
 
 \code{rank_iterative()} returns a \code{tibble} with columns \code{player},
 \code{rating_iterative} (if \code{keep_rating = TRUE}) and \code{ranking_iterative}
