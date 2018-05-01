@@ -70,15 +70,16 @@ common games Head-to-Head value is computed to 0 (not \code{NA}). \strong{Note} 
 values should be non-negative and non-NA. This can be ensured with setting
 \code{force_nonneg_h2h} to \code{TRUE}.
 
-For player which can make \emph{high} score (even against the player with strong
-defense) it is said that he/she has \strong{strong offense} which results into
-\emph{high} offensive rating. For player which can force their opponents into
-making \emph{low} score (even if they have strong offense) it is said that he/she
-has \strong{strong defense} which results into \emph{low} defensive rating.
+For player which can achieve \emph{high} Head-to-Head value (even against the
+player with strong defense) it is said that he/she has \strong{strong offense}
+which results into \emph{high} offensive rating. For player which can force their
+opponents into achieving \emph{low} Head-to-Head value (even if they have strong
+offense) it is said that he/she has \strong{strong defense} which results into
+\emph{low} defensive rating.
 
 Offensive and defensive ratings describe different skills of players. In
 order to fully rate players, OD ratings are computed: offensive ratings
-divided be defensive. The more OD rating the better the player.
+divided by defensive. The more OD rating the better player performance.
 
 Algorithm for OD ratings is as follows:
 \enumerate{
@@ -144,7 +145,7 @@ rank_od(ncaa2005, mean(score1))
 rank_od(ncaa2005, mean(score1), keep_rating = TRUE)
 
 # Account for self play
-rate_od(ncaa2005, ifelse(player1[1] == player2[1], 0, mean(score1)))
+rate_od(ncaa2005, if(player1[1] == player2[1]) 0 else mean(score1))
 
 }
 \references{

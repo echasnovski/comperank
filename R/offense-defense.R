@@ -22,15 +22,16 @@
 #' values should be non-negative and non-NA. This can be ensured with setting
 #' `force_nonneg_h2h` to `TRUE`.
 #'
-#' For player which can make _high_ score (even against the player with strong
-#' defense) it is said that he/she has __strong offense__ which results into
-#' _high_ offensive rating. For player which can force their opponents into
-#' making _low_ score (even if they have strong offense) it is said that he/she
-#' has __strong defense__ which results into _low_ defensive rating.
+#' For player which can achieve _high_ Head-to-Head value (even against the
+#' player with strong defense) it is said that he/she has __strong offense__
+#' which results into _high_ offensive rating. For player which can force their
+#' opponents into achieving _low_ Head-to-Head value (even if they have strong
+#' offense) it is said that he/she has __strong defense__ which results into
+#' _low_ defensive rating.
 #'
 #' Offensive and defensive ratings describe different skills of players. In
 #' order to fully rate players, OD ratings are computed: offensive ratings
-#' divided be defensive. The more OD rating the better the player.
+#' divided by defensive. The more OD rating the better player performance.
 #'
 #' Algorithm for OD ratings is as follows:
 #'
@@ -97,7 +98,7 @@
 #' rank_od(ncaa2005, mean(score1), keep_rating = TRUE)
 #'
 #' # Account for self play
-#' rate_od(ncaa2005, ifelse(player1[1] == player2[1], 0, mean(score1)))
+#' rate_od(ncaa2005, if(player1[1] == player2[1]) 0 else mean(score1))
 #'
 #' @name offense-defense
 NULL
