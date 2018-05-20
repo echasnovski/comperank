@@ -3,7 +3,9 @@ Title: Ranking and Rating Methods for Competition Results
 Version: 0.0.0.9000
 Authors@R: person("Evgeni", "Chasnovski", email = "evgeni.chasnovski@gmail.com",
     role = c("aut", "cre"))
-Description: Compute ranking and rating based on competition results.
+Description: Compute ranking and rating based on competition results. Also has
+    data sets describing professional snooker in seasons 2016/2017 and
+    2017/2018.
 License: MIT + file LICENSE
 URL: https://github.com/echasnovski/comperank
 BugReports: https://github.com/echasnovski/comperank/issues

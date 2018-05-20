@@ -26,6 +26,10 @@
 #'     and [add_iterative_ratings()].
 #'     - Elo ratings with [rate_elo()], [rank_elo()], and [add_elo_ratings()].
 #'
+#' `comperank` also offers data sets describing professional snooker in seasons
+#' 2016/2017 and 2017/2018. See [snooker_events], [snooker_players],
+#' [snooker_matches].
+#'
 #' To learn more about `comperank` browse vignettes with browseVignettes(package
 #' = "comperank").
 #'

@@ -40,6 +40,10 @@ and \code{\link[=add_iterative_ratings]{add_iterative_ratings()}}.
 }
 }
 
+\code{comperank} also offers data sets describing professional snooker in seasons
+2016/2017 and 2017/2018. See \link{snooker_events}, \link{snooker_players},
+\link{snooker_matches}.
+
 To learn more about \code{comperank} browse vignettes with browseVignettes(package
 = "comperank").
 }
