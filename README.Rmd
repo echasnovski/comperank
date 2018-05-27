@@ -21,7 +21,7 @@ options(tibble.print_min = 6, tibble.print_max = 6, tibble.width = 120)
 
 `comperank` provides tools for computing ranking and rating based on competition results. It is tightly connected to its data infrastructure package [comperes](https://github.com/echasnovski/comperes). Basic knowledge about creating [valid competition results](https://github.com/echasnovski/comperes#store-and-convert) and [Head-to-Head expressions](https://github.com/echasnovski/comperes#head-to-head) with `comperes` is needed in order to efficiently use `comperank`.
 
-Understanding of __competition__ is quite general: it is a set of __games__ (abstract event) in which __players__ (abstract entity) gain some abstract __scores__ (typically numeric). The most natural example is sport results, however not the only one. For example, product rating can be considered as a competition between products as "players". Here a "game" is a customer that reviews a set of products by rating them with numerical "score" (stars, points, etc.).
+Understanding of __competition__ is quite general: it is a set of __games__ (abstract event) in which __players__ (abstract entity) gain some abstract __scores__ (typically numeric). The most natural example is sport results, however not the only one. Product rating can also be considered as a competition between products as "players". Here a "game" is a customer that reviews a set of products by rating them with numerical "score" (stars, points, etc.).
 
 __Rating__ is a list (in the ordinary sense) of numerical values, one for each player, or the numerical value itself. Its interpretation depends on rating method: either bigger value indicates better player performance or otherwise.
 
@@ -74,7 +74,7 @@ devtools::install_github("echasnovski/comperank")
 
 All functions in `comperank` expect competition results in one of the formats from `comperes` package. That is either __long__ or __wide__ format.
 
-__Long format__ is the most abstract way of presenting competition results. Basically, it is a data frame (or tibble) with columns `game` (game identifier), `player` (player identifier) and `score` where each row represents the score of particular player in particular game. One game can consist from __variable__ number of players which makes this format more usable. Inside a game all players are treated equally.
+__Long format__ is the most abstract way of presenting competition results. Basically, it is a data frame (or tibble) with columns `game` (game identifier), `player` (player identifier) and `score` where _each row represents the score of particular player in particular game_. One game can consist from __variable__ number of players which makes this format more usable. Inside a game all players are treated equally.
 
 Programmatically long format is represented with `longcr` S3 class which should be created with `as_longcr()` function from `comperes`.
 
@@ -84,7 +84,7 @@ For examples we will use `ncaa2005` data set from `comperes` package, which is a
 ncaa2005
 ```
 
-__Wide format__ is a more convenient way to store results with __fixed__ number of players in a game. Data should be organized in pairs of columns "player"-"score". Identifier of a pair should go after respective keyword and consist only from digits. For example: player1, score1, player2, score2. Order doesn't matter. Column `game` is optional.
+__Wide format__ is a more convenient way to store results with __fixed__ number of players in a game. _Each row represents scores of all players in particular game_. Data should be organized in pairs of columns "player"-"score". Identifier of a pair should go after respective keyword and consist only from digits. For example: `player1`, `score1`, `player2`, `score2`. Order doesn't matter. Column `game` is optional.
 
 Programmatically wide format is represented with `widecr` S3 class which should be created with `as_widecr()` function from `comperes`:
 
@@ -206,7 +206,7 @@ Rating methods with iterative nature assume that games occur in some particular 
 
 Iterative ratings represent the general approach to ratings with iterative nature. It needs custom rating function and initial player ratings to perform iterative ratings computation. Rating function should accept four arguments: `rating1` (scalar rating of the first player before the game), `score1` (his score), `rating2` and `score2` for the data about second player's performance. It should return a numeric vector of length 2 with elements respectively representing ratings of players after the game.
 
-All functions assume that the order of the games is supplied with order of values in column `game` (if present) or is defined by the row order.
+All functions assume that the order in which games were played is identical to order of values in column `game` (if present) or is defined by the row order.
 
 Arguably, the most useful function is `add_iterative_ratings()`, which adds to `widecr` format of competition results information about game ratings before and after the game.
 
@@ -230,7 +230,7 @@ rank_iterative(ncaa2005, test_rate_fun, keep_rating = TRUE)
 
 ### Elo method
 
-Elo method is, basically, an iterative rating method with fixed [Elo](https://en.wikipedia.org/wiki/Elo_rating_system) rating function. General idea is that rating increase for winner should be the bigger the more is rating difference. In other words, win over a better player should lead to more rating increase and win over a considerably weaker player shouldn't affect rating that much.
+Elo method is, basically, an iterative rating method with fixed [Elo](https://en.wikipedia.org/wiki/Elo_rating_system) rating function. General idea is that rating increase for winner should be the bigger the more is rating difference between players. In other words, win over a better player should lead to more rating increase and win over a considerably weaker player shouldn't affect rating that much.
 
 ```{r elo}
 add_elo_ratings(ncaa2005)

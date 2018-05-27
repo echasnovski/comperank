@@ -7,7 +7,7 @@ comperank
 
 `comperank` provides tools for computing ranking and rating based on competition results. It is tightly connected to its data infrastructure package [comperes](https://github.com/echasnovski/comperes). Basic knowledge about creating [valid competition results](https://github.com/echasnovski/comperes#store-and-convert) and [Head-to-Head expressions](https://github.com/echasnovski/comperes#head-to-head) with `comperes` is needed in order to efficiently use `comperank`.
 
-Understanding of **competition** is quite general: it is a set of **games** (abstract event) in which **players** (abstract entity) gain some abstract **scores** (typically numeric). The most natural example is sport results, however not the only one. For example, product rating can be considered as a competition between products as "players". Here a "game" is a customer that reviews a set of products by rating them with numerical "score" (stars, points, etc.).
+Understanding of **competition** is quite general: it is a set of **games** (abstract event) in which **players** (abstract entity) gain some abstract **scores** (typically numeric). The most natural example is sport results, however not the only one. Product rating can also be considered as a competition between products as "players". Here a "game" is a customer that reviews a set of products by rating them with numerical "score" (stars, points, etc.).
 
 **Rating** is a list (in the ordinary sense) of numerical values, one for each player, or the numerical value itself. Its interpretation depends on rating method: either bigger value indicates better player performance or otherwise.
 
@@ -63,7 +63,7 @@ Structure of competition results
 
 All functions in `comperank` expect competition results in one of the formats from `comperes` package. That is either **long** or **wide** format.
 
-**Long format** is the most abstract way of presenting competition results. Basically, it is a data frame (or tibble) with columns `game` (game identifier), `player` (player identifier) and `score` where each row represents the score of particular player in particular game. One game can consist from **variable** number of players which makes this format more usable. Inside a game all players are treated equally.
+**Long format** is the most abstract way of presenting competition results. Basically, it is a data frame (or tibble) with columns `game` (game identifier), `player` (player identifier) and `score` where *each row represents the score of particular player in particular game*. One game can consist from **variable** number of players which makes this format more usable. Inside a game all players are treated equally.
 
 Programmatically long format is represented with `longcr` S3 class which should be created with `as_longcr()` function from `comperes`.
 
@@ -84,7 +84,7 @@ ncaa2005
 #> # ... with 14 more rows
 ```
 
-**Wide format** is a more convenient way to store results with **fixed** number of players in a game. Data should be organized in pairs of columns "player"-"score". Identifier of a pair should go after respective keyword and consist only from digits. For example: player1, score1, player2, score2. Order doesn't matter. Column `game` is optional.
+**Wide format** is a more convenient way to store results with **fixed** number of players in a game. *Each row represents scores of all players in particular game*. Data should be organized in pairs of columns "player"-"score". Identifier of a pair should go after respective keyword and consist only from digits. For example: `player1`, `score1`, `player2`, `score2`. Order doesn't matter. Column `game` is optional.
 
 Programmatically wide format is represented with `widecr` S3 class which should be created with `as_widecr()` function from `comperes`:
 
@@ -122,31 +122,31 @@ rate_massey(ncaa2005)
 #> # A tibble: 5 x 2
 #>   player rating_massey
 #>   <chr>          <dbl>
-#> 1 Duke          -24.8 
-#> 2 Miami          18.2 
-#> 3 UNC            -8.00
-#> 4 UVA            -3.40
-#> 5 VT             18.0
+#> 1 Duke           -24.8
+#> 2 Miami           18.2
+#> 3 UNC             -8. 
+#> 4 UVA             -3.4
+#> 5 VT              18
 
 rank_massey(ncaa2005)
 #> # A tibble: 5 x 2
 #>   player ranking_massey
 #>   <chr>           <dbl>
-#> 1 Duke               5.
-#> 2 Miami              1.
-#> 3 UNC                4.
-#> 4 UVA                3.
-#> 5 VT                 2.
+#> 1 Duke                5
+#> 2 Miami               1
+#> 3 UNC                 4
+#> 4 UVA                 3
+#> 5 VT                  2
 
 rank_massey(ncaa2005, keep_rating = TRUE)
 #> # A tibble: 5 x 3
 #>   player rating_massey ranking_massey
 #>   <chr>          <dbl>          <dbl>
-#> 1 Duke          -24.8              5.
-#> 2 Miami          18.2              1.
-#> 3 UNC            -8.00             4.
-#> 4 UVA            -3.40             3.
-#> 5 VT             18.0              2.
+#> 1 Duke           -24.8              5
+#> 2 Miami           18.2              1
+#> 3 UNC             -8.               4
+#> 4 UVA             -3.4              3
+#> 5 VT              18                2
 ```
 
 ### Colley method
@@ -158,11 +158,11 @@ rank_colley(ncaa2005, keep_rating = TRUE)
 #> # A tibble: 5 x 3
 #>   player rating_colley ranking_colley
 #>   <chr>          <dbl>          <dbl>
-#> 1 Duke           0.214             5.
-#> 2 Miami          0.786             1.
-#> 3 UNC            0.500             3.
-#> 4 UVA            0.357             4.
-#> 5 VT             0.643             2.
+#> 1 Duke           0.214              5
+#> 2 Miami          0.786              1
+#> 3 UNC            0.5                3
+#> 4 UVA            0.357              4
+#> 5 VT             0.643              2
 ```
 
 Algorithms with variable Head-to-Head structure
@@ -202,20 +202,20 @@ comperes::h2h_long(ncaa2005, !!! h2h_funs)
 #> # A tibble: 25 x 11
 #>   player1 player2 mean_score_diff mean_score_diff_pos mean_score
 #>   <chr>   <chr>             <dbl>               <dbl>      <dbl>
-#> 1 Duke    Duke                 0.                  0.       8.75
-#> 2 Duke    Miami              -45.                  0.       7.00
-#> 3 Duke    UNC                 -3.                  0.      21.0 
-#> 4 Duke    UVA                -31.                  0.       7.00
-#> 5 Duke    VT                 -45.                  0.       0.  
-#> 6 Miami   Duke                45.                 45.      52.0 
+#> 1 Duke    Duke                  0                   0       8.75
+#> 2 Duke    Miami               -45                   0       7   
+#> 3 Duke    UNC                  -3                   0      21   
+#> 4 Duke    UVA                 -31                   0       7   
+#> 5 Duke    VT                  -45                   0       0   
+#> 6 Miami   Duke                 45                  45      52   
 #>   sum_score_diff sum_score_diff_p… sum_score
 #>            <int>             <dbl>     <int>
-#> 1              0                0.        35
-#> 2            -45                0.         7
-#> 3             -3                0.        21
-#> 4            -31                0.         7
-#> 5            -45                0.         0
-#> 6             45               45.        52
+#> 1              0                 0        35
+#> 2            -45                 0         7
+#> 3             -3                 0        21
+#> 4            -31                 0         7
+#> 5            -45                 0         0
+#> 6             45                45        52
 #> # ... with 19 more rows, and 3 more variables: num_wins <dbl>,
 #> #   num_wins2 <dbl>, num <int>
 
@@ -260,11 +260,11 @@ rank_keener(ncaa2005, !!! h2h_funs["mean_score"], keep_rating = TRUE)
 #> # A tibble: 5 x 3
 #>   player rating_keener ranking_keener
 #>   <chr>          <dbl>          <dbl>
-#> 1 Duke          0.0671             5.
-#> 2 Miami         0.351              1.
-#> 3 UNC           0.158              4.
-#> 4 UVA           0.161              3.
-#> 5 VT            0.263              2.
+#> 1 Duke          0.0671              5
+#> 2 Miami         0.351               1
+#> 3 UNC           0.158               4
+#> 4 UVA           0.161               3
+#> 5 VT            0.263               2
 ```
 
 ### Markov method
@@ -280,11 +280,11 @@ rank_markov(ncaa2005, !!! h2h_funs["num_wins"], keep_rating = TRUE)
 #> # A tibble: 5 x 3
 #>   player rating_markov ranking_markov
 #>   <chr>          <dbl>          <dbl>
-#> 1 Duke          0.0991             5.
-#> 2 Miami         0.407              1.
-#> 3 UNC           0.154              3.
-#> 4 UVA           0.120              4.
-#> 5 VT            0.220              2.
+#> 1 Duke          0.0991              5
+#> 2 Miami         0.407               1
+#> 3 UNC           0.154               3
+#> 4 UVA           0.120               4
+#> 5 VT            0.220               2
 
 rank_markov(
   ncaa2005,
@@ -295,11 +295,11 @@ rank_markov(
 #> # A tibble: 5 x 3
 #>   player rating_markov ranking_markov
 #>   <chr>          <dbl>          <dbl>
-#> 1 Duke          0.0994             5.
-#> 2 Miami         0.408              1.
-#> 3 UNC           0.115              4.
-#> 4 UVA           0.120              3.
-#> 5 VT            0.257              2.
+#> 1 Duke          0.0994              5
+#> 2 Miami         0.408               1
+#> 3 UNC           0.115               4
+#> 4 UVA           0.120               3
+#> 5 VT            0.257               2
 ```
 
 ### Offense-Defense method
@@ -320,18 +320,18 @@ rank_od(
 #> # A tibble: 5 x 7
 #>   player rating_off rating_def rating_od ranking_off ranking_def
 #>   <chr>       <dbl>      <dbl>     <dbl>       <dbl>       <dbl>
-#> 1 Duke         34.0      1.69       20.1          5.          5.
-#> 2 Miami       152.       0.803     189.           1.          2.
-#> 3 UNC          48.7      1.16       41.8          4.          4.
-#> 4 UVA          82.0      0.967      84.8          3.          3.
-#> 5 VT          115.       0.411     280.           2.          1.
+#> 1 Duke         34.0      1.69       20.1           5           5
+#> 2 Miami       152.       0.803     189.            1           2
+#> 3 UNC          48.7      1.16       41.8           4           4
+#> 4 UVA          82.0      0.967      84.8           3           3
+#> 5 VT          115.       0.411     280.            2           1
 #>   ranking_od
 #>        <dbl>
-#> 1         5.
-#> 2         2.
-#> 3         4.
-#> 4         3.
-#> 5         1.
+#> 1          5
+#> 2          2
+#> 3          4
+#> 4          3
+#> 5          1
 ```
 
 Algorithms with iterative nature
@@ -343,7 +343,7 @@ Rating methods with iterative nature assume that games occur in some particular 
 
 Iterative ratings represent the general approach to ratings with iterative nature. It needs custom rating function and initial player ratings to perform iterative ratings computation. Rating function should accept four arguments: `rating1` (scalar rating of the first player before the game), `score1` (his score), `rating2` and `score2` for the data about second player's performance. It should return a numeric vector of length 2 with elements respectively representing ratings of players after the game.
 
-All functions assume that the order of the games is supplied with order of values in column `game` (if present) or is defined by the row order.
+All functions assume that the order in which games were played is identical to order of values in column `game` (if present) or is defined by the row order.
 
 Arguably, the most useful function is `add_iterative_ratings()`, which adds to `widecr` format of competition results information about game ratings before and after the game.
 
@@ -359,20 +359,20 @@ add_iterative_ratings(ncaa2005, test_rate_fun)
 #> # A tibble: 10 x 9
 #>    game player1 score1 player2 score2 rating1Before rating2Before
 #>   <int> <chr>    <int> <chr>    <int>         <dbl>         <dbl>
-#> 1     1 Duke         7 Miami       52            0.            0.
-#> 2     2 Duke        21 UNC         24           -1.            0.
-#> 3     3 Duke         7 UVA         38           -2.            0.
-#> 4     4 Duke         0 VT          45           -3.            0.
-#> 5     5 Miami       34 UNC         16            1.            1.
-#> 6     6 Miami       25 UVA         17            2.            1.
+#> 1     1 Duke         7 Miami       52             0             0
+#> 2     2 Duke        21 UNC         24            -1             0
+#> 3     3 Duke         7 UVA         38            -2             0
+#> 4     4 Duke         0 VT          45            -3             0
+#> 5     5 Miami       34 UNC         16             1             1
+#> 6     6 Miami       25 UVA         17             2             1
 #>   rating1After rating2After
 #>          <dbl>        <dbl>
-#> 1          -1.           1.
-#> 2          -2.           1.
-#> 3          -3.           1.
-#> 4          -4.           1.
-#> 5           2.           0.
-#> 6           3.           0.
+#> 1           -1            1
+#> 2           -2            1
+#> 3           -3            1
+#> 4           -4            1
+#> 5            2            0
+#> 6            3            0
 #> # ... with 4 more rows
 
 # Revert the order of games
@@ -383,20 +383,20 @@ add_iterative_ratings(ncaa2005_rev, test_rate_fun)
 #> # A tibble: 10 x 9
 #>    game player1 score1 player2 score2 rating1Before rating2Before
 #>   <dbl> <chr>    <int> <chr>    <int>         <dbl>         <dbl>
-#> 1    1. UVA         14 VT          52            0.            0.
-#> 2    2. UNC          3 VT          30            0.            1.
-#> 3    3. UNC          7 UVA          5           -1.           -1.
-#> 4    4. Miami       27 VT           7            0.            2.
-#> 5    5. Miami       25 UVA         17            1.           -2.
-#> 6    6. Miami       34 UNC         16            2.            0.
+#> 1     1 UVA         14 VT          52             0             0
+#> 2     2 UNC          3 VT          30             0             1
+#> 3     3 UNC          7 UVA          5            -1            -1
+#> 4     4 Miami       27 VT           7             0             2
+#> 5     5 Miami       25 UVA         17             1            -2
+#> 6     6 Miami       34 UNC         16             2             0
 #>   rating1After rating2After
 #>          <dbl>        <dbl>
-#> 1          -1.           1.
-#> 2          -1.           2.
-#> 3           0.          -2.
-#> 4           1.           1.
-#> 5           2.          -3.
-#> 6           3.          -1.
+#> 1           -1            1
+#> 2           -1            2
+#> 3            0           -2
+#> 4            1            1
+#> 5            2           -3
+#> 6            3           -1
 #> # ... with 4 more rows
 
 # Rating after the last game
@@ -404,16 +404,16 @@ rank_iterative(ncaa2005, test_rate_fun, keep_rating = TRUE)
 #> # A tibble: 5 x 3
 #>   player rating_iterative ranking_iterative
 #>   <chr>             <dbl>             <dbl>
-#> 1 Duke                -4.                5.
-#> 2 Miami                4.                1.
-#> 3 UNC                  0.                3.
-#> 4 UVA                 -2.                4.
-#> 5 VT                   2.                2.
+#> 1 Duke                 -4                 5
+#> 2 Miami                 4                 1
+#> 3 UNC                   0                 3
+#> 4 UVA                  -2                 4
+#> 5 VT                    2                 2
 ```
 
 ### Elo method
 
-Elo method is, basically, an iterative rating method with fixed [Elo](https://en.wikipedia.org/wiki/Elo_rating_system) rating function. General idea is that rating increase for winner should be the bigger the more is rating difference. In other words, win over a better player should lead to more rating increase and win over a considerably weaker player shouldn't affect rating that much.
+Elo method is, basically, an iterative rating method with fixed [Elo](https://en.wikipedia.org/wiki/Elo_rating_system) rating function. General idea is that rating increase for winner should be the bigger the more is rating difference between players. In other words, win over a better player should lead to more rating increase and win over a considerably weaker player shouldn't affect rating that much.
 
 ``` r
 add_elo_ratings(ncaa2005)
@@ -421,15 +421,15 @@ add_elo_ratings(ncaa2005)
 #> # A tibble: 10 x 9
 #>    game player1 score1 player2 score2 rating1Before rating2Before
 #>   <int> <chr>    <int> <chr>    <int>         <dbl>         <dbl>
-#> 1     1 Duke         7 Miami       52           0.            0. 
-#> 2     2 Duke        21 UNC         24         -15.0           0. 
-#> 3     3 Duke         7 UVA         38         -29.4           0. 
-#> 4     4 Duke         0 VT          45         -43.1           0. 
-#> 5     5 Miami       34 UNC         16          15.0          14.4
+#> 1     1 Duke         7 Miami       52           0             0  
+#> 2     2 Duke        21 UNC         24         -15             0  
+#> 3     3 Duke         7 UVA         38         -29.4           0  
+#> 4     4 Duke         0 VT          45         -43.1           0  
+#> 5     5 Miami       34 UNC         16          15            14.4
 #> 6     6 Miami       25 UVA         17          30.0          13.7
 #>   rating1After rating2After
 #>          <dbl>        <dbl>
-#> 1        -15.0       15.0  
+#> 1        -15         15    
 #> 2        -29.4       14.4  
 #> 3        -43.1       13.7  
 #> 4        -56.2       13.1  
@@ -441,15 +441,15 @@ add_elo_ratings(ncaa2005_rev)
 #> # A tibble: 10 x 9
 #>    game player1 score1 player2 score2 rating1Before rating2Before
 #>   <dbl> <chr>    <int> <chr>    <int>         <dbl>         <dbl>
-#> 1    1. UVA         14 VT          52           0.          0.   
-#> 2    2. UNC          3 VT          30           0.         15.0  
-#> 3    3. UNC          7 UVA          5         -14.4       -15.0  
-#> 4    4. Miami       27 VT           7           0.         29.4  
-#> 5    5. Miami       25 UVA         17          16.3       -30.0  
-#> 6    6. Miami       34 UNC         16          29.3         0.619
+#> 1     1 UVA         14 VT          52           0           0    
+#> 2     2 UNC          3 VT          30           0          15    
+#> 3     3 UNC          7 UVA          5         -14.4       -15    
+#> 4     4 Miami       27 VT           7           0          29.4  
+#> 5     5 Miami       25 UVA         17          16.3       -30.0  
+#> 6     6 Miami       34 UNC         16          29.3         0.619
 #>   rating1After rating2After
 #>          <dbl>        <dbl>
-#> 1      -15.0           15.0
+#> 1      -15             15  
 #> 2      -14.4           29.4
 #> 3        0.619        -30.0
 #> 4       16.3           13.1
@@ -461,18 +461,18 @@ rank_elo(ncaa2005, keep_rating = TRUE)
 #> # A tibble: 5 x 3
 #>   player rating_elo ranking_elo
 #>   <chr>       <dbl>       <dbl>
-#> 1 Duke       -56.2           5.
-#> 2 Miami       57.9           1.
-#> 3 UNC         -1.26          3.
-#> 4 UVA        -29.2           4.
-#> 5 VT          28.8           2.
+#> 1 Duke       -56.2            5
+#> 2 Miami       57.9            1
+#> 3 UNC         -1.26           3
+#> 4 UVA        -29.2            4
+#> 5 VT          28.8            2
 rank_elo(ncaa2005_rev, keep_rating = TRUE)
 #> # A tibble: 5 x 3
 #>   player rating_elo ranking_elo
 #>   <chr>       <dbl>       <dbl>
-#> 1 Duke       -56.2           5.
-#> 2 Miami       54.3           1.
-#> 3 UNC          1.10          3.
-#> 4 UVA        -26.8           4.
-#> 5 VT          27.5           2.
+#> 1 Duke       -56.2            5
+#> 2 Miami       54.3            1
+#> 3 UNC          1.10           3
+#> 4 UVA        -26.8            4
+#> 5 VT          27.5            2
 ```
