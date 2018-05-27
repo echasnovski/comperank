@@ -110,31 +110,6 @@ test_that("assert_h2h_fun works", {
 })
 
 
-# to_rating_tbl -----------------------------------------------------------
-test_that("to_rating_tbl works", {
-  input <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)
-  output <- tibble::tibble(
-    player = paste0("pl", 1:3),
-    rating = 10^(0:2)
-  )
-
-  expect_equal(to_rating_tbl(input), output)
-})
-
-
-# to_rating_vec -----------------------------------------------------------
-test_that("to_rating_vec works", {
-  input <- tibble::tibble(
-    player = paste0("pl", 1:3),
-    rating = 10^(0:2),
-    stringsAsFactors = FALSE
-  )
-  output <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)
-
-  expect_equal(to_rating_vec(input), output)
-})
-
-
 # unique_levels -----------------------------------------------------------
 test_that("unique_levels works", {
   num_input <- c(NA, 2, -1, 10, NA, 1, 1, 10)

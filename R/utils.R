@@ -110,45 +110,6 @@ assert_h2h_fun <- function(...) {
   invisible(TRUE)
 }
 
-#' Convert between ratings as named vector and tibble
-#'
-#' Functions to convert between different forms of ratings.
-#'
-#' @param rating_vec Named vector of ratings.
-#' @param rating_tbl Tibble with columns `player` and `rating`.
-#'
-#' @return `to_rating_tbl()` returns a [tibble][tibble::tibble] with two
-#' columns: `player` and `rating`.
-#'
-#' `to_rating_vec()` returns named vector of ratings.
-#'
-#' @examples
-#' rating_vec <- c("pl1" = 1, "pl2" = 10, "pl3" = 100)
-#' rating_tbl <- to_rating_tbl(rating_vec)
-#' rating_tbl
-#' to_rating_vec(rating_tbl)
-#'
-#' @name convert-rating
-NULL
-
-#' @rdname convert-rating
-#' @export
-to_rating_tbl <- function(rating_vec) {
-  tibble::tibble(
-    player = names(rating_vec),
-    rating = rating_vec
-  )
-}
-
-#' @rdname convert-rating
-#' @export
-to_rating_vec <- function(rating_tbl) {
-  res <- rating_tbl$rating
-  names(res) <- as.character(rating_tbl$player)
-
-  res
-}
-
 unique_levels <- function(x, na.last = TRUE) {
   if (is.null(levels(x))) {
     sort(unique(x), na.last = na.last)
