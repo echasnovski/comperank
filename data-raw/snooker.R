@@ -7,6 +7,23 @@ library(snookerorg)
 season_vec <- 2016:2017
 
 
+# Preprocessing functions -------------------------------------------------
+# Replace common non-ASCII characters with ASCII
+replace_special_chr <- function(x) {
+  x %>%
+    str_replace_all("ö", "oe") %>%
+    str_replace_all("ü", "ue") %>%
+    str_replace_all("ä", "ae") %>%
+    str_replace_all("ß", "ss")
+}
+
+# Remove extra whitespace and replace common non-ASCII characters with ASCII
+handle_tbl_strings <- function(tbl) {
+  tbl %>%
+    mutate_if(is.character, . %>% str_trim() %>% replace_special_chr)
+}
+
+
 # Fetch events ------------------------------------------------------------
 raw_events <- map(season_vec, snookerorg::get_season_events) %>%
   bind_rows() %>%
@@ -28,9 +45,9 @@ snooker_events <- raw_events %>%
     !grepl("shoot-out", name, ignore.case = TRUE)
   ) %>%
   snookerorg::simplify_event() %>%
-  mutate(name = str_trim(name)) %>%
   select(-discipline, -sex, -ageGroup) %>%
   select(id, season, name, everything()) %>%
+  handle_tbl_strings() %>%
   arrange(startDate)
 
 
@@ -84,7 +101,8 @@ snooker_players <- bind_rows(pro_players, ama_players) %>%
       str_squish(paste(firstName, middleName, lastName))
     )
   ) %>%
-  select(id, name, nationality, sex, born, status)
+  select(id, name, nationality, sex, born, status) %>%
+  handle_tbl_strings()
 
 
 # Fetch matches -----------------------------------------------------------
@@ -100,7 +118,8 @@ saveRDS(raw_matches, file.path("data-raw", "raw_matches.rds"))
 snooker_matches <- raw_matches %>%
   snookerorg::simplify_match() %>%
   arrange(startDate) %>%
-  select(-number)
+  select(-number) %>%
+  handle_tbl_strings()
 
 
 # Sanity checks -----------------------------------------------------------
@@ -127,6 +146,15 @@ sum(
 
 # Check that there are no matches with two walkovers. Result should be 0.
 sum(snooker_matches$walkover1 & snooker_matches$walkover2)
+
+# Detect non-ASCII characters. Result should be zero in all cases.
+detect_non_ascii <- . %>% transmute_if(is.character, stringi::stri_enc_mark) %>%
+  mutate(id = 1:n()) %>%
+  gather(var, value, -id) %>%
+  summarise(numNonASCII = sum(value != "ASCII", na.rm = TRUE))
+detect_non_ascii(snooker_events)
+detect_non_ascii(snooker_players)
+detect_non_ascii(snooker_matches)
 
 
 # File work ---------------------------------------------------------------
