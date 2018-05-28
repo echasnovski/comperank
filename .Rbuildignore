@@ -4,3 +4,4 @@
 ^codecov\.yml$
 ^data-raw$
 ^README\.Rmd$
+^LICENSE\.md$
