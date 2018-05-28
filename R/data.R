@@ -36,8 +36,8 @@
 #'
 #' @details Data is taken from snooker.org (http://www.snooker.org/) API.
 #'
-#' Data is present only for players who played at least one game in seasons
-#' 2016/2017 and 2017/2018.
+#' Data is present only for players who played at least one game in tracked
+#' [snooker events][snooker_events] in seasons 2016/2017 and 2017/2018.
 #'
 #' @format A [tibble][tibble::tibble] with one row per player and the following
 #' columns:
@@ -59,6 +59,8 @@
 #' Data set describing snooker matches in seasons 2016/2017 and 2017/2018.
 #'
 #' @details Data is taken from snooker.org (http://www.snooker.org/) API.
+#'
+#' Matches are present only for tracked [snooker events][snooker_events].
 #'
 #' @format A [tibble][tibble::tibble] with one row per match and the following
 #' columns:

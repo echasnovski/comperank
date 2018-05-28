@@ -18,6 +18,8 @@ snooker_events <- raw_events %>%
     type %in% c("Invitational", "Qualifying", "Ranking"),
     discipline == "snooker", # Not Six Red or Power snooker
     sex == "Both",
+    # "CVB Snooker Challenge" (id == 663) is a team event with dummy players
+    id != 663,
     # For some reason "Womens British Open" groups are stored
     # with `sex` equals "both" but they are female
     !grepl("women.*british.*open", name, ignore.case = TRUE),

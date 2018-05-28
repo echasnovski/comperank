@@ -26,8 +26,8 @@ Data set describing snooker players in seasons 2016/2017 and 2017/2018.
 \details{
 Data is taken from snooker.org (http://www.snooker.org/) API.
 
-Data is present only for players who played at least one game in seasons
-2016/2017 and 2017/2018.
+Data is present only for players who played at least one game in tracked
+\link[=snooker_events]{snooker events} in seasons 2016/2017 and 2017/2018.
 }
 \seealso{
 \link[=snooker_events]{Snooker events}, \link[=snooker_matches]{snooker matches}

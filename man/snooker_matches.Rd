@@ -41,6 +41,8 @@ Data set describing snooker matches in seasons 2016/2017 and 2017/2018.
 }
 \details{
 Data is taken from snooker.org (http://www.snooker.org/) API.
+
+Matches are present only for tracked \link[=snooker_events]{snooker events}.
 }
 \seealso{
 \link[=snooker_events]{Snooker events}, \link[=snooker_players]{snooker players}
