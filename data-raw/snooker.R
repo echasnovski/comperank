@@ -1,7 +1,7 @@
 library(tidyverse)
 
 # devtools::install.github("echasnovski/snookerorg")
-# Version, used to create actual data, is 0.1.0 as of 2018-05-20
+# Version, used to create actual data, is 0.1.0 as of 2018-05-28
 library(snookerorg)
 
 season_vec <- 2016:2017
@@ -35,8 +35,11 @@ snooker_events <- raw_events %>%
     type %in% c("Invitational", "Qualifying", "Ranking"),
     discipline == "snooker", # Not Six Red or Power snooker
     sex == "Both",
-    # "CVB Snooker Challenge" (id == 663) is a team event with dummy players
-    id != 663,
+    # "CVB Snooker Challenge" (id == 663) is a team event
+    id != 663L,
+    # "World Cup" (id == 626) is a team event with 4 group stages stored as
+    # separate events (other identifiers)
+    !(id %in% c(626L, 658L, 659L, 660L, 661L)),
     # For some reason "Womens British Open" groups are stored
     # with `sex` equals "both" but they are female
     !grepl("women.*british.*open", name, ignore.case = TRUE),
@@ -155,6 +158,28 @@ detect_non_ascii <- . %>% transmute_if(is.character, stringi::stri_enc_mark) %>%
 detect_non_ascii(snooker_events)
 detect_non_ascii(snooker_players)
 detect_non_ascii(snooker_matches)
+
+# Check that all players have names to (weakly) avoid team events.
+# Both results should be 0.
+sum(is.na(snooker_players$name))
+sum(snooker_players$name == "", na.rm = TRUE)
+
+# Check that all events have at least one pro played in at least one match.
+# Result should have 0 rows.
+snooker_matches %>%
+  left_join(
+    y = snooker_players %>% select(id, status1 = status),
+    by = c(player1Id = "id")
+  ) %>%
+  left_join(
+    y = snooker_players %>% select(id, status2 = status),
+    by = c(player2Id = "id")
+  ) %>%
+  select(eventId, status1, status2) %>%
+  gather(status, value, -eventId) %>%
+  group_by(eventId) %>%
+  summarise(anyPro = any(value == "pro")) %>%
+  filter(!anyPro)
 
 
 # File work ---------------------------------------------------------------

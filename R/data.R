@@ -6,7 +6,8 @@
 #'
 #' This data set has information about events that have all following qualities:
 #' - It has "Invitational", "Qualifying", or "Ranking" type.
-#' - It describes traditional snooker (not 6 Red or Power Snooker).
+#' - It describes traditional snooker (not 6 Red or Power Snooker) between
+#' individual players (not teams).
 #' - Both genders can take part (not only men or women).
 #' - Players of all ages can take part (not only seniors or under 21).
 #' - It is not "Shoot-Out" as those events are treated differently in
