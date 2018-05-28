@@ -1,3 +1,3 @@
-# comperank 0.0.0.9000
+# comperank 0.1.0 (2018-05-28)
 
 * Initial release.
