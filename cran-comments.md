@@ -1,3 +1,7 @@
+## Resubmission details
+
+Added a reference for the methods in the 'Description' field of DESCRIPTION file.
+
 ## Submission details
 
 This is a first submission of the package.
