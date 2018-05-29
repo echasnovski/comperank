@@ -3,9 +3,11 @@ Title: Ranking Methods for Competition Results
 Version: 0.1.0
 Authors@R: person("Evgeni", "Chasnovski", email = "evgeni.chasnovski@gmail.com",
     role = c("aut", "cre"))
-Description: Compute ranking and rating based on competition results. Algorithms
-    of different nature are implemented: with fixed Head-to-Head structure, with
-    variable Head-to-Head structure and with iterative nature.
+Description: Compute ranking and rating based on competition results. Methods of
+    different nature are implemented: with fixed Head-to-Head structure, with
+    variable Head-to-Head structure and with iterative nature. All algorithms
+    are taken from the book 'Who’s #1?: The science of rating and ranking' by
+    Amy N. Langville and Carl D. Meyer (2012, ISBN:978-0-691-15422-0).
 License: MIT + file LICENSE
 URL: https://github.com/echasnovski/comperank
 BugReports: https://github.com/echasnovski/comperank/issues
