@@ -1,5 +1,5 @@
 Package: comperank
-Title: Ranking Methods for Competition Results 
+Title: Ranking Methods for Competition Results
 Version: 0.1.0
 Authors@R: person("Evgeni", "Chasnovski", email = "evgeni.chasnovski@gmail.com",
     role = c("aut", "cre"))
