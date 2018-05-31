@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 options(tibble.print_min = 6, tibble.print_max = 6, tibble.width = 120)
 ```
 
-# comperank
+# comperank: Ranking Methods for Competition Results
 
 [![Build Status](https://travis-ci.org/echasnovski/comperank.svg?branch=master)](https://travis-ci.org/echasnovski/comperank) [![codecov](https://codecov.io/gh/echasnovski/comperank/branch/master/graph/badge.svg)](https://codecov.io/gh/echasnovski/comperank)
 

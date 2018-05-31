@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-comperank
-=========
+comperank: Ranking Methods for Competition Results
+==================================================
 
 [![Build Status](https://travis-ci.org/echasnovski/comperank.svg?branch=master)](https://travis-ci.org/echasnovski/comperank) [![codecov](https://codecov.io/gh/echasnovski/comperank/branch/master/graph/badge.svg)](https://codecov.io/gh/echasnovski/comperank)
 
