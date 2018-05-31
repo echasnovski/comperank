@@ -1,0 +1,28 @@
+title: comperes
+template:
+  params:
+    bootswatch: united
+
+reference:
+  - title: Package description
+    contents:
+    - comperank-package
+  - title: Ranking methods
+    contents:
+    - rating-ranking
+    - colley
+    - massey
+    - keener
+    - markov
+    - offense-defense
+    - iterative
+    - elo
+  - title: Other
+    contents:
+    - round_rank
+    - stoch-modifiers
+  - title: Snooker data
+    contents:
+    - snooker_events
+    - snooker_players
+    - snooker_matches
