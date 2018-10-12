@@ -6,12 +6,13 @@
 \alias{rank_od}
 \title{Offense-Defense method}
 \usage{
-rate_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001, tol = 1e-04,
-  max_iterations = 100)
+rate_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001,
+  tol = 1e-04, max_iterations = 100)
 
-rank_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001, tol = 1e-04,
-  max_iterations = 100, keep_rating = FALSE, ties = c("average", "first",
-  "last", "random", "max", "min"), round_digits = 7)
+rank_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001,
+  tol = 1e-04, max_iterations = 100, keep_rating = FALSE,
+  ties = c("average", "first", "last", "random", "max", "min"),
+  round_digits = 7)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for

@@ -17,7 +17,7 @@ creating valid competition results and Head-to-Head expressions with
 of R packages. Among other things, it means that the main output format is
 \link[tibble:tibble]{tibble}.
 
-\code{comperank} gets inspiration from the book \href{https://www.amazon.com/Whos-1-Science-Rating-Ranking/dp/069116231X}{"Who's#1"} by
+\code{comperank} gets inspiration from the book \href{https://www.amazon.com/Whos-1-Science-Rating-Ranking/dp/069116231X}{"Who's #1"} by
 Langville and Meyer. It provides functionality for the following rating
 algorithms:
 \itemize{

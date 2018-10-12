@@ -9,9 +9,9 @@
 \usage{
 rate_iterative(cr_data, rate_fun, initial_ratings = 0)
 
-rank_iterative(cr_data, rate_fun, initial_ratings = 0, keep_rating = FALSE,
-  type = "desc", ties = c("average", "first", "last", "random", "max",
-  "min"), round_digits = 7)
+rank_iterative(cr_data, rate_fun, initial_ratings = 0,
+  keep_rating = FALSE, type = "desc", ties = c("average", "first",
+  "last", "random", "max", "min"), round_digits = 7)
 
 add_iterative_ratings(cr_data, rate_fun, initial_ratings = 0)
 }
