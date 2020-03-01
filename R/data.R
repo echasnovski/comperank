@@ -15,17 +15,17 @@
 #'
 #' @format A [tibble][tibble::tibble] with one row per event and the following
 #' columns:
-#' - __id__ <int> : Event identifier in snooker.org database (used in `eventId`
+#' - __id__ `<int>` : Event identifier in snooker.org database (used in `eventId`
 #' column of [snooker_matches]).
-#' - __season__ <int> : Season identifier (by the year of season start).
-#' - __name__ <chr> : Event name.
-#' - __startDate__ <dttm> : Start date of event.
-#' - __endDate__ <dttm> : End date of event.
-#' - __sponsor__ <chr> : Event sponsor name.
-#' - __type__ <chr> : Event type ("Invitational", "Qualifying", or "Ranking").
-#' - __venue__ <chr> : Venue name event was played.
-#' - __city__ <chr> : City name event was played.
-#' - __country__ <chr> : Country name event was played.
+#' - __season__ `<int>` : Season identifier (by the year of season start).
+#' - __name__ `<chr>` : Event name.
+#' - __startDate__ `<dttm>` : Start date of event.
+#' - __endDate__ `<dttm>` : End date of event.
+#' - __sponsor__ `<chr>` : Event sponsor name.
+#' - __type__ `<chr>` : Event type ("Invitational", "Qualifying", or "Ranking").
+#' - __venue__ `<chr>` : Venue name event was played.
+#' - __city__ `<chr>` : City name event was played.
+#' - __country__ `<chr>` : Country name event was played.
 #'
 #' @seealso [Snooker players][snooker_players],
 #' [snooker matches][snooker_matches]
@@ -42,14 +42,14 @@
 #'
 #' @format A [tibble][tibble::tibble] with one row per player and the following
 #' columns:
-#' - __id__ <int> : Player identifier in snooker.org database (used in
+#' - __id__ `<int>` : Player identifier in snooker.org database (used in
 #' `player1Id`, `player2Id` and `winnerId` columns of [snooker_matches]).
-#' - __name__ <chr> : Player full name.
-#' - __nationality__ <chr> : Player nationality.
-#' - __sex__ <chr> : Player gender ("F" for female, "M" for male, and
+#' - __name__ `<chr>` : Player full name.
+#' - __nationality__ `<chr>` : Player nationality.
+#' - __sex__ `<chr>` : Player gender ("F" for female, "M" for male, and
 #' "Unknown").
-#' - __born__ <dttm> : Player date of birth.
-#' - __status__ <chr> : Player status in season 2017/2018 ("pro" for
+#' - __born__ `<dttm>` : Player date of birth.
+#' - __status__ `<chr>` : Player status in season 2017/2018 ("pro" for
 #' professional, "ama" for amateur).
 #'
 #' @seealso [Snooker events][snooker_events], [snooker matches][snooker_matches]
@@ -65,30 +65,30 @@
 #'
 #' @format A [tibble][tibble::tibble] with one row per match and the following
 #' columns:
-#' - __id__ <int> : Match identifier in snooker.org database.
-#' - __eventId__ <int> : Match's event identifier (taken from `id` column of
+#' - __id__ `<int>` : Match identifier in snooker.org database.
+#' - __eventId__ `<int>` : Match's event identifier (taken from `id` column of
 #' [snooker_events])
-#' - __round__ <int> : Round number of event in which match was played.
+#' - __round__ `<int>` : Round number of event in which match was played.
 #' _Usually_ event's structure is organized in rounds: sets of matches with
 #' roughly "the same importance". _Usually_ the more round number the "more
 #' important" matches are played. However, there are many exceptions.
-#' - __player1Id__ <int> : Identifier of first player in match (taken from `id`
+#' - __player1Id__ `<int>` : Identifier of first player in match (taken from `id`
 #' column of [snooker_players]).
-#' - __score1__ <int> : Number of won frames (individual games) by first player.
-#' - __walkover1__ <lgl> : Whether the win of first player was scored by the
+#' - __score1__ `<int>` : Number of won frames (individual games) by first player.
+#' - __walkover1__ `<lgl>` : Whether the win of first player was scored by the
 #' technical reasons.
-#' - __player2Id__ <int> : Identifier of second player in match (taken from `id`
+#' - __player2Id__ `<int>` : Identifier of second player in match (taken from `id`
 #' column of [snooker_players]).
-#' - __score2__ <int> : Number of won frames (individual games) by second
+#' - __score2__ `<int>` : Number of won frames (individual games) by second
 #' player.
-#' - __walkover2__ <lgl> : Whether the win of second player was scored by the
+#' - __walkover2__ `<lgl>` : Whether the win of second player was scored by the
 #' technical reasons.
-#' - __winnerId__ <int> : Identifier of match's winner (taken from either
+#' - __winnerId__ `<int>` : Identifier of match's winner (taken from either
 #' `player1Id` or `player2Id` columns).
-#' - __startDate__ <dttm> : Time at which match started.
-#' - __endDate__ <dttm> : Time at which match ended.
-#' - __scheduledDate__ <dttm> : Time at which match was scheduled to start.
-#' - __frameScores__ <chr> : Scores of players in frames. Usually is missing,
+#' - __startDate__ `<dttm>` : Time at which match started.
+#' - __endDate__ `<dttm>` : Time at which match ended.
+#' - __scheduledDate__ `<dttm>` : Time at which match was scheduled to start.
+#' - __frameScores__ `<chr>` : Scores of players in frames. Usually is missing,
 #' present only for important matches.
 #'
 #' @seealso [Snooker events][snooker_events], [snooker players][snooker_players]

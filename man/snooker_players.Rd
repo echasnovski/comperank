@@ -7,14 +7,14 @@
 \format{A \link[tibble:tibble]{tibble} with one row per player and the following
 columns:
 \itemize{
-\item \strong{id} <int> : Player identifier in snooker.org database (used in
+\item \strong{id} \verb{<int>} : Player identifier in snooker.org database (used in
 \code{player1Id}, \code{player2Id} and \code{winnerId} columns of \link{snooker_matches}).
-\item \strong{name} <chr> : Player full name.
-\item \strong{nationality} <chr> : Player nationality.
-\item \strong{sex} <chr> : Player gender ("F" for female, "M" for male, and
+\item \strong{name} \verb{<chr>} : Player full name.
+\item \strong{nationality} \verb{<chr>} : Player nationality.
+\item \strong{sex} \verb{<chr>} : Player gender ("F" for female, "M" for male, and
 "Unknown").
-\item \strong{born} <dttm> : Player date of birth.
-\item \strong{status} <chr> : Player status in season 2017/2018 ("pro" for
+\item \strong{born} \verb{<dttm>} : Player date of birth.
+\item \strong{status} \verb{<chr>} : Player status in season 2017/2018 ("pro" for
 professional, "ama" for amateur).
 }}
 \usage{
