@@ -10,8 +10,8 @@
 rate_elo(cr_data, K = 30, ksi = 400, initial_ratings = 0)
 
 rank_elo(cr_data, K = 30, ksi = 400, initial_ratings = 0,
-  keep_rating = FALSE, ties = c("average", "first", "last", "random",
-  "max", "min"), round_digits = 7)
+  keep_rating = FALSE, ties = c("average", "first", "last", "random", "max",
+  "min"), round_digits = 7)
 
 add_elo_ratings(cr_data, K = 30, ksi = 400, initial_ratings = 0)
 

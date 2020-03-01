@@ -6,13 +6,12 @@
 \alias{rank_od}
 \title{Offense-Defense method}
 \usage{
-rate_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001,
-  tol = 1e-04, max_iterations = 100)
+rate_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001, tol = 1e-04,
+  max_iterations = 100)
 
-rank_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001,
-  tol = 1e-04, max_iterations = 100, keep_rating = FALSE,
-  ties = c("average", "first", "last", "random", "max", "min"),
-  round_digits = 7)
+rank_od(cr_data, ..., force_nonneg_h2h = TRUE, eps = 0.001, tol = 1e-04,
+  max_iterations = 100, keep_rating = FALSE, ties = c("average", "first",
+  "last", "random", "max", "min"), round_digits = 7)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
@@ -90,12 +89,12 @@ iterative algorithm in the next step. If all values are strictly positive
 then this step is omitted. In other case small value is computed as the
 smallest non-zero Head-to-Head value multiplied by \code{eps}.
 \item Perform iterative fixed point search with the following recurrent formula:
-\code{def_{k+1} = t(A) \%*\% inv(A \%*\% inv(def_{k}))} where \code{def_{k}}
+\code{def_{k+1} = t(A) \%*\% inv(A \%*\% inv(def_{k}))} where \verb{def_\{k\}}
 is a vector of defensive ratings at iteration \code{k}, \code{A} is a perturbed
 Head-to-Head matrix, \code{inv(x) = 1 / x}. Iterative search stops if at least one
 of two conditions is met:
 \itemize{
-\item \code{sum(abs(def_{k+1} / def_{k} - 1)) < tol}.
+\item \verb{sum(abs(def_\{k+1\} / def_\{k\} - 1)) < tol}.
 \item Number of iterations exceeds maximum number of iterations
 \code{max_iterations}.
 }
