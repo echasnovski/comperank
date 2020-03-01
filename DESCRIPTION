@@ -1,6 +1,6 @@
 Package: comperank
 Title: Ranking Methods for Competition Results
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: person("Evgeni", "Chasnovski", email = "evgeni.chasnovski@gmail.com",
     role = c("aut", "cre"))
 Description: Compute ranking and rating based on competition results. Methods of
