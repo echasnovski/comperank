@@ -7,17 +7,17 @@
 \format{A \link[tibble:tibble]{tibble} with one row per event and the following
 columns:
 \itemize{
-\item \strong{id} <int> : Event identifier in snooker.org database (used in \code{eventId}
+\item \strong{id} \verb{<int>} : Event identifier in snooker.org database (used in \code{eventId}
 column of \link{snooker_matches}).
-\item \strong{season} <int> : Season identifier (by the year of season start).
-\item \strong{name} <chr> : Event name.
-\item \strong{startDate} <dttm> : Start date of event.
-\item \strong{endDate} <dttm> : End date of event.
-\item \strong{sponsor} <chr> : Event sponsor name.
-\item \strong{type} <chr> : Event type ("Invitational", "Qualifying", or "Ranking").
-\item \strong{venue} <chr> : Venue name event was played.
-\item \strong{city} <chr> : City name event was played.
-\item \strong{country} <chr> : Country name event was played.
+\item \strong{season} \verb{<int>} : Season identifier (by the year of season start).
+\item \strong{name} \verb{<chr>} : Event name.
+\item \strong{startDate} \verb{<dttm>} : Start date of event.
+\item \strong{endDate} \verb{<dttm>} : End date of event.
+\item \strong{sponsor} \verb{<chr>} : Event sponsor name.
+\item \strong{type} \verb{<chr>} : Event type ("Invitational", "Qualifying", or "Ranking").
+\item \strong{venue} \verb{<chr>} : Venue name event was played.
+\item \strong{city} \verb{<chr>} : City name event was played.
+\item \strong{country} \verb{<chr>} : Country name event was played.
 }}
 \usage{
 snooker_events

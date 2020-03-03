@@ -7,30 +7,30 @@
 \format{A \link[tibble:tibble]{tibble} with one row per match and the following
 columns:
 \itemize{
-\item \strong{id} <int> : Match identifier in snooker.org database.
-\item \strong{eventId} <int> : Match's event identifier (taken from \code{id} column of
+\item \strong{id} \verb{<int>} : Match identifier in snooker.org database.
+\item \strong{eventId} \verb{<int>} : Match's event identifier (taken from \code{id} column of
 \link{snooker_events})
-\item \strong{round} <int> : Round number of event in which match was played.
+\item \strong{round} \verb{<int>} : Round number of event in which match was played.
 \emph{Usually} event's structure is organized in rounds: sets of matches with
 roughly "the same importance". \emph{Usually} the more round number the "more
 important" matches are played. However, there are many exceptions.
-\item \strong{player1Id} <int> : Identifier of first player in match (taken from \code{id}
+\item \strong{player1Id} \verb{<int>} : Identifier of first player in match (taken from \code{id}
 column of \link{snooker_players}).
-\item \strong{score1} <int> : Number of won frames (individual games) by first player.
-\item \strong{walkover1} <lgl> : Whether the win of first player was scored by the
+\item \strong{score1} \verb{<int>} : Number of won frames (individual games) by first player.
+\item \strong{walkover1} \verb{<lgl>} : Whether the win of first player was scored by the
 technical reasons.
-\item \strong{player2Id} <int> : Identifier of second player in match (taken from \code{id}
+\item \strong{player2Id} \verb{<int>} : Identifier of second player in match (taken from \code{id}
 column of \link{snooker_players}).
-\item \strong{score2} <int> : Number of won frames (individual games) by second
+\item \strong{score2} \verb{<int>} : Number of won frames (individual games) by second
 player.
-\item \strong{walkover2} <lgl> : Whether the win of second player was scored by the
+\item \strong{walkover2} \verb{<lgl>} : Whether the win of second player was scored by the
 technical reasons.
-\item \strong{winnerId} <int> : Identifier of match's winner (taken from either
+\item \strong{winnerId} \verb{<int>} : Identifier of match's winner (taken from either
 \code{player1Id} or \code{player2Id} columns).
-\item \strong{startDate} <dttm> : Time at which match started.
-\item \strong{endDate} <dttm> : Time at which match ended.
-\item \strong{scheduledDate} <dttm> : Time at which match was scheduled to start.
-\item \strong{frameScores} <chr> : Scores of players in frames. Usually is missing,
+\item \strong{startDate} \verb{<dttm>} : Time at which match started.
+\item \strong{endDate} \verb{<dttm>} : Time at which match ended.
+\item \strong{scheduledDate} \verb{<dttm>} : Time at which match was scheduled to start.
+\item \strong{frameScores} \verb{<chr>} : Scores of players in frames. Usually is missing,
 present only for important matches.
 }}
 \usage{
