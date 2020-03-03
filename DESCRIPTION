@@ -1,6 +1,6 @@
 Package: comperank
 Title: Ranking Methods for Competition Results
-Version: 0.1.0.9000
+Version: 0.1.1
 Authors@R: 
     person(given = "Evgeni",
            family = "Chasnovski",

@@ -1,5 +1,7 @@
-# comperank (development version)
+# comperank 0.1.1
 
-# comperank 0.1.0 (2018-05-28)
+* Reaction to `tibble` 3.0.0.
+
+# comperank 0.1.0
 
 * Initial release.
