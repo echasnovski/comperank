@@ -1,23 +1,20 @@
-## Resubmission details
-
-Added a reference for the methods in the 'Description' field of DESCRIPTION file.
-
 ## Submission details
 
-This is a first submission of the package.
+This submission is reaction to upcoming changes in 'tibble' 3.0.0.
 
 ## Test environments
-* Ubuntu 16.04 LTS (local install), R 3.4.4 (2018-03-15)
-* macOS 10.11 El Capitan (64-bit) (on R-hub), R 3.5.0 (2018-04-23)
-* Debian Linux (on R-hub), R-devel (2018-05-27 r74786), GCC
-* win-builder, R Under development (unstable) (2018-05-27 r74786)
+
+* Local Ubuntu 18.04 install, R 3.6.3
+* Debian on R-hub, R development version (2020-03-01 r77879)
+* macOS 10.11 on R-hub, R 3.6.2
+* win-builder, release and development version (2020-01-28 r77738)
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 notes
 
-* Note is for the new submission.
+---
 
 ## Reverse dependencies
 
-This is a new release, so there are no reverse dependencies.
+There are no reverse dependencies.
