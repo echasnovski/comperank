@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 
-options(tibble.print_min = 6, tibble.print_max = 6, tibble.width = 120)
+options(tibble.print_min = 6, tibble.print_max = 6, tibble.width = 100)
 ```
 
 # comperank: Ranking Methods for Competition Results
