@@ -4,8 +4,8 @@
 \alias{round_rank}
 \title{Rank vector after rounding}
 \usage{
-round_rank(x, type = "desc", na.last = TRUE, ties = c("average",
-  "first", "last", "random", "max", "min"), round_digits = 7)
+round_rank(x, type = "desc", na.last = TRUE, ties = c("average", "first",
+  "last", "random", "max", "min"), round_digits = 7)
 }
 \arguments{
 \item{x}{A numeric, complex, character or logical vector.}
