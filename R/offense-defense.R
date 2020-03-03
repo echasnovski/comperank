@@ -138,7 +138,11 @@ rate_od <- function(cr_data, ..., force_nonneg_h2h = TRUE,
     off_ratings[, 1], unique_levels(cr$player),
     "player", "rating_off"
   ) %>%
-    mutate(rating_def = def_ratings[, 1], rating_od = od_ratings[, 1])
+    mutate(
+      # `unname()` is needed to remove unnecessary names inside input vectors
+      rating_def = unname(def_ratings[, 1]),
+      rating_od = unname(od_ratings[, 1])
+    )
 }
 
 #' @rdname offense-defense
