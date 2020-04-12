@@ -195,6 +195,9 @@ add_iterative_ratings <- function(cr_data, rate_fun, initial_ratings = 0) {
     as.data.frame()
 
   cr %>%
+    # Converting to raw tibble here is crucial to avoid possible confusion
+    # during 'tidyverse' operations about combination of subclassed tibbles.
+    as_tibble() %>%
     bind_cols(y = ratings) %>%
     select(-.data[[".player1_id"]], -.data[[".player2_id"]]) %>%
     as_widecr(repair = FALSE)
@@ -244,6 +247,9 @@ get_cr_initial_ratings <- function(players, initial_ratings = 0) {
 
 get_ratings_after <- function(cr_with_ratings) {
   ratings_wide <- cr_with_ratings %>%
+    # Converting to raw tibble here is crucial to avoid possible confusion
+    # during 'tidyverse' operations about combination of subclassed tibbles.
+    as_tibble() %>%
     mutate(..game = 1:n())
 
   bind_rows(
