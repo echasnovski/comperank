@@ -13,8 +13,8 @@ rate_keener(cr_data, ..., fill = 0, force_nonneg_h2h = TRUE,
 
 rank_keener(cr_data, ..., fill = 0, force_nonneg_h2h = TRUE,
   skew_fun = skew_keener, normalize_fun = normalize_keener, eps = 0.001,
-  keep_rating = FALSE, ties = c("average", "first", "last", "random", "max",
-  "min"), round_digits = 7)
+  keep_rating = FALSE, ties = c("average", "first", "last", "random",
+  "max", "min"), round_digits = 7)
 
 skew_keener(x)
 

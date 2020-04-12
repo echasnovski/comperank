@@ -4,7 +4,8 @@
 \name{snooker_players}
 \alias{snooker_players}
 \title{Snooker players}
-\format{A \link[tibble:tibble]{tibble} with one row per player and the following
+\format{
+A \link[tibble:tibble]{tibble} with one row per player and the following
 columns:
 \itemize{
 \item \strong{id} \verb{<int>} : Player identifier in snooker.org database (used in
@@ -16,7 +17,8 @@ columns:
 \item \strong{born} \verb{<dttm>} : Player date of birth.
 \item \strong{status} \verb{<chr>} : Player status in season 2017/2018 ("pro" for
 professional, "ama" for amateur).
-}}
+}
+}
 \usage{
 snooker_players
 }

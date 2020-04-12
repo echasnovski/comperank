@@ -4,7 +4,8 @@
 \name{snooker_events}
 \alias{snooker_events}
 \title{Snooker events}
-\format{A \link[tibble:tibble]{tibble} with one row per event and the following
+\format{
+A \link[tibble:tibble]{tibble} with one row per event and the following
 columns:
 \itemize{
 \item \strong{id} \verb{<int>} : Event identifier in snooker.org database (used in \code{eventId}
@@ -18,7 +19,8 @@ column of \link{snooker_matches}).
 \item \strong{venue} \verb{<chr>} : Venue name event was played.
 \item \strong{city} \verb{<chr>} : City name event was played.
 \item \strong{country} \verb{<chr>} : Country name event was played.
-}}
+}
+}
 \usage{
 snooker_events
 }

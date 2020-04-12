@@ -4,7 +4,8 @@
 \name{snooker_matches}
 \alias{snooker_matches}
 \title{Snooker matches}
-\format{A \link[tibble:tibble]{tibble} with one row per match and the following
+\format{
+A \link[tibble:tibble]{tibble} with one row per match and the following
 columns:
 \itemize{
 \item \strong{id} \verb{<int>} : Match identifier in snooker.org database.
@@ -32,7 +33,8 @@ technical reasons.
 \item \strong{scheduledDate} \verb{<dttm>} : Time at which match was scheduled to start.
 \item \strong{frameScores} \verb{<chr>} : Scores of players in frames. Usually is missing,
 present only for important matches.
-}}
+}
+}
 \usage{
 snooker_matches
 }
