@@ -17,7 +17,13 @@ options(tibble.print_min = 6, tibble.print_max = 6, tibble.width = 100)
 
 # comperank: Ranking Methods for Competition Results
 
-[![Build Status](https://travis-ci.org/echasnovski/comperank.svg?branch=master)](https://travis-ci.org/echasnovski/comperank) [![codecov](https://codecov.io/gh/echasnovski/comperank/branch/master/graph/badge.svg)](https://codecov.io/gh/echasnovski/comperank)
+<!-- badges: start -->
+[![Travis-CI Build Status](https://travis-ci.org/echasnovski/comperank.svg?branch=master)](https://travis-ci.org/echasnovski/comperank)
+[![Coverage Status](https://codecov.io/gh/echasnovski/comperank/graph/badge.svg)](https://codecov.io/github/echasnovski/comperank?branch=master)
+[![CRAN](https://www.r-pkg.org/badges/version/comperank?color=blue)](https://cran.r-project.org/package=comperank)
+[![Dependencies](https://tinyverse.netlify.com/badge/comperank)](https://CRAN.R-project.org/package=comperank)
+[![Downloads](http://cranlogs.r-pkg.org/badges/comperank)](https://cran.r-project.org/package=comperank)
+<!-- badges: end -->
 
 `comperank` provides tools for computing ranking and rating based on competition results. It is tightly connected to its data infrastructure package [comperes](https://github.com/echasnovski/comperes). Basic knowledge about creating [valid competition results](https://github.com/echasnovski/comperes#store-and-convert) and [Head-to-Head expressions](https://github.com/echasnovski/comperes#head-to-head) with `comperes` is needed in order to efficiently use `comperank`.
 

@@ -3,9 +3,16 @@
 
 # comperank: Ranking Methods for Competition Results
 
-[![Build
+<!-- badges: start -->
+
+[![Travis-CI Build
 Status](https://travis-ci.org/echasnovski/comperank.svg?branch=master)](https://travis-ci.org/echasnovski/comperank)
-[![codecov](https://codecov.io/gh/echasnovski/comperank/branch/master/graph/badge.svg)](https://codecov.io/gh/echasnovski/comperank)
+[![Coverage
+Status](https://codecov.io/gh/echasnovski/comperank/graph/badge.svg)](https://codecov.io/github/echasnovski/comperank?branch=master)
+[![CRAN](https://www.r-pkg.org/badges/version/comperank?color=blue)](https://cran.r-project.org/package=comperank)
+[![Dependencies](https://tinyverse.netlify.com/badge/comperank)](https://CRAN.R-project.org/package=comperank)
+[![Downloads](http://cranlogs.r-pkg.org/badges/comperank)](https://cran.r-project.org/package=comperank)
+<!-- badges: end -->
 
 `comperank` provides tools for computing ranking and rating based on
 competition results. It is tightly connected to its data infrastructure
@@ -298,6 +305,8 @@ comperes::h2h_mat(ncaa2005, !!! h2h_funs["mean_score"])
 #> UNC   24.00  16.0 12.5  7.0  3.0
 #> UVA   38.00  17.0  5.0 18.5 14.0
 #> VT    45.00   7.0 30.0 52.0 33.5
+#> attr(,"class")
+#> [1] "matrix" "array"
 
 # Computing Head-to-Head values manually
 comperes::h2h_mat(ncaa2005, mean(score1))
@@ -308,6 +317,8 @@ comperes::h2h_mat(ncaa2005, mean(score1))
 #> UNC   24.00  16.0 12.5  7.0  3.0
 #> UVA   38.00  17.0  5.0 18.5 14.0
 #> VT    45.00   7.0 30.0 52.0 33.5
+#> attr(,"class")
+#> [1] "matrix" "array"
 
 # To account for self play use `if-else`
 comperes::h2h_mat(ncaa2005, if(player1[1] == player2[1]) 0 else mean(score1))
@@ -318,6 +329,8 @@ comperes::h2h_mat(ncaa2005, if(player1[1] == player2[1]) 0 else mean(score1))
 #> UNC     24    16   0   7  3
 #> UVA     38    17   5   0 14
 #> VT      45     7  30  52  0
+#> attr(,"class")
+#> [1] "matrix" "array"
 ```
 
 All functions for methods with variable Head-to-Head structure are
