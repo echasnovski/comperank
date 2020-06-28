@@ -19,6 +19,7 @@ options(tibble.print_min = 6, tibble.print_max = 6, tibble.width = 100)
 
 <!-- badges: start -->
 [![Travis-CI Build Status](https://travis-ci.org/echasnovski/comperank.svg?branch=master)](https://travis-ci.org/echasnovski/comperank)
+[![R build status](https://github.com/echasnovski/comperank/workflows/R-CMD-check/badge.svg)](https://github.com/echasnovski/comperank/actions)
 [![Coverage Status](https://codecov.io/gh/echasnovski/comperank/graph/badge.svg)](https://codecov.io/github/echasnovski/comperank?branch=master)
 [![CRAN](https://www.r-pkg.org/badges/version/comperank?color=blue)](https://cran.r-project.org/package=comperank)
 [![Dependencies](https://tinyverse.netlify.com/badge/comperank)](https://CRAN.R-project.org/package=comperank)
