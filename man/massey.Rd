@@ -13,7 +13,7 @@ rank_massey(cr_data, keep_rating = FALSE, ties = c("average", "first",
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\link[comperes:as_longcr]{as_longcr()}.}
+\link[comperes:longcr]{as_longcr()}.}
 
 \item{keep_rating}{Whether to keep rating column in ranking output.}
 
@@ -39,7 +39,7 @@ using Massey method.
 This rating method was initially designed for games between two
 players. There will be an error if in \code{cr_data} there is a game not between
 two players. Convert input competition results manually or with
-\link[comperes:to_pairgames]{to_pairgames()} from \code{comperes} package.
+\link[comperes:pairgames]{to_pairgames()} from \code{comperes} package.
 
 It is assumed that score is numeric and higher values are better for the
 player.
@@ -69,7 +69,7 @@ will be 0.
 
 
 \code{comperank} offers a possibility to handle certain set of players. It is done
-by having \code{player} column (in \link[comperes:as_longcr]{longcr} format) as factor
+by having \code{player} column (in \link[comperes:longcr]{longcr} format) as factor
 with levels specifying all players of interest. In case of factor the result
 is returned only for players from its levels. Otherwise - for all present
 players.

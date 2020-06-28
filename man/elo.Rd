@@ -19,7 +19,7 @@ elo(rating1, score1, rating2, score2, K = 30, ksi = 400)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\link[comperes:as_longcr]{as_longcr()}.}
+\link[comperes:longcr]{as_longcr()}.}
 
 \item{K}{K-factor for Elo formula.}
 
@@ -95,7 +95,7 @@ Players) and \code{NA} values.
 
 
 \code{comperank} offers a possibility to handle certain set of players. It is done
-by having \code{player} column (in \link[comperes:as_longcr]{longcr} format) as factor
+by having \code{player} column (in \link[comperes:longcr]{longcr} format) as factor
 with levels specifying all players of interest. In case of factor the result
 is returned only for players from its levels. Otherwise - for all present
 players.

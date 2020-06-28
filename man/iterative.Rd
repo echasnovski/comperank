@@ -17,7 +17,7 @@ add_iterative_ratings(cr_data, rate_fun, initial_ratings = 0)
 }
 \arguments{
 \item{cr_data}{Competition results in format ready for
-\link[comperes:as_longcr]{as_longcr()}.}
+\link[comperes:longcr]{as_longcr()}.}
 
 \item{rate_fun}{Rating function (see Details).}
 
@@ -63,7 +63,7 @@ game based on players' game scores and their ratings just before the game.
 Theoretically this kind of ratings can be non-numeric and be computed on
 competition results with variable number of players but they rarely do. This
 package provides functions for computing iterative \strong{numeric} ratings for
-\link[comperes:to_pairgames]{pairgames} (competition results with games only
+\link[comperes:pairgames]{pairgames} (competition results with games only
 between two players). Error is thrown if \code{cr_data} is not pairgames.
 
 Games in \link[comperes:widecr]{widecr} form are arranged in increasing order
@@ -101,14 +101,14 @@ computed, should be present in its names (as character representation of
 players' actual identifiers).
 \item A data frame with first column representing player and second - initial
 rating. It will be converted to named vector with
-\link[tibble:deframe]{deframe()} from \code{tibble} package.
+\link[tibble:enframe]{deframe()} from \code{tibble} package.
 }
 }
 \section{Players}{
 
 
 \code{comperank} offers a possibility to handle certain set of players. It is done
-by having \code{player} column (in \link[comperes:as_longcr]{longcr} format) as factor
+by having \code{player} column (in \link[comperes:longcr]{longcr} format) as factor
 with levels specifying all players of interest. In case of factor the result
 is returned only for players from its levels. Otherwise - for all present
 players.
