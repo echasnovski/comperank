@@ -1,11 +1,12 @@
 Package: comperank
 Title: Ranking Methods for Competition Results
 Version: 0.1.1.9000
-Authors@R: 
+Authors@R:
     person(given = "Evgeni",
            family = "Chasnovski",
            role = c("aut", "cre"),
-           email = "evgeni.chasnovski@gmail.com")
+           email = "evgeni.chasnovski@gmail.com",
+           comment = c(ORCID = "0000-0002-1617-4019"))
 Description: Compute ranking and rating based on competition
     results. Methods of different nature are implemented: with fixed
     Head-to-Head structure, with variable Head-to-Head structure and with
@@ -15,24 +16,24 @@ Description: Compute ranking and rating based on competition
 License: MIT + file LICENSE
 URL: https://github.com/echasnovski/comperank
 BugReports: https://github.com/echasnovski/comperank/issues
-Depends: 
+Depends:
     comperes (>= 0.1.0),
     R (>= 3.4.0)
-Imports: 
+Imports:
     dplyr (>= 0.6.0),
     Rcpp,
     rlang (>= 0.2.0),
     tibble
-Suggests: 
+Suggests:
     covr,
     knitr,
     rmarkdown,
     testthat
-LinkingTo: 
+LinkingTo:
     Rcpp
-VignetteBuilder: 
+VignetteBuilder:
     knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE, old_usage = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
