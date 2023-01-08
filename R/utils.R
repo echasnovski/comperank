@@ -128,7 +128,7 @@ enframe_vec <- function(x, ref = NULL, name = "name", value = "value") {
     res <- tibble::tibble(ref = ref) %>%
       mutate(ref_chr = as.character(ref)) %>%
       left_join(y = res_tbl, by = c(ref_chr = name)) %>%
-      select(-.data$ref_chr)
+      select(-"ref_chr")
     colnames(res)[1] <- name
 
     res

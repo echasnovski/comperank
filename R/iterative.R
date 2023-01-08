@@ -199,7 +199,7 @@ add_iterative_ratings <- function(cr_data, rate_fun, initial_ratings = 0) {
     # during 'tidyverse' operations about combination of subclassed tibbles.
     as_tibble() %>%
     bind_cols(y = ratings) %>%
-    select(-.data[[".player1_id"]], -.data[[".player2_id"]]) %>%
+    select(-".player1_id", -".player2_id") %>%
     as_widecr(repair = FALSE)
 }
 
@@ -267,5 +267,5 @@ get_ratings_after <- function(cr_with_ratings) {
       )
   ) %>%
     arrange(.data$game) %>%
-    select(-.data$game)
+    select(-"game")
 }
