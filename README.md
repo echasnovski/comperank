@@ -7,10 +7,9 @@
 
 [![Travis-CI Build
 Status](https://travis-ci.org/echasnovski/comperank.svg?branch=master)](https://travis-ci.org/echasnovski/comperank)
-[![R build
-status](https://github.com/echasnovski/comperank/workflows/R-CMD-check/badge.svg)](https://github.com/echasnovski/comperank/actions)
-[![Coverage
-Status](https://codecov.io/gh/echasnovski/comperank/graph/badge.svg)](https://codecov.io/github/echasnovski/comperank?branch=master)
+[![R-CMD-check](https://github.com/echasnovski/comperank/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/echasnovski/comperank/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/echasnovski/comperank/branch/master/graph/badge.svg)](https://app.codecov.io/gh/echasnovski/comperank?branch=master)
 [![CRAN](https://www.r-pkg.org/badges/version/comperank?color=blue)](https://cran.r-project.org/package=comperank)
 [![Dependencies](https://tinyverse.netlify.com/badge/comperank)](https://CRAN.R-project.org/package=comperank)
 [![Downloads](http://cranlogs.r-pkg.org/badges/comperank)](https://cran.r-project.org/package=comperank)
@@ -52,36 +51,33 @@ output format is [tibble](http://tibble.tidyverse.org/).
 by Langville and Meyer. It provides functionality for the following
 rating algorithms:
 
-  - Algorithms with **fixed Head-to-Head structure**:
-      - Simplified Massey method with `rate_massey()` and
-        `rank_massey()`.
-      - Simplified Colley method with `rate_colley()` and
-        `rank_colley()`.
-  - Algorithms with **variable Head-to-Head structure**:
-      - Keener method with `rate_keener()` and `rank_keener()`.
-      - Markov method with `rate_markov()` and `rank_markov()`.
-      - Offense-Defense method with `rate_od()` and `rank_od()`.
-  - Algorithms with **iterative nature**:
-      - General Iterative ratings with `rate_iterative()`,
-        `rank_iterative()`, and `add_iterative_ratings()`.
-      - Elo ratings with `rate_elo()`, `rank_elo()`, and
-        `add_elo_ratings()`.
+- Algorithms with **fixed Head-to-Head structure**:
+  - Simplified Massey method with `rate_massey()` and `rank_massey()`.
+  - Simplified Colley method with `rate_colley()` and `rank_colley()`.
+- Algorithms with **variable Head-to-Head structure**:
+  - Keener method with `rate_keener()` and `rank_keener()`.
+  - Markov method with `rate_markov()` and `rank_markov()`.
+  - Offense-Defense method with `rate_od()` and `rank_od()`.
+- Algorithms with **iterative nature**:
+  - General Iterative ratings with `rate_iterative()`,
+    `rank_iterative()`, and `add_iterative_ratings()`.
+  - Elo ratings with `rate_elo()`, `rank_elo()`, and
+    `add_elo_ratings()`.
 
 As you can see, there are three sets of functions:
 
-  - `rate_*()`. Its output is a tibble with columns `player` (player
-    identifier) and at least one `rating_*` (rating value). Names of
-    rating columns depend on rating method.
-  - `rank_*()`. Its default output is similar to previous one, but with
-    `ranking_*` instead of rating columns. It runs `rate_*()` and does
-    ranking with correct direction. One can use option `keep_rating =
-    TRUE` to keep rating columns in the output.
-  - `add_*_ratings()`. These functions are present only for algorithms
-    with iterative nature and competition results with games only
-    between two players. They return tibble with row corresponding to a
-    game (see wide format in **Structure of competition results**) and
-    extra columns indicating ratings of players before and after the
-    game.
+- `rate_*()`. Its output is a tibble with columns `player` (player
+  identifier) and at least one `rating_*` (rating value). Names of
+  rating columns depend on rating method.
+- `rank_*()`. Its default output is similar to previous one, but with
+  `ranking_*` instead of rating columns. It runs `rate_*()` and does
+  ranking with correct direction. One can use option
+  `keep_rating = TRUE` to keep rating columns in the output.
+- `add_*_ratings()`. These functions are present only for algorithms
+  with iterative nature and competition results with games only between
+  two players. They return tibble with row corresponding to a game (see
+  wide format in **Structure of competition results**) and extra columns
+  indicating ratings of players before and after the game.
 
 This README provides examples of basic usage of these functions. To
 learn more about algorithms behind them, see corresponding help pages.
@@ -129,7 +125,7 @@ of an isolated group of Atlantic Coast Conference teams provided in book
 ``` r
 ncaa2005
 #> # A longcr object:
-#> # A tibble: 20 x 3
+#> # A tibble: 20 × 3
 #>    game player score
 #>   <int> <chr>  <int>
 #> 1     1 Duke       7
@@ -154,7 +150,7 @@ should be created with `as_widecr()` function from `comperes`:
 ``` r
 comperes::as_widecr(ncaa2005)
 #> # A widecr object:
-#> # A tibble: 10 x 5
+#> # A tibble: 10 × 5
 #>    game player1 score1 player2 score2
 #>   <int> <chr>    <int> <chr>    <int>
 #> 1     1 Duke         7 Miami       52
@@ -174,9 +170,9 @@ structure, or `longcr` object, or `widecr` object**.
 **Massey** and **Colley** methods were initially designed for
 competitions where:
 
-  - Games are held only between two players.
-  - It is assumed that score is numeric and higher values indicate
-    better player performance in a game.
+- Games are held only between two players.
+- It is assumed that score is numeric and higher values indicate better
+  player performance in a game.
 
 ### Massey method
 
@@ -186,17 +182,17 @@ indicates better player competition performance.
 
 ``` r
 rate_massey(ncaa2005)
-#> # A tibble: 5 x 2
+#> # A tibble: 5 × 2
 #>   player rating_massey
 #>   <chr>          <dbl>
-#> 1 Duke           -24.8
-#> 2 Miami           18.2
-#> 3 UNC             -8. 
-#> 4 UVA             -3.4
-#> 5 VT              18
+#> 1 Duke          -24.8 
+#> 2 Miami          18.2 
+#> 3 UNC            -8   
+#> 4 UVA            -3.40
+#> 5 VT             18
 
 rank_massey(ncaa2005)
-#> # A tibble: 5 x 2
+#> # A tibble: 5 × 2
 #>   player ranking_massey
 #>   <chr>           <dbl>
 #> 1 Duke                5
@@ -206,14 +202,14 @@ rank_massey(ncaa2005)
 #> 5 VT                  2
 
 rank_massey(ncaa2005, keep_rating = TRUE)
-#> # A tibble: 5 x 3
+#> # A tibble: 5 × 3
 #>   player rating_massey ranking_massey
 #>   <chr>          <dbl>          <dbl>
-#> 1 Duke           -24.8              5
-#> 2 Miami           18.2              1
-#> 3 UNC             -8.               4
-#> 4 UVA             -3.4              3
-#> 5 VT              18                2
+#> 1 Duke          -24.8               5
+#> 2 Miami          18.2               1
+#> 3 UNC            -8                 4
+#> 4 UVA            -3.40              3
+#> 5 VT             18                 2
 ```
 
 ### Colley method
@@ -223,7 +219,7 @@ player’s won games. Bigger value indicates better player performance.
 
 ``` r
 rank_colley(ncaa2005, keep_rating = TRUE)
-#> # A tibble: 5 x 3
+#> # A tibble: 5 × 3
 #>   player rating_colley ranking_colley
 #>   <chr>          <dbl>          <dbl>
 #> 1 Duke           0.214              5
@@ -245,10 +241,10 @@ players’ matchups - mini-“games” in `widecr` format between pair of
 players. In other words, for every directed pair (order matters) of
 players (including “pair” of player with oneself):
 
-  - Data frame of matchups is computed in wide format, i.e. with columns
-    `game`, `player1`, `score1`, `player2`, `score2`.
-  - This data frame is summarised with Head-to-Head expression supplied
-    in [dplyr](http://dplyr.tidyverse.org/) fashion.
+- Data frame of matchups is computed in wide format, i.e. with columns
+  `game`, `player1`, `score1`, `player2`, `score2`.
+- This data frame is summarised with Head-to-Head expression supplied in
+  [dplyr](http://dplyr.tidyverse.org/) fashion.
 
 For more robust usage `comperes` provides `h2h_funs` - a list of the
 most common Head-to-Head
@@ -263,9 +259,9 @@ Examples of computing Head-to-Head values for more clarity:
 ``` r
 # Examples of h2h_funs elements
 names(h2h_funs)
-#> [1] "mean_score_diff"     "mean_score_diff_pos" "mean_score"         
-#> [4] "sum_score_diff"      "sum_score_diff_pos"  "sum_score"          
-#> [7] "num_wins"            "num_wins2"           "num"
+#> [1] "mean_score_diff"     "mean_score_diff_pos" "mean_score"          "sum_score_diff"     
+#> [5] "sum_score_diff_pos"  "sum_score"           "num_wins"            "num_wins2"          
+#> [9] "num"
 
 h2h_funs[1:3]
 #> $mean_score_diff
@@ -280,7 +276,7 @@ h2h_funs[1:3]
 # Computing Head-to-Head values with unquoting
 comperes::h2h_long(ncaa2005, !!! h2h_funs)
 #> # A long format of Head-to-Head values:
-#> # A tibble: 25 x 11
+#> # A tibble: 25 × 11
 #>   player1 player2 mean_score_diff mean_score_diff_pos mean_score sum_score_diff
 #>   <chr>   <chr>             <dbl>               <dbl>      <dbl>          <int>
 #> 1 Duke    Duke                  0                   0       8.75              0
@@ -343,7 +339,7 @@ value indicates better player performance.
 
 ``` r
 rank_keener(ncaa2005, !!! h2h_funs["mean_score"], keep_rating = TRUE)
-#> # A tibble: 5 x 3
+#> # A tibble: 5 × 3
 #>   player rating_keener ranking_keener
 #>   <chr>          <dbl>          <dbl>
 #> 1 Duke          0.0671              5
@@ -375,7 +371,7 @@ expressions.
 
 ``` r
 rank_markov(ncaa2005, !!! h2h_funs["num_wins"], keep_rating = TRUE)
-#> # A tibble: 5 x 3
+#> # A tibble: 5 × 3
 #>   player rating_markov ranking_markov
 #>   <chr>          <dbl>          <dbl>
 #> 1 Duke          0.0991              5
@@ -390,7 +386,7 @@ rank_markov(
   weights = c(0.2, 0.8),
   keep_rating = TRUE
 )
-#> # A tibble: 5 x 3
+#> # A tibble: 5 × 3
 #>   player rating_markov ranking_markov
 #>   <chr>          <dbl>          <dbl>
 #> 1 Duke          0.0994              5
@@ -405,13 +401,13 @@ rank_markov(
 The idea of Offense-Defense (OD) method is to account for different
 abilities of players by combining different ratings:
 
-  - For player which can achieve *high* Head-to-Head value (even against
-    the player with strong defense) it is said that he/she has **strong
-    offense** which results into *high* offensive rating.
-  - For player which can force their opponents into achieving *low*
-    Head-to-Head value (even if they have strong offense) it is said
-    that he/she has **strong defense** which results into *low*
-    defensive rating.
+- For player which can achieve *high* Head-to-Head value (even against
+  the player with strong defense) it is said that he/she has **strong
+  offense** which results into *high* offensive rating.
+- For player which can force their opponents into achieving *low*
+  Head-to-Head value (even if they have strong offense) it is said that
+  he/she has **strong defense** which results into *low* defensive
+  rating.
 
 Offensive and defensive ratings describe different skills of players. In
 order to fully rate players, OD ratings are computed: offensive ratings
@@ -423,7 +419,7 @@ rank_od(
   if (player1[1] == player2[1]) 0 else mean(score1),
   keep_rating = TRUE
 )
-#> # A tibble: 5 x 7
+#> # A tibble: 5 × 7
 #>   player rating_off rating_def rating_od ranking_off ranking_def ranking_od
 #>   <chr>       <dbl>      <dbl>     <dbl>       <dbl>       <dbl>      <dbl>
 #> 1 Duke         34.0      1.69       20.1           5           5          5
@@ -470,23 +466,15 @@ test_rate_fun <- function(rating1, score1, rating2, score2) {
 }
 add_iterative_ratings(ncaa2005, test_rate_fun)
 #> # A widecr object:
-#> # A tibble: 10 x 9
-#>    game player1 score1 player2 score2 rating1Before rating2Before rating1After
-#>   <int> <chr>    <int> <chr>    <int>         <dbl>         <dbl>        <dbl>
-#> 1     1 Duke         7 Miami       52             0             0           -1
-#> 2     2 Duke        21 UNC         24            -1             0           -2
-#> 3     3 Duke         7 UVA         38            -2             0           -3
-#> 4     4 Duke         0 VT          45            -3             0           -4
-#> 5     5 Miami       34 UNC         16             1             1            2
-#> 6     6 Miami       25 UVA         17             2             1            3
-#>   rating2After
-#>          <dbl>
-#> 1            1
-#> 2            1
-#> 3            1
-#> 4            1
-#> 5            0
-#> 6            0
+#> # A tibble: 10 × 9
+#>    game player1 score1 player2 score2 rating1Before rating2Before rating1After rating2After
+#>   <int> <chr>    <int> <chr>    <int>         <dbl>         <dbl>        <dbl>        <dbl>
+#> 1     1 Duke         7 Miami       52             0             0           -1            1
+#> 2     2 Duke        21 UNC         24            -1             0           -2            1
+#> 3     3 Duke         7 UVA         38            -2             0           -3            1
+#> 4     4 Duke         0 VT          45            -3             0           -4            1
+#> 5     5 Miami       34 UNC         16             1             1            2            0
+#> 6     6 Miami       25 UVA         17             2             1            3            0
 #> # … with 4 more rows
 
 # Revert the order of games
@@ -494,28 +482,20 @@ ncaa2005_rev <- ncaa2005
 ncaa2005_rev$game <- 11 - ncaa2005_rev$game
 add_iterative_ratings(ncaa2005_rev, test_rate_fun)
 #> # A widecr object:
-#> # A tibble: 10 x 9
-#>    game player1 score1 player2 score2 rating1Before rating2Before rating1After
-#>   <dbl> <chr>    <int> <chr>    <int>         <dbl>         <dbl>        <dbl>
-#> 1     1 UVA         14 VT          52             0             0           -1
-#> 2     2 UNC          3 VT          30             0             1           -1
-#> 3     3 UNC          7 UVA          5            -1            -1            0
-#> 4     4 Miami       27 VT           7             0             2            1
-#> 5     5 Miami       25 UVA         17             1            -2            2
-#> 6     6 Miami       34 UNC         16             2             0            3
-#>   rating2After
-#>          <dbl>
-#> 1            1
-#> 2            2
-#> 3           -2
-#> 4            1
-#> 5           -3
-#> 6           -1
+#> # A tibble: 10 × 9
+#>    game player1 score1 player2 score2 rating1Before rating2Before rating1After rating2After
+#>   <dbl> <chr>    <int> <chr>    <int>         <dbl>         <dbl>        <dbl>        <dbl>
+#> 1     1 UVA         14 VT          52             0             0           -1            1
+#> 2     2 UNC          3 VT          30             0             1           -1            2
+#> 3     3 UNC          7 UVA          5            -1            -1            0           -2
+#> 4     4 Miami       27 VT           7             0             2            1            1
+#> 5     5 Miami       25 UVA         17             1            -2            2           -3
+#> 6     6 Miami       34 UNC         16             2             0            3           -1
 #> # … with 4 more rows
 
 # Rating after the last game
 rank_iterative(ncaa2005, test_rate_fun, keep_rating = TRUE)
-#> # A tibble: 5 x 3
+#> # A tibble: 5 × 3
 #>   player rating_iterative ranking_iterative
 #>   <chr>             <dbl>             <dbl>
 #> 1 Duke                 -4                 5
@@ -537,47 +517,31 @@ considerably weaker player shouldn’t affect rating that much.
 ``` r
 add_elo_ratings(ncaa2005)
 #> # A widecr object:
-#> # A tibble: 10 x 9
-#>    game player1 score1 player2 score2 rating1Before rating2Before rating1After
-#>   <int> <chr>    <int> <chr>    <int>         <dbl>         <dbl>        <dbl>
-#> 1     1 Duke         7 Miami       52           0             0          -15  
-#> 2     2 Duke        21 UNC         24         -15             0          -29.4
-#> 3     3 Duke         7 UVA         38         -29.4           0          -43.1
-#> 4     4 Duke         0 VT          45         -43.1           0          -56.2
-#> 5     5 Miami       34 UNC         16          15            14.4         30.0
-#> 6     6 Miami       25 UVA         17          30.0          13.7         44.3
-#>   rating2After
-#>          <dbl>
-#> 1       15    
-#> 2       14.4  
-#> 3       13.7  
-#> 4       13.1  
-#> 5       -0.619
-#> 6       -0.564
+#> # A tibble: 10 × 9
+#>    game player1 score1 player2 score2 rating1Before rating2Before rating1After rating2After
+#>   <int> <chr>    <int> <chr>    <int>         <dbl>         <dbl>        <dbl>        <dbl>
+#> 1     1 Duke         7 Miami       52           0             0          -15         15    
+#> 2     2 Duke        21 UNC         24         -15             0          -29.4       14.4  
+#> 3     3 Duke         7 UVA         38         -29.4           0          -43.1       13.7  
+#> 4     4 Duke         0 VT          45         -43.1           0          -56.2       13.1  
+#> 5     5 Miami       34 UNC         16          15            14.4         30.0       -0.619
+#> 6     6 Miami       25 UVA         17          30.0          13.7         44.3       -0.564
 #> # … with 4 more rows
 add_elo_ratings(ncaa2005_rev)
 #> # A widecr object:
-#> # A tibble: 10 x 9
-#>    game player1 score1 player2 score2 rating1Before rating2Before rating1After
-#>   <dbl> <chr>    <int> <chr>    <int>         <dbl>         <dbl>        <dbl>
-#> 1     1 UVA         14 VT          52           0           0          -15    
-#> 2     2 UNC          3 VT          30           0          15          -14.4  
-#> 3     3 UNC          7 UVA          5         -14.4       -15            0.619
-#> 4     4 Miami       27 VT           7           0          29.4         16.3  
-#> 5     5 Miami       25 UVA         17          16.3       -30.0         29.3  
-#> 6     6 Miami       34 UNC         16          29.3         0.619       43.0  
-#>   rating2After
-#>          <dbl>
-#> 1         15  
-#> 2         29.4
-#> 3        -30.0
-#> 4         13.1
-#> 5        -43.0
-#> 6        -13.1
+#> # A tibble: 10 × 9
+#>    game player1 score1 player2 score2 rating1Before rating2Before rating1After rating2After
+#>   <dbl> <chr>    <int> <chr>    <int>         <dbl>         <dbl>        <dbl>        <dbl>
+#> 1     1 UVA         14 VT          52           0           0          -15             15  
+#> 2     2 UNC          3 VT          30           0          15          -14.4           29.4
+#> 3     3 UNC          7 UVA          5         -14.4       -15            0.619        -30.0
+#> 4     4 Miami       27 VT           7           0          29.4         16.3           13.1
+#> 5     5 Miami       25 UVA         17          16.3       -30.0         29.3          -43.0
+#> 6     6 Miami       34 UNC         16          29.3         0.619       43.0          -13.1
 #> # … with 4 more rows
 
 rank_elo(ncaa2005, keep_rating = TRUE)
-#> # A tibble: 5 x 3
+#> # A tibble: 5 × 3
 #>   player rating_elo ranking_elo
 #>   <chr>       <dbl>       <dbl>
 #> 1 Duke       -56.2            5
@@ -586,7 +550,7 @@ rank_elo(ncaa2005, keep_rating = TRUE)
 #> 4 UVA        -29.2            4
 #> 5 VT          28.8            2
 rank_elo(ncaa2005_rev, keep_rating = TRUE)
-#> # A tibble: 5 x 3
+#> # A tibble: 5 × 3
 #>   player rating_elo ranking_elo
 #>   <chr>       <dbl>       <dbl>
 #> 1 Duke       -56.2            5
