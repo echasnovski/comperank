@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // compute_iterative_ratings
 List compute_iterative_ratings(Function rate_fun, IntegerVector player1_id, NumericVector score1, IntegerVector player2_id, NumericVector score2, NumericVector initial_ratings);
 RcppExport SEXP _comperank_compute_iterative_ratings(SEXP rate_funSEXP, SEXP player1_idSEXP, SEXP score1SEXP, SEXP player2_idSEXP, SEXP score2SEXP, SEXP initial_ratingsSEXP) {
